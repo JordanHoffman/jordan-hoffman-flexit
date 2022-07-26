@@ -1,0 +1,14 @@
+@use "./fonts" as *;
+@forward "./fonts";
+@use "./variables.scss" as *;
+@forward "./variables.scss";
+@use "./mixins.scss" as *;
+@forward "./mixins.scss";
+
+*, *:before, *:after {
+  // font-family: 'Avenir', 'Arial', 'sans-serif';
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  // color: $brainFlix-DarkBlack;
+}
