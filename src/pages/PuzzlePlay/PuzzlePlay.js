@@ -2,18 +2,26 @@ import React from 'react';
 import {v4 as uuidv4} from 'uuid'; 
 
 import './PuzzlePlay.scss';
+import Toolkit from '../../components/Toolkit';
 import FlexBlock from '../../components/FlexBlock';
 
 class PuzzlePlay extends React.Component {
 
   state={
-    flexBlockPuzzle : null
+    flexBlockPuzzle : null,
+    selectedFlexBlock : null,
+  }
+
+  selectedFlexBlockHandler = null;
+
+  componentDidMount() {
+    this.setState({flexBlockPuzzle: this.createPuzzle()})
   }
 
   createChildren = () =>{
     let children = [];
     for (let i=0; i< 2; i++) {
-      children.push(<FlexBlock key={uuidv4()} parentAsk={null} />)
+      children.push(<FlexBlock key={uuidv4()} parentAsk={null} playPageHandle={this.handleFlexBlockRequest}/>)
     }
     return children;
   }
@@ -25,17 +33,29 @@ class PuzzlePlay extends React.Component {
     }
 
     let children = this.createChildren();
-    const parent = <FlexBlock details={boardDetails} unheldChildren={children} />
+    const parent = <FlexBlock details={boardDetails} unheldChildren={children} playPageHandle={this.handleFlexBlockRequest}/>
     return parent;
   }
 
-  componentDidMount() {
-    this.setState({flexBlockPuzzle: this.createPuzzle()})
+  handleFlexBlockRequest = (req) => {
+    const key = Object.keys(req)[0]
+    const data = req[key]
+    switch (key) {
+      case 'selected':
+        this.selectedFlexBlockHandler = data;
+        this.selectedFlexBlockHandler();
+        break;
+      default:
+        console.warn('invalid request to puzze play pg from flexblock: ' + req)
+    }
   }
+
+
 
   render(){
     return(
       <div className='puzzle-pg'>
+        <Toolkit />
         <h1>Puzzle Page</h1>
         {this.state.flexBlockPuzzle}
       </div>

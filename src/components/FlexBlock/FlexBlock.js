@@ -41,7 +41,17 @@ class FlexBlock extends React.Component {
   }
 
   componentDidUpdate() {
-    console.log(this.getBoardPos());
+    // console.log(this.getBoardPos());
+  }
+
+  handlePlayPageRequest = () => {
+    console.log('received play pg request');
+    console.log('my y position: ' + this.getBoardPos().y);
+  }
+
+  handleClick = (e)=> {
+    this.props.playPageHandle( {'selected': this.handlePlayPageRequest});
+    e.stopPropagation();
   }
 
   render(){
@@ -52,7 +62,7 @@ class FlexBlock extends React.Component {
     if (this.props.details.direction === "column") className += ` ${base}--dir-column`;
 
     return(
-      <div className={className} ref={this.selfRef}>
+      <div className={className} ref={this.selfRef} onClick={this.handleClick}>
         {this.state.directChildren.map(unheldChild => {
           return (React.cloneElement(unheldChild, {
             parentAsk:this.parentAsk,
