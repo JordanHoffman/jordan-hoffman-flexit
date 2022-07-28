@@ -38,7 +38,9 @@ class FlexBlock extends React.Component {
   }
 
   componentDidMount() {
+    //Initial setup for the base flexblock involves 
     if (this.props.details.isBaseBoard) {
+      //set the boardOffset that all other inner flexblocks will need for their location calculation. Update this board offset on window resize.
       const [xPos, yPos] = [this.selfRef.current.getBoundingClientRect().x, this.selfRef.current.getBoundingClientRect().y]
       this.setState({boardOffset:{x: xPos, y:yPos}})
 
@@ -47,6 +49,7 @@ class FlexBlock extends React.Component {
         this.setState({boardOffset:{x: xPos, y:yPos}})
       })
 
+      //Give the toolkit an initial handle to the base board flexblock.
       this.props.playPageHandle( {'selected': this.handleRequest});
     }
   }
