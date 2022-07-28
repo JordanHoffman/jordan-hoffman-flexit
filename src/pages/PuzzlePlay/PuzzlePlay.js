@@ -9,10 +9,8 @@ class PuzzlePlay extends React.Component {
 
   state={
     flexBlockPuzzle : null,
-    selectedFlexBlock : null,
+    selectedFlexBlockHandler : null,
   }
-
-  selectedFlexBlockHandler = null;
 
   componentDidMount() {
     this.setState({flexBlockPuzzle: this.createPuzzle()})
@@ -42,8 +40,7 @@ class PuzzlePlay extends React.Component {
     const data = req[key]
     switch (key) {
       case 'selected':
-        this.selectedFlexBlockHandler = data;
-        this.selectedFlexBlockHandler();
+        this.setState({selectedFlexBlockHandler: data});
         break;
       default:
         console.warn('invalid request to puzze play pg from flexblock: ' + req)
@@ -55,7 +52,7 @@ class PuzzlePlay extends React.Component {
   render(){
     return(
       <div className='puzzle-pg'>
-        <Toolkit />
+        <Toolkit selectedFlexBlockHandler={this.state.selectedFlexBlockHandler}/>
         <h1>Puzzle Page</h1>
         {this.state.flexBlockPuzzle}
       </div>

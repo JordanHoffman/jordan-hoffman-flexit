@@ -2,7 +2,11 @@ import React from 'react';
 import './FlexBlock.scss';
 
 /**
- * Howdy pal
+ * List of props
+ * key
+ * parentAsk - a function to allow communication to the parent flexblock
+ * unheldchildren - the jsx component objects that will be rendered by cloning with the parentAsk prop added
+ * playPageHandle - a function to allow communication to the PuzzlePlay Page Component
  */
 class FlexBlock extends React.Component {
 
@@ -37,6 +41,13 @@ class FlexBlock extends React.Component {
     if (this.props.details.isBaseBoard) {
       const [xPos, yPos] = [this.selfRef.current.getBoundingClientRect().x, this.selfRef.current.getBoundingClientRect().y]
       this.setState({boardOffset:{x: xPos, y:yPos}})
+
+      window.addEventListener('resize', e => {
+        const [xPos, yPos] = [this.selfRef.current.getBoundingClientRect().x, this.selfRef.current.getBoundingClientRect().y]
+        this.setState({boardOffset:{x: xPos, y:yPos}})
+      })
+
+      this.props.playPageHandle( {'selected': this.handleRequest});
     }
   }
 
@@ -44,13 +55,13 @@ class FlexBlock extends React.Component {
     // console.log(this.getBoardPos());
   }
 
-  handlePlayPageRequest = () => {
-    console.log('received play pg request');
+  handleRequest = () => {
+    console.log('received request');
     console.log('my y position: ' + this.getBoardPos().y);
   }
 
   handleClick = (e)=> {
-    this.props.playPageHandle( {'selected': this.handlePlayPageRequest});
+    this.props.playPageHandle( {'selected': this.handleRequest});
     e.stopPropagation();
   }
 
