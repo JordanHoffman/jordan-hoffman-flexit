@@ -4,6 +4,7 @@ import {v4 as uuidv4} from 'uuid';
 import './PuzzlePlay.scss';
 import Toolkit from '../../components/Toolkit';
 import FlexBlock from '../../components/FlexBlock';
+import helperFunctions from '../../Utility/HelperFunctions';
 
 class PuzzlePlay extends React.Component {
 
@@ -22,15 +23,11 @@ class PuzzlePlay extends React.Component {
   }
 
   createPuzzle = () => {
-    let boardDetails = {
-      isBaseBoard:true,
-      direction: 'column',
-      initialSize: {x: 5, y: 5}
-    }
+    const details = helperFunctions.createDetailsObj({isBaseBoard: true, size:{x:5,y:5} , flexDirection: 'column'})
 
     let children = this.createChildren();
     const parent = <FlexBlock 
-    details={boardDetails} 
+    details={details} 
     initialChildData={children} 
     playPageHandle={this.handleFlexBlockRequest}
     />

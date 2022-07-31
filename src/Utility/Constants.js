@@ -1,5 +1,7 @@
 const Constants = {
-
+  acceptedDetailKeys : ['isBaseBoard', 'flexDirection', 'size']
 }
 
-//freeze and export it
+Object.freeze(Constants);
+
+export default Constants;
