@@ -1,19 +1,20 @@
 import React from 'react';
 import './FlexBlock.scss';
+import { v4 as uuidv4 } from 'uuid';
 
 /**
  * List of props
  * key
  * parentAsk - a function to allow communication to the parent flexblock
- * unheldchildren - the jsx component objects that will be rendered by cloning with the parentAsk prop added
  * playPageHandle - a function to allow communication to the PuzzlePlay Page Component
+ * initialChildData - gives info for constructing the goal puzzle and/or building up a loaded puzzle to continue.
  */
 class FlexBlock extends React.Component {
 
   state = {
-    directChildren : this.props.unheldChildren,
-    size: {x:1, y:1},
-    boardOffset : this.props.boardOffset
+    size: this.props.details.initialSize,
+    boardOffset : this.props.boardOffset,
+    childData : this.props.initialChildData.map(childDataObj => {return {...childDataObj, key:uuidv4()}})
   }
 
   selfRef = React.createRef();
@@ -77,11 +78,15 @@ class FlexBlock extends React.Component {
 
     return(
       <div className={className} ref={this.selfRef} onClick={this.handleClick}>
-        {this.state.directChildren.map(unheldChild => {
-          return (React.cloneElement(unheldChild, {
-            parentAsk:this.parentAsk,
-            boardOffset: this.state.boardOffset
-          }))
+        {this.state.childData.map(childDataObj => {
+          return (
+            <FlexBlock 
+              key={childDataObj.key} 
+              parentAsk={this.parentAsk}
+              boardOffset={this.state.boardOffset}
+              playPageHandle={this.props.playPageHandle}
+            />
+          )
         })}
       </div>
     )
@@ -89,10 +94,13 @@ class FlexBlock extends React.Component {
 }
 
 FlexBlock.defaultProps = {
-  details:{},
+  details:{
+    initialSize : {x: 1, y:1}
+  },
   parentBoardPos: 0,
   unheldChildren: [],
-  boardOffset:{x:0,y:0}
+  boardOffset:{x:0,y:0},
+  initialChildData : []
 };
 
 export default FlexBlock;

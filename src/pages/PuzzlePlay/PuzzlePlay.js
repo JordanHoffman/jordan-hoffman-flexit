@@ -17,21 +17,23 @@ class PuzzlePlay extends React.Component {
   }
 
   createChildren = () =>{
-    let children = [];
-    for (let i=0; i< 2; i++) {
-      children.push(<FlexBlock key={uuidv4()} parentAsk={null} playPageHandle={this.handleFlexBlockRequest}/>)
-    }
+    let children = [{},{}];
     return children;
   }
 
   createPuzzle = () => {
     let boardDetails = {
       isBaseBoard:true,
-      direction: 'column'
+      direction: 'column',
+      initialSize: {x: 5, y: 5}
     }
 
     let children = this.createChildren();
-    const parent = <FlexBlock details={boardDetails} unheldChildren={children} playPageHandle={this.handleFlexBlockRequest}/>
+    const parent = <FlexBlock 
+    details={boardDetails} 
+    initialChildData={children} 
+    playPageHandle={this.handleFlexBlockRequest}
+    />
     return parent;
   }
 
