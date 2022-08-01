@@ -1,0 +1,13 @@
+.sizetool {
+  display: flex;
+  gap: 10px;
+
+  &__adjust {
+    width: 25px;
+  }
+
+  &__display {
+    width: 2rem;
+    border: 2px solid blue;
+  }
+}

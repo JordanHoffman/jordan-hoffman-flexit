@@ -16,7 +16,7 @@ import helperFunctions from '../../Utility/HelperFunctions';
 class FlexBlock extends React.Component {
 
   state = {
-    details: this.props.details,
+    // details: this.props.details,
     boardOffset: this.props.boardOffset,
     childDetailsArray: this.props.childDetailsArray
   }
@@ -47,7 +47,7 @@ class FlexBlock extends React.Component {
 
   componentDidMount() {
     //Initial setup for the base flexblock involves 
-    if (this.state.details.isBaseBoard) {
+    if (this.props.details.isBaseBoard) {
       //set the boardOffset that all other inner flexblocks will need for their location calculation. Update this board offset on window resize.
       const [xPos, yPos] = [this.selfRef.current.getBoundingClientRect().x, this.selfRef.current.getBoundingClientRect().y]
       this.setState({ boardOffset: { x: xPos, y: yPos } })
@@ -64,23 +64,25 @@ class FlexBlock extends React.Component {
   }
 
   createInside = () => {
-    if (this.state.details.flexDirection === 'row'){
+    //flex dir: row
+    if (this.props.details.flexDirection === 'row'){
       let totalChildrenWidth = 0;
       for (const childDetails of this.state.childDetailsArray) {
         totalChildrenWidth += childDetails.size.x;
       }
-      if (totalChildrenWidth < this.state.details.size.x) {
+      if (totalChildrenWidth < this.props.details.size.x) {
         const newChild = helperFunctions.createDefaultDetailsObj();
 
         this.setState({childDetailsArray: [...this.state.childDetailsArray, newChild]})
       }
     }
-    else { //column
+    //flex dir: column
+    else { 
       let totalChildrenHeight = 0;
       for (const childDetails of this.state.childDetailsArray) {
         totalChildrenHeight += childDetails.size.y;
       }
-      if (totalChildrenHeight < this.state.details.size.y) {
+      if (totalChildrenHeight < this.props.details.size.y) {
         const newChild = helperFunctions.createDefaultDetailsObj();
 
         this.setState({childDetailsArray: [...this.state.childDetailsArray, newChild]})
@@ -88,27 +90,27 @@ class FlexBlock extends React.Component {
     }
   }
 
-  handleRequest = (req) => {
-    const reqName = Object.keys(req)[0];
-    const reqData = req[reqName];
+  // handleRequest = (req) => {
+  //   const reqName = Object.keys(req)[0];
+  //   const reqData = req[reqName];
 
-    switch (reqName) {
-      case 'receiveToolkitRequestHandler':
-        this.toolkitHandler = reqData;
-        break;
-      case 'getInfoForToolkit':
-        return cloneDeep(this.state.details);
-      case 'createInside':
-        //TODO: Check if you have room to add another flexblock and then..... JUST DO IT!!!!!!!!
-        break;
-      default:
-        throw new Error(`Invalid request sent to flexblock with name: ${reqName}`);
-    }
+  //   switch (reqName) {
+  //     case 'receiveToolkitRequestHandler':
+  //       this.toolkitHandler = reqData;
+  //       break;
+  //     case 'getInfoForToolkit':
+  //       return cloneDeep(this.props.details);
+  //     case 'createInside':
+  //       //TODO: Check if you have room to add another flexblock and then..... JUST DO IT!!!!!!!!
+  //       break;
+  //     default:
+  //       throw new Error(`Invalid request sent to flexblock with name: ${reqName}`);
+  //   }
 
 
-    console.log('received request: ' + Object.keys(req)[0]);
-    console.log('my y position: ' + this.getBoardPos().y);
-  }
+  //   console.log('received request: ' + Object.keys(req)[0]);
+  //   console.log('my y position: ' + this.getBoardPos().y);
+  // }
 
   handleClick = (e) => {
     this.props.selectedListener(this);
@@ -119,8 +121,8 @@ class FlexBlock extends React.Component {
     let className = 'flexblock';
     const base = className;
 
-    if (this.state.details.isBaseBoard) className += ` ${base}--base-board`;
-    if (this.state.details.flexDirection === "column") className += ` ${base}--dir-column`;
+    if (this.props.details.isBaseBoard) className += ` ${base}--base-board`;
+    if (this.props.details.flexDirection === "column") className += ` ${base}--dir-column`;
 
     return (
       <div className={className} ref={this.selfRef} onClick={this.handleClick}>
@@ -141,7 +143,7 @@ class FlexBlock extends React.Component {
 }
 
 FlexBlock.defaultProps = {
-  details: helperFunctions.createDefaultDetailsObj(),
+  // details: helperFunctions.createDefaultDetailsObj(),
   parentBoardPos: 0,
   boardOffset: { x: 0, y: 0 },
   childDetailsArray: []

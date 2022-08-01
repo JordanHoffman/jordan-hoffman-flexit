@@ -1,6 +1,7 @@
-import React from "react";  
+import React from "react";
 
 import './Toolkit.scss'
+import SizeTool from "../SizeTool/SizeTool";
 
 //Gameplan:
 /* 
@@ -9,21 +10,60 @@ Instead of the Toolkit having to know about the current flexblock, its parent, a
 
 class Toolkit extends React.Component {
 
-  componentDidUpdate(prevProps) {
-    if (!prevProps.selectedFlexBlock && !this.props.selectedFlexBlock) return;
-    if (!prevProps.selectedFlexBlock || prevProps.selectedFlexBlock.props.details.id !== this.props.selectedFlexBlock.props.details.id) {
+  state = {
+    selectedFlexBlockDetails: null,
+  }
 
+  componentDidUpdate(prevProps) {
+    if (!prevProps.selectedFlexBlock || prevProps.selectedFlexBlock.props.details.id !== this.props.selectedFlexBlock.props.details.id) {
+      this.setState({selectedFlexBlockDetails: this.props.selectedFlexBlock.details})
     }
   }
 
-  handleCreateInside = ()=>{
+  handleCreateInside = () => {
     this.props.selectedFlexBlock.createInside();
   }
 
-  render(){
-    return(
+  handleSizeAdjust = (dimension, increase) => {
+    if (dimension === 'width') {
+
+    }
+    else if (dimension === 'height') {
+
+    }
+    else {
+      throw new Error(`invalid dimension of name: ${dimension}`)
+    }
+  }
+
+  render() {
+    return (
       <div className="toolkit">
-        <button onClick={this.handleCreateInside}>Create</button>
+        <h2 className="toolkit__title">Toolkit</h2>
+
+        <section className="toolkit__section">
+          <h3 className="toolkit__section-title">Create</h3>
+          <div className="creation-btn-ctr">
+            <button >before</button>
+            <button onClick={this.handleCreateInside}>inside</button>
+            <button>after</button>
+          </div>
+        </section>
+
+        <section className="toolkit__section">
+          <h3 className="toolkit__section-title">Selected FlexBlock Editor</h3>
+
+          <div className="size-ctr">
+            <h4 className="size-ctr__title">Width:</h4>
+            <SizeTool size={0} />
+          </div>
+          <div className="size-ctr">
+            <h4 className="size-ctr__title">Height:</h4>
+            <SizeTool size={0} />
+          </div>
+
+
+        </section>
       </div>
     )
   }
