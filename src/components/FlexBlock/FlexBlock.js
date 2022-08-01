@@ -1,5 +1,4 @@
 import React from 'react';
-import { v4 as uuidv4 } from 'uuid';
 import { cloneDeep } from 'lodash';
 
 import './FlexBlock.scss';
@@ -19,10 +18,13 @@ class FlexBlock extends React.Component {
   state = {
     details: this.props.details,
     boardOffset: this.props.boardOffset,
-    childData: this.props.initialChildData.map(childDataObj => { return { ...childDataObj, key: uuidv4() } })
+    childDetailsArray: this.props.childDetailsArray
   }
 
+  //meant for getting the position in the DOM.
   selfRef = React.createRef();
+  //will hold a callback function from toolkit to allow initiation of a request to toolkit.
+  toolkitHandler = null;
 
   getBoardPos = () => {
     let [xPos, yPos] = [this.selfRef.current.getBoundingClientRect().x, this.selfRef.current.getBoundingClientRect().y]
@@ -65,6 +67,9 @@ class FlexBlock extends React.Component {
     const reqData = req[reqName];
 
     switch (reqName) {
+      case 'receiveToolkitRequestHandler':
+        this.toolkitHandler = reqData;
+        break;
       case 'getInfoForToolkit':
         return cloneDeep(this.state.details);
       case 'createInside':
@@ -93,10 +98,11 @@ class FlexBlock extends React.Component {
 
     return (
       <div className={className} ref={this.selfRef} onClick={this.handleClick}>
-        {this.state.childData.map(childDataObj => {
+        {this.state.childDetailsArray.map(childDetailObj => {
           return (
             <FlexBlock
-              key={childDataObj.key}
+              key={childDetailObj.id}
+              details={childDetailObj}
               parentAsk={this.parentAsk}
               boardOffset={this.state.boardOffset}
               playPageHandle={this.props.playPageHandle}
@@ -112,7 +118,7 @@ FlexBlock.defaultProps = {
   details: helperFunctions.createDefaultDetailsObj(),
   parentBoardPos: 0,
   boardOffset: { x: 0, y: 0 },
-  initialChildData: []
+  childDetailsArray: []
 };
 
 export default FlexBlock;

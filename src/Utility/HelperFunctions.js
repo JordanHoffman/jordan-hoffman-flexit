@@ -1,13 +1,20 @@
+import {v4 as uuidv4} from 'uuid';
+
 import C from "./Constants"
 
 function createDefaultDetailsObj() {
   return {
     isBaseBoard: false,
     flexDirection: 'row',
-    size: { x: 1, y: 1 }
+    size: { x: 1, y: 1 },
+    id: uuidv4()
   }
 }
 
+/**
+ * Allows you to create a custom details object with whatever details you wish. Any left out details will just be default values.
+ * @param {Object} details - The flexblock details you wish to set.
+ */
 function createDetailsObj(details) {
   let detailObj = createDefaultDetailsObj();
 

@@ -1,4 +1,5 @@
 import React from "react";  
+
 import './Toolkit.scss'
 
 //Gameplan:
@@ -9,13 +10,19 @@ Instead of the Toolkit having to know about the current flexblock, its parent, a
 class Toolkit extends React.Component {
 
   componentDidUpdate(prevProps) {
+    //If we receive a new flexblock handler, first pass the flexblock our callback handler in order for it to start a communication with us (complete the handshake). Then get the info on the newly selected flexblock for toolkit to update the parts of its display which represent the flexblock's details (e.g. width and height)
     if (prevProps.selectedFlexBlockHandler !== this.props.selectedFlexBlockHandler) {
+      this.props.selectedFlexBlockHandler({'receiveToolkitRequestHandler': this.handleRequest});
       this.props.selectedFlexBlockHandler({'getInfoForToolkit': null});
     }
   }
 
   handleCreateInside = ()=>{
     this.props.selectedFlexBlockHandler({'createInside': null});
+  }
+
+  handleRequest = (req) => {
+
   }
 
   render(){

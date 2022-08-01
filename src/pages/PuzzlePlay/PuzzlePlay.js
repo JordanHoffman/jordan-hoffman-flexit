@@ -1,5 +1,4 @@
 import React from 'react';
-import {v4 as uuidv4} from 'uuid'; 
 
 import './PuzzlePlay.scss';
 import Toolkit from '../../components/Toolkit';
@@ -10,6 +9,7 @@ class PuzzlePlay extends React.Component {
 
   state={
     flexBlockPuzzle : null,
+    //the flow is that upon flexblock selection (via user click), it calls PuzzlePlay's handleFlexBlockRequest which updates the state's selectedFlexBlockHandler. The sole purpose is to pass the flexblock's handler to the toolkit via props. From that point, toolkit handshakes with the flexblock to allow the two to communicate together.
     selectedFlexBlockHandler : null,
   }
 
@@ -18,7 +18,7 @@ class PuzzlePlay extends React.Component {
   }
 
   createChildren = () =>{
-    let children = [{},{}];
+    let children = [helperFunctions.createDefaultDetailsObj(), helperFunctions.createDefaultDetailsObj()];
     return children;
   }
 
@@ -27,8 +27,9 @@ class PuzzlePlay extends React.Component {
 
     let children = this.createChildren();
     const parent = <FlexBlock 
+    key={details.id}
     details={details} 
-    initialChildData={children} 
+    childDetailsArray={children} 
     playPageHandle={this.handleFlexBlockRequest}
     />
     return parent;
