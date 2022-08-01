@@ -8,13 +8,19 @@ import helperFunctions from '../../Utility/HelperFunctions';
 class PuzzlePlay extends React.Component {
 
   state={
+    //The fully created puzzle component
     flexBlockPuzzle : null,
     //the flow is that upon flexblock selection (via user click), it calls PuzzlePlay's handleFlexBlockRequest which updates the state's selectedFlexBlockHandler. The sole purpose is to pass the flexblock's handler to the toolkit via props. From that point, toolkit handshakes with the flexblock to allow the two to communicate together.
-    selectedFlexBlockHandler : null,
+    selectedFlexBlock : null,
+    baseBoard: null
   }
 
   componentDidMount() {
     this.setState({flexBlockPuzzle: this.createPuzzle()})
+  }
+
+  componentDidUpdate(){
+
   }
 
   createChildren = () =>{
@@ -23,28 +29,35 @@ class PuzzlePlay extends React.Component {
   }
 
   createPuzzle = () => {
-    const details = helperFunctions.createDetailsObj({isBaseBoard: true, size:{x:5,y:5} , flexDirection: 'column'})
+    const details = helperFunctions.createDetailsObj({isBaseBoard: true, size:{x:5,y:5}, flexDirection: 'column' })
 
     let children = this.createChildren();
     const parent = <FlexBlock 
     key={details.id}
     details={details} 
     childDetailsArray={children} 
-    playPageHandle={this.handleFlexBlockRequest}
+    selectedListener={this.newFlexBlockSelected}
+    receiveBaseBoardHandle={this.receiveBaseBoardHandle}
     />
     return parent;
   }
 
-  handleFlexBlockRequest = (req) => {
-    const key = Object.keys(req)[0]
-    const data = req[key]
-    switch (key) {
-      case 'selected':
-        this.setState({selectedFlexBlockHandler: data});
-        break;
-      default:
-        console.warn('invalid request to puzze play pg from flexblock: ' + req)
-    }
+  receiveBaseBoardHandle = (baseBoardHandle) => {
+    this.setState({baseBoard: baseBoardHandle})
+  }
+
+  newFlexBlockSelected = (selectedFlexBlock) => {
+
+    this.setState({selectedFlexBlock: selectedFlexBlock});
+    // const key = Object.keys(req)[0]
+    // const data = req[key]
+    // switch (key) {
+    //   case 'selected':
+    //     this.setState({selectedFlexBlockHandler: data});
+    //     break;
+    //   default:
+    //     console.warn('invalid request to puzze play pg from flexblock: ' + req)
+    // }
   }
 
 
@@ -52,7 +65,7 @@ class PuzzlePlay extends React.Component {
   render(){
     return(
       <div className='puzzle-pg'>
-        <Toolkit selectedFlexBlockHandler={this.state.selectedFlexBlockHandler}/>
+        <Toolkit selectedFlexBlock={this.state.selectedFlexBlock}/>
         <h1>Puzzle Page</h1>
         {this.state.flexBlockPuzzle}
       </div>

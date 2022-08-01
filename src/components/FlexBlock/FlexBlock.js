@@ -10,7 +10,7 @@ import helperFunctions from '../../Utility/HelperFunctions';
  * key
  * details - an object with details pertaining to this specific flexblock
  * parentAsk - a function to allow communication to the parent flexblock
- * playPageHandle - a function to allow communication to the PuzzlePlay Page Component
+ * selectedListener - a function to give a handle to the newly selected flexblock onclick.
  * initialChildData - gives array of child data objects for constructing the goal puzzle and/or building up a loaded puzzle to continue.
  */
 class FlexBlock extends React.Component {
@@ -58,7 +58,33 @@ class FlexBlock extends React.Component {
       })
 
       //Give the toolkit an initial handle to the base board flexblock.
-      this.props.playPageHandle({ 'selected': this.handleRequest });
+      this.props.receiveBaseBoardHandle(this);
+      this.props.selectedListener(this);
+    }
+  }
+
+  createInside = () => {
+    if (this.state.details.flexDirection === 'row'){
+      let totalChildrenWidth = 0;
+      for (const childDetails of this.state.childDetailsArray) {
+        totalChildrenWidth += childDetails.size.x;
+      }
+      if (totalChildrenWidth < this.state.details.size.x) {
+        const newChild = helperFunctions.createDefaultDetailsObj();
+
+        this.setState({childDetailsArray: [...this.state.childDetailsArray, newChild]})
+      }
+    }
+    else { //column
+      let totalChildrenHeight = 0;
+      for (const childDetails of this.state.childDetailsArray) {
+        totalChildrenHeight += childDetails.size.y;
+      }
+      if (totalChildrenHeight < this.state.details.size.y) {
+        const newChild = helperFunctions.createDefaultDetailsObj();
+
+        this.setState({childDetailsArray: [...this.state.childDetailsArray, newChild]})
+      }
     }
   }
 
@@ -85,7 +111,7 @@ class FlexBlock extends React.Component {
   }
 
   handleClick = (e) => {
-    this.props.playPageHandle({ 'selected': this.handleRequest });
+    this.props.selectedListener(this);
     e.stopPropagation();
   }
 
@@ -105,7 +131,7 @@ class FlexBlock extends React.Component {
               details={childDetailObj}
               parentAsk={this.parentAsk}
               boardOffset={this.state.boardOffset}
-              playPageHandle={this.props.playPageHandle}
+              selectedListener={this.props.selectedListener}
             />
           )
         })}
