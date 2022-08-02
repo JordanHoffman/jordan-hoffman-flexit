@@ -35,15 +35,15 @@ class FlexBlock extends React.Component {
     return { x: xPos, y: yPos };
   }
 
-  parentAsk = (request, theChild) => {
-    switch (request) {
-      case "listNumber":
-        console.log(theChild);
-        break;
-      default:
-        console.warn('invalid request asked to parent')
-    }
-  }
+  // parentAsk = (request, theChild) => {
+  //   switch (request) {
+  //     case "listNumber":
+  //       console.log(theChild);
+  //       break;
+  //     default:
+  //       console.warn('invalid request asked to parent')
+  //   }
+  // }
 
   componentDidMount() {
     //Initial setup for the base flexblock involves 
@@ -60,6 +60,35 @@ class FlexBlock extends React.Component {
       //Give the toolkit an initial handle to the base board flexblock.
       this.props.receiveBaseBoardHandle(this);
       this.props.selectedListener(this);
+    }
+  }
+
+  //A lot of logic. Also, I need to figure out how to tie this in to CSS. To convert size to css, it needs to be expressed as a ratio to its parent size. (ex: child size.x is 1. Parent's is 4. Therefore child's literal size is 25%.). I'll probably need to inline style this because it's a dynamic calculation.
+  parentHandleSizeAdjust(dimension, adjustment, id) {
+    if (adjustment === 'decrement') {
+      let updatedChildDetailsArray = cloneDeep(this.state.childDetailsArray);
+      let updatedChildDetailObj = updatedChildDetailsArray.find(childDetailObj => childDetailObj.id === id);
+      if (dimension === 'width') {
+        updatedChildDetailObj.size.x -= 1;
+      }
+      else if(dimension === 'height') {
+        updatedChildDetailObj.size.y -=1;
+      }
+
+      this.setState({childDetailsArray:updatedChildDetailsArray});
+    }
+  }
+
+  attemptSizeAdjust(dimension, adjustment) {
+    if (this.props.details.isBaseBoard) return false;
+
+    if (adjustment === 'decrement') {
+      if ( (dimension === 'width' && this.props.details.size.x > 1) || (dimension === 'height' && this.props.details.size.y > 1)) {
+        return this.props.parent.parentHandleSizeAdjust(dimension, adjustment, this.props.details.id)
+      }
+    }
+    else { //increment logic
+      return(this.props.parent.parentHandleSizeAdjust(dimension, adjustment, this.props.details.id));
     }
   }
 
@@ -131,7 +160,7 @@ class FlexBlock extends React.Component {
             <FlexBlock
               key={childDetailObj.id}
               details={childDetailObj}
-              parentAsk={this.parentAsk}
+              parent={this}
               boardOffset={this.state.boardOffset}
               selectedListener={this.props.selectedListener}
             />
@@ -143,10 +172,9 @@ class FlexBlock extends React.Component {
 }
 
 FlexBlock.defaultProps = {
-  // details: helperFunctions.createDefaultDetailsObj(),
-  parentBoardPos: 0,
   boardOffset: { x: 0, y: 0 },
-  childDetailsArray: []
+  childDetailsArray: [],
+  parent: null
 };
 
 export default FlexBlock;

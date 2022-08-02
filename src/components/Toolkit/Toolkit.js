@@ -14,9 +14,11 @@ class Toolkit extends React.Component {
     selectedFlexBlockDetails: null,
   }
 
-  componentDidUpdate(prevProps) {
-    if (!prevProps.selectedFlexBlock || prevProps.selectedFlexBlock.props.details.id !== this.props.selectedFlexBlock.props.details.id) {
-      this.setState({selectedFlexBlockDetails: this.props.selectedFlexBlock.details})
+  componentDidUpdate() {
+
+    if (this.props.selectedFlexBlock) {
+      if (!this.state.selectedFlexBlockDetails || this.state.selectedFlexBlockDetails.id !== this.props.selectedFlexBlock.props.details.id)
+      this.setState({selectedFlexBlockDetails: this.props.selectedFlexBlock.props.details})
     }
   }
 
@@ -24,16 +26,19 @@ class Toolkit extends React.Component {
     this.props.selectedFlexBlock.createInside();
   }
 
-  handleSizeAdjust = (dimension, increase) => {
-    if (dimension === 'width') {
+  //TODO CONTINUE FROM HERE
+  handleSizeAdjust = (e) => {
+    const result = this.props.selectedFlexBlock.attemptSizeAdjust(e.target.dataset.dimension, e.target.dataset.adjustment)
+    // this.props.selectedFlexBlock.attemptSizeAdjust(e.data)
+    // if (dimension === 'width') {
 
-    }
-    else if (dimension === 'height') {
+    // }
+    // else if (dimension === 'height') {
 
-    }
-    else {
-      throw new Error(`invalid dimension of name: ${dimension}`)
-    }
+    // }
+    // else {
+    //   throw new Error(`invalid dimension of name: ${dimension}`)
+    // }
   }
 
   render() {
@@ -55,11 +60,11 @@ class Toolkit extends React.Component {
 
           <div className="size-ctr">
             <h4 className="size-ctr__title">Width:</h4>
-            <SizeTool size={0} />
+            <SizeTool size={0} dimension='width' handleSizeAdjust={this.handleSizeAdjust}/>
           </div>
           <div className="size-ctr">
             <h4 className="size-ctr__title">Height:</h4>
-            <SizeTool size={0} />
+            <SizeTool size={0} dimension='height' handleSizeAdjust={this.handleSizeAdjust}/>
           </div>
 
 
