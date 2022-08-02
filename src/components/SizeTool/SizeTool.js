@@ -8,7 +8,7 @@ function SizeTool(props) {
         {'<'}
       </button>
       <div className="sizetool__display">
-        {props.size}
+        {props.value}
       </div>
       <button className="sizetool__adjust" data-dimension={props.dimension} data-adjustment='increment' onClick={props.handleSizeAdjust}>
         {'>'}

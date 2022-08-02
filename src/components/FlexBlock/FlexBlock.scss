@@ -1,11 +1,40 @@
 @use '../../styles/partials/global' as *;
 
 .flexblock {
-  width: 20%;
-  height: 20%;
-  background-color: blue;
+  // width and height set inline due to dynamic calculation
+  // width: 20%;
+  // height: 20%;
+  // background-color: blue;
   display: flex;
   flex-shrink: 0;
+
+  &--layer0 {
+    background-color: white;
+  }
+
+  &--layer1 {
+    background-color: blue;
+  }
+
+  &--layer2 {
+    background-color: red;
+  }
+
+  &--layer3 {
+    background-color: green;
+  }
+
+  &--layer4 {
+    background-color: yellow;
+  }
+
+  &--layer5 {
+    background-color: orange;
+  }
+
+  &--layer6 {
+    background-color: purple;
+  }
 
   &--base-board {
     text-align: center;

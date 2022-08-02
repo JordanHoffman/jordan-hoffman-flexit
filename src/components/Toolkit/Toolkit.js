@@ -28,7 +28,12 @@ class Toolkit extends React.Component {
 
   //TODO CONTINUE FROM HERE
   handleSizeAdjust = (e) => {
+    //result will either be the new details of the updated flexblock or false if it was unable to update
     const result = this.props.selectedFlexBlock.attemptSizeAdjust(e.target.dataset.dimension, e.target.dataset.adjustment)
+
+    if (result) {
+      this.setState({selectedFlexBlockDetails: result})
+    }
     // this.props.selectedFlexBlock.attemptSizeAdjust(e.data)
     // if (dimension === 'width') {
 
@@ -42,6 +47,9 @@ class Toolkit extends React.Component {
   }
 
   render() {
+    const width = this.state.selectedFlexBlockDetails ? this.state.selectedFlexBlockDetails.size.x : 0;
+    const height = this.state.selectedFlexBlockDetails ? this.state.selectedFlexBlockDetails.size.y : 0;
+
     return (
       <div className="toolkit">
         <h2 className="toolkit__title">Toolkit</h2>
@@ -60,11 +68,11 @@ class Toolkit extends React.Component {
 
           <div className="size-ctr">
             <h4 className="size-ctr__title">Width:</h4>
-            <SizeTool size={0} dimension='width' handleSizeAdjust={this.handleSizeAdjust}/>
+            <SizeTool value={width} dimension='width' handleSizeAdjust={this.handleSizeAdjust}/>
           </div>
           <div className="size-ctr">
             <h4 className="size-ctr__title">Height:</h4>
-            <SizeTool size={0} dimension='height' handleSizeAdjust={this.handleSizeAdjust}/>
+            <SizeTool value={height} dimension='height' handleSizeAdjust={this.handleSizeAdjust}/>
           </div>
 
 
