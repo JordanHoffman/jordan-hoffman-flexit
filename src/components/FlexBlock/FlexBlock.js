@@ -18,7 +18,7 @@ class FlexBlock extends React.Component {
   state = {
     // details: this.props.details,
     boardOffset: this.props.boardOffset,
-    childDetailsArray: this.props.childDetailsArray
+    childDetailsArray: this.props.initialChildDetailsArray
   }
 
   //meant for getting the position in the DOM.
@@ -141,6 +141,7 @@ class FlexBlock extends React.Component {
   //   console.log('my y position: ' + this.getBoardPos().y);
   // }
 
+  //TODO: THIS DOESNT WORK. It gets stale as the state changes. You need to pass a ref instead of this.
   handleClick = (e) => {
     this.props.selectedListener(this);
     e.stopPropagation();
@@ -173,7 +174,7 @@ class FlexBlock extends React.Component {
 
 FlexBlock.defaultProps = {
   boardOffset: { x: 0, y: 0 },
-  childDetailsArray: [],
+  initialChildDetailsArray: [],
   parent: null
 };
 

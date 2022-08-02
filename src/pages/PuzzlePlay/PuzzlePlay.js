@@ -35,7 +35,7 @@ class PuzzlePlay extends React.Component {
     const parent = <FlexBlock 
     key={details.id}
     details={details} 
-    childDetailsArray={children} 
+    initialChildDetailsArray={children} 
     selectedListener={this.newFlexBlockSelected}
     receiveBaseBoardHandle={this.receiveBaseBoardHandle}
     />
