@@ -1,7 +1,9 @@
 import React from "react";
 
 import './Toolkit.scss'
-import SizeTool from "../SizeTool/SizeTool";
+import SizeTool from "../SizeTool";
+import { RadioOff, RadioOn } from "../../Utility/svg-loader"
+import DropDownTool from "../DropDownTool";
 
 //Gameplan:
 /* 
@@ -18,7 +20,7 @@ class Toolkit extends React.Component {
 
     if (this.props.selectedFlexBlock) {
       if (!this.state.selectedFlexBlockDetails || this.state.selectedFlexBlockDetails.id !== this.props.selectedFlexBlock.props.details.id)
-      this.setState({selectedFlexBlockDetails: this.props.selectedFlexBlock.props.details})
+        this.setState({ selectedFlexBlockDetails: this.props.selectedFlexBlock.props.details })
     }
   }
 
@@ -32,7 +34,7 @@ class Toolkit extends React.Component {
     const result = this.props.selectedFlexBlock.attemptSizeAdjust(e.target.dataset.dimension, e.target.dataset.adjustment)
 
     if (result) {
-      this.setState({selectedFlexBlockDetails: result})
+      this.setState({ selectedFlexBlockDetails: result })
     }
     // this.props.selectedFlexBlock.attemptSizeAdjust(e.data)
     // if (dimension === 'width') {
@@ -56,6 +58,7 @@ class Toolkit extends React.Component {
 
         <section className="toolkit__section">
           <h3 className="toolkit__section-title">Create</h3>
+
           <div className="creation-btn-ctr">
             <button >before</button>
             <button onClick={this.handleCreateInside}>inside</button>
@@ -63,20 +66,51 @@ class Toolkit extends React.Component {
           </div>
         </section>
 
-        <section className="toolkit__section">
-          <h3 className="toolkit__section-title">Selected FlexBlock Editor</h3>
 
-          <div className="size-ctr">
-            <h4 className="size-ctr__title">Width:</h4>
-            <SizeTool value={width} dimension='width' handleSizeAdjust={this.handleSizeAdjust}/>
-          </div>
-          <div className="size-ctr">
-            <h4 className="size-ctr__title">Height:</h4>
-            <SizeTool value={height} dimension='height' handleSizeAdjust={this.handleSizeAdjust}/>
+        <section className="toolkit__section toolkit__section--details">
+
+          <h3 className="toolkit__section-title">FlexBlock Details</h3>
+
+          <div className="detail-ctr">
+            <h4 className="detail-ctr__title">Flex Direction:</h4>
+
+            <div className="detail-ctr__controls detail-ctr__controls--flexDirection">
+              <div className="radio-ctr">
+                <h5 className="detail-ctr__subtitle">row</h5>
+                <button className="radio-button">
+                  <RadioOff className="radio-button__svg" />
+                </button>
+              </div>
+              <div className="radio-ctr">
+                <h5 className="detail-ctr__subtitle">column</h5>
+                <button className="radio-button">
+                  <RadioOn className="radio-button__svg" />
+                </button>
+              </div>
+            </div>
+
+
+
           </div>
 
+          <div className="detail-ctr">
+            <h4 className="detail-ctr__title">Width:</h4>
+            <SizeTool ctrClass="detail-ctr__controls detail-ctr__controls--sizetool" value={width} dimension='width' handleSizeAdjust={this.handleSizeAdjust} />
+          </div>
+
+          <div className="detail-ctr">
+            <h4 className="detail-ctr__title">Height:</h4>
+            <SizeTool ctrClass="detail-ctr__controls detail-ctr__controls--sizetool" value={height} dimension='height' handleSizeAdjust={this.handleSizeAdjust} />
+          </div>
+
+          <div className="detail-ctr">
+            <h4 className="detail-ctr__title">Justify Content:</h4>
+            <DropDownTool ctrClass="detail-ctr__controls" options={['start','center','end','between','around','evenly']}/>
+          </div>
 
         </section>
+
+
       </div>
     )
   }

@@ -1,0 +1,14 @@
+@use "../../styles/partials/global" as *;
+
+.select-dropdown {
+  min-width: 75%;
+  background-color: $Primary-Dark;
+  color: $Secondary;
+  padding: $qtr-padding-between-mobile;
+
+  &__option {
+    color: $Font-Primary-Color;
+    border: 2px solid $Primary-Dark;
+    background-color: $Primary-Light;
+  }
+}

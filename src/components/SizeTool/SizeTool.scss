@@ -1,13 +1,33 @@
-.sizetool {
-  display: flex;
-  gap: 10px;
+@use "../../styles/partials/global" as *;
 
-  &__adjust {
+// .sizetool {
+//   display: flex;
+//   width: 50%;
+//   gap: $qtr-padding-between-mobile;
+//   justify-content: center;
+
+  .adjust-button {
     width: 25px;
+    background-color: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &__arrow {
+      fill: $Secondary;
+      display: block;
+    }
   }
 
-  &__display {
+
+
+  .display {
     width: 2rem;
-    border: 2px solid blue;
+    border-radius: 8px;
+    background-color: $Primary-Dark;
+    padding: $qtr-padding-between-mobile;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
-}
+// }

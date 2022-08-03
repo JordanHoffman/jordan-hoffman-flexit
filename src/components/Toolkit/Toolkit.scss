@@ -1,21 +1,35 @@
+@use "../../styles/partials/global" as *;
+
+.radio-button {
+
+}
+
 .toolkit {
   width: 33%;
   height: 100%;
   display: flex;
   flex-direction: column;
-  background-color: gray;
-  padding: 0px 10px;
+  background-color: $Primary-Light;
 
   &__title {
+    font-family: Allan;
+    font-weight: 700;
+    background-color: $Primary-Dark;
 
+    @include page-header-fontstats;
   }
 
   &__section {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: $padding-between-larger;
     margin-top: 25px;
-    border: 2px solid blue;
+    background-color: $Primary;
+    padding: $padding-between-mobile;
+
+    &--details {
+
+    }
   }
 
   &__section-title {
@@ -30,15 +44,50 @@
   gap: 10px;
 }
 
-.size-ctr {
+.detail-ctr {
   display: flex;
   width: 100%;
   max-width: 400px;
   gap: 10px;
+  align-items: center;
 
   &__title {
-    width: 25%;
+    width: 50%;
     text-align: right;
 
+  }
+
+  &__controls {
+    display: flex;
+    justify-content: center;
+    width: 50%;
+
+    &--flexDirection {
+      justify-content: space-evenly;
+    }
+
+    &--sizetool {
+      gap: $qtr-padding-between-mobile;
+    }
+  }
+}
+
+.radio-ctr {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 50%;
+  gap: $qtr-padding-between-mobile;
+}
+
+.radio-button {
+  width: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: transparent;
+
+  &__svg {
+    fill: $Secondary;
   }
 }

@@ -1,0 +1,79 @@
+@use "./variables.scss" as *;
+
+//Breakpoints
+@mixin tablet {
+  @media (min-width: $tablet-breakpoint) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media (min-width: $desktop-breakpoint) {
+    @content;
+  }
+}
+
+//Font Rules
+@mixin page-header-fontstats() {
+  font-size: 24px;
+  font-weight: 700;
+
+  @include tablet {
+    font-size: 33px;
+    font-weight: 700;
+  }
+}
+
+@mixin page-header-fontstats-larger() {
+  font-size: 33px;
+  line-height: 44px;
+  font-weight: 700;
+}
+
+@mixin section-header-fontstats-mobile() {
+  font-size: 12px;
+  line-height: 20px;
+  font-weight: 700;
+}
+
+@mixin section-header-fontstats-larger() {
+  font-size: 12px;
+  line-height: 20px;
+  font-weight: 700;
+}
+
+@mixin subheader-fontstats-mobile() {
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 700;
+}
+
+@mixin subheader-fontstats-larger() {
+  font-size: 14px;
+  line-height: 22px;
+  font-weight: 700;
+}
+
+@mixin body-fontstats-mobile() {
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 400;
+}
+
+@mixin body-fontstats-larger() {
+  font-size: 14px;
+  line-height: 22px;
+  font-weight: 400;
+}
+
+@mixin buttonlabels-fontstats-mobile() {
+  font-size: 12px;
+  line-height: 20px;
+  font-weight: 700;
+}
+
+@mixin buttonlabels-fontstats-larger() {
+  font-size: 12px;
+  line-height: 20px;
+  font-weight: 700;
+}
