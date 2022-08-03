@@ -14,4 +14,9 @@
   outline: none;
   font-family: MPlus;
   color: $Font-Primary-Color;
+  @include buttonlabels-fontstats;
+}
+
+button:hover {
+  cursor: pointer;
 }

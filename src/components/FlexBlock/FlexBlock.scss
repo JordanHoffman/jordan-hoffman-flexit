@@ -2,9 +2,6 @@
 
 .flexblock {
   // width and height set inline due to dynamic calculation
-  // width: 20%;
-  // height: 20%;
-  // background-color: blue;
   display: flex;
   flex-shrink: 0;
 
@@ -45,8 +42,7 @@
     height: 25vw;
     left: 50%;
     top: 50%;
-    transform: translate(-50%, -50%) ;
-    background-color: white;
+    transform: translate(-50%, -50%);
   }
 
   &--dir-column {

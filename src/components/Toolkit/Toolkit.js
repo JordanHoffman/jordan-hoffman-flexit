@@ -57,13 +57,14 @@ class Toolkit extends React.Component {
         <h2 className="toolkit__title">Toolkit</h2>
 
         <section className="toolkit__section">
-          <h3 className="toolkit__section-title">Create</h3>
+          <h3 className="toolkit__section-title">FlexBlock Creation</h3>
 
           <div className="creation-btn-ctr">
-            <button >before</button>
-            <button onClick={this.handleCreateInside}>inside</button>
-            <button>after</button>
+            <button className="creation-btn">before</button>
+            <button className="creation-btn" onClick={this.handleCreateInside}>inside</button>
+            <button className="creation-btn">after</button>
           </div>
+          <button className="deletion-btn">DELETE</button>
         </section>
 
 
@@ -105,6 +106,16 @@ class Toolkit extends React.Component {
 
           <div className="detail-ctr">
             <h4 className="detail-ctr__title">Justify Content:</h4>
+            <DropDownTool ctrClass="detail-ctr__controls" options={['start','center','end','between','around','evenly']}/>
+          </div>
+
+          <div className="detail-ctr">
+            <h4 className="detail-ctr__title">Align Items:</h4>
+            <DropDownTool ctrClass="detail-ctr__controls" options={['start','center','end','between','around','evenly']}/>
+          </div>
+
+          <div className="detail-ctr">
+            <h4 className="detail-ctr__title">Align Self:</h4>
             <DropDownTool ctrClass="detail-ctr__controls" options={['start','center','end','between','around','evenly']}/>
           </div>
 

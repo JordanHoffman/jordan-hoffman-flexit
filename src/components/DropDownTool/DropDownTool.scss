@@ -5,10 +5,12 @@
   background-color: $Primary-Dark;
   color: $Secondary;
   padding: $qtr-padding-between-mobile;
+  font-weight: 700;
 
   &__option {
     color: $Font-Primary-Color;
     border: 2px solid $Primary-Dark;
     background-color: $Primary-Light;
+    font-weight: 700;
   }
 }

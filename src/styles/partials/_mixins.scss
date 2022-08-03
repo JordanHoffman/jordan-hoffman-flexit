@@ -24,56 +24,42 @@
   }
 }
 
-@mixin page-header-fontstats-larger() {
-  font-size: 33px;
-  line-height: 44px;
+@mixin section-header-fontstats() {
+  font-size: 20px;
   font-weight: 700;
+
+  @include tablet {
+    font-size: 28px;
+    font-weight: 700;
+  }
 }
 
-@mixin section-header-fontstats-mobile() {
+@mixin subheader-fontstats() {
+  font-size: 15px;
+  font-weight: 700;
+
+  @include tablet {
+    font-size: 18px;
+    font-weight: 700;
+  }
+}
+
+@mixin body-fontstats() {
   font-size: 12px;
-  line-height: 20px;
-  font-weight: 700;
-}
-
-@mixin section-header-fontstats-larger() {
-  font-size: 12px;
-  line-height: 20px;
-  font-weight: 700;
-}
-
-@mixin subheader-fontstats-mobile() {
-  font-size: 13px;
-  line-height: 18px;
-  font-weight: 700;
-}
-
-@mixin subheader-fontstats-larger() {
-  font-size: 14px;
-  line-height: 22px;
-  font-weight: 700;
-}
-
-@mixin body-fontstats-mobile() {
-  font-size: 13px;
-  line-height: 18px;
   font-weight: 400;
+
+  @include tablet {
+    font-size: 14px;
+    font-weight: 400;
+  }
 }
 
-@mixin body-fontstats-larger() {
-  font-size: 14px;
-  line-height: 22px;
-  font-weight: 400;
-}
-
-@mixin buttonlabels-fontstats-mobile() {
+@mixin buttonlabels-fontstats() {
   font-size: 12px;
-  line-height: 20px;
   font-weight: 700;
-}
 
-@mixin buttonlabels-fontstats-larger() {
-  font-size: 12px;
-  line-height: 20px;
-  font-weight: 700;
+  @include tablet {
+    font-size: 14px;
+    font-weight: 700;
+  }
 }

@@ -67,7 +67,6 @@ class PuzzlePlay extends React.Component {
     return(
       <div className='puzzle-pg'>
         <Toolkit selectedFlexBlock={this.state.selectedFlexBlock}/>
-        <h1>Puzzle Page</h1>
         {this.state.flexBlockPuzzle}
       </div>
 
