@@ -63,12 +63,12 @@ class FlexBlock extends React.Component {
     }
   }
 
-  //TODO: Handle special cases for complete overlap of single child to parent.
+  //This function is only called by a child of this flexblock in order to get this flexblock to update its childDetailsArray and thus pass down new props for the child to actually be updated.
   parentHandleSizeAdjust = (dimension, adjustment, id) => {
     let updatedChildDetailsArray = cloneDeep(this.state.childDetailsArray);
     let updatedChildDetailObj = updatedChildDetailsArray.find(childDetailObj => childDetailObj.id === id);
 
-    //DECREMENT logic handled in the child
+    //DECREMENT logic handled in the child. By this point it's safe to update it.
     if (adjustment === 'decrement') {
       if (dimension === 'width') {
         updatedChildDetailObj.size.x -= 1;
@@ -83,51 +83,117 @@ class FlexBlock extends React.Component {
     else {
       //FLEX DIRECTION ROW
       if (this.props.details.flexDirection === 'row') {
+        //WIDTH
         if (dimension === 'width') { //sum all to see
           const widthSum = this.state.childDetailsArray.reduce((prevSum, currChildDetails) => prevSum + currChildDetails.size.x, 0)
+          //possible room to increase width further
           if (widthSum < this.props.details.size.x) {
+            //Special case where increasing would cause single child to completely overlap parent
+            if (this.state.childDetailsArray.length === 1) {
+              const childWidth = this.state.childDetailsArray[0].size.x;
+              const childHeight = this.state.childDetailsArray[0].size.y;
+              if (childWidth === this.props.details.size.x - 1 && childHeight === this.props.details.size.y) {
+                return false //special case met
+              }
+            }
+
+            //width can safely be increased by this point
             updatedChildDetailObj.size.x += 1;
             this.setState({ childDetailsArray: updatedChildDetailsArray });
             return updatedChildDetailObj;
           }
-          else return false;
+          //no room to increase width further
+          else return false
         }
-        else { //just check parent
+        //HEIGHT
+        else {
+          //possible room to increase height further
           if (updatedChildDetailObj.size.y < this.props.details.size.y) {
+            //Special case where increasing would cause single child to completely overlap parent
+            if (this.state.childDetailsArray.length === 1) {
+              const childWidth = this.state.childDetailsArray[0].size.x;
+              const childHeight = this.state.childDetailsArray[0].size.y;
+              if (childWidth === this.props.details.size.x && childHeight === this.props.details.size.y - 1) {
+                return false //special case met
+              }
+            }
+            //height can safely be increased by this point
             updatedChildDetailObj.size.y += 1;
             this.setState({ childDetailsArray: updatedChildDetailsArray });
             return updatedChildDetailObj;
           }
+          //no room to increase height further
           else return false;
         }
       }
       //FLEX DIRECTION COLUMN
       else {
+        //WIDTH
+        if (dimension === 'width') {
+          //possible room to increase width further
+          if (updatedChildDetailObj.size.x < this.props.details.size.x) {
+            //Special case where increasing would cause single child to completely overlap parent
+            if (this.state.childDetailsArray.length === 1) {
+              const childWidth = this.state.childDetailsArray[0].size.x;
+              const childHeight = this.state.childDetailsArray[0].size.y;
+              if (childWidth === this.props.details.size.x - 1 && childHeight === this.props.details.size.y) {
+                return false //special case met
+              }
+            }
+            //width can safely be increased by this point
+            updatedChildDetailObj.size.x += 1;
+            this.setState({ childDetailsArray: updatedChildDetailsArray });
+            return updatedChildDetailObj;
+          }
+          //no room to increase width further
+          else return false;
+        }
+        //HEIGHT
+        else {
+          const heightSum = this.state.childDetailsArray.reduce((prevSum, currChildDetails) => prevSum + currChildDetails.size.y, 0)
+          //possible room to increase height further
+          if (heightSum < this.props.details.size.y) {
+            //Special case where increasing would cause single child to completely overlap parent
+            if (this.state.childDetailsArray.length === 1) {
+              const childWidth = this.state.childDetailsArray[0].size.x;
+              const childHeight = this.state.childDetailsArray[0].size.y;
+              if (childWidth === this.props.details.size.x && childHeight === this.props.details.size.y - 1) {
+                return false //special case met
+              }
+            }
 
+            //height can safely be increased by this point
+            updatedChildDetailObj.size.y += 1;
+            this.setState({ childDetailsArray: updatedChildDetailsArray });
+            return updatedChildDetailObj;
+          }
+          //no room to increase height further
+          else return false
+        }
       }
-
     }
   }
 
-  //Since a flexblock's details come from props, size adjusting must be handled by the parent.
+  //Since a flexblock's details come from props, size adjusting that starts here must ultimately be handled by the parent, and thus a call to the parent's handling function will be made.
   attemptSizeAdjust = (dimension, adjustment) => {
     //No size adjusting for the base board.
     if (this.props.details.isBaseBoard) return false;
 
     //DECREMENT
     if (adjustment === 'decrement') {
+      //Special case: can't decrement if its already at its smallest
       if ((dimension === 'width' && this.props.details.size.x === 1) || (dimension === 'height' && this.props.details.size.y === 1)) {
-        return false; //cant decrement if its already at its smallest
+        return false; 
       }
 
       //FLEX DIRECTION ROW
       if (this.props.details.flexDirection === 'row') {
         //WIDTH 
-        if (dimension === 'width'){ 
+        if (dimension === 'width') {
           //get sum of children width
           const widthSum = this.state.childDetailsArray.reduce((prevSum, currChildDetails) => prevSum + currChildDetails.size.x, 0)
 
-          //Sufficient space to reduce width
+          //Possible space to reduce width
           if (widthSum < this.props.details.size.x) {
             //Special case where reducing width would cause single child to completely overlap parent
             if (this.state.childDetailsArray.length === 1) {
@@ -146,6 +212,7 @@ class FlexBlock extends React.Component {
         //HEIGHT
         else {
           const maxChildHeight = this.state.childDetailsArray.reduce((prevMax, currChildDetails) => prevMax > currChildDetails.size.y ? prevMax : currChildDetails.size.y, 0)
+          //Possible space to reduce height
           if (this.props.details.size.y > maxChildHeight) {
             //Special case where reducing height would make the child completely overlap it.
             if (this.state.childDetailsArray.length === 1) {
@@ -158,17 +225,55 @@ class FlexBlock extends React.Component {
             //Height can be reduce. Let parent handle it.
             return this.props.parent.parentHandleSizeAdjust(dimension, adjustment, this.props.details.id);
           }
+          //Not enough space to reduce height anymore
+          else return false
         }
-
-
-      } 
+      }
       //FLEX DIRECTION COLUMN
       else {
+        //WIDTH 
+        if (dimension === 'width') {
+          const maxChildWidth = this.state.childDetailsArray.reduce((prevMax, currChildDetails) => prevMax > currChildDetails.size.x ? prevMax : currChildDetails.size.x, 0)
+          //Possible space to reduce width
+          if (this.props.details.size.x > maxChildWidth) {
+            //Special case where reducing parent size would make the single child completely overlap it.
+            if (this.state.childDetailsArray.length === 1) {
+              const childWidth = this.state.childDetailsArray[0].size.x;
+              const childHeight = this.state.childDetailsArray[0].size.y;
+              if (childWidth === this.props.details.size.x - 1 && childHeight === this.props.details.size.y) {
+                return false //special case met
+              }
+            }
+            //Width can be reduced. Let parent handle it.
+            return this.props.parent.parentHandleSizeAdjust(dimension, adjustment, this.props.details.id);
+          }
+          //Not enough space to reduce width anymore
+          else return false
+        }
+        //HEIGHT
+        else {
+          //get sum of children height
+          const heightSum = this.state.childDetailsArray.reduce((prevSum, currChildDetails) => prevSum + currChildDetails.size.y, 0)
 
-
+          //Possible space to reduce height
+          if (heightSum < this.props.details.size.y) {
+            //Special case where reducing height of parent would cause single child to completely overlap parent
+            if (this.state.childDetailsArray.length === 1) {
+              const childWidth = this.state.childDetailsArray[0].size.x;
+              const childHeight = this.state.childDetailsArray[0].size.y;
+              if (childWidth === this.props.details.size.x && childHeight === this.props.details.size.y - 1) {
+                return false //special case met
+              }
+            }
+            //Height can be reduced. Let parent handle it.
+            return this.props.parent.parentHandleSizeAdjust(dimension, adjustment, this.props.details.id);
+          }
+          //Not enough space to reduce height anymore
+          else return false;
+        }
       }
     }
-    //INCREMENT logic handled in the parent
+    //INCREMENT logic has to be handled in the parent
     else {
       return (this.props.parent.parentHandleSizeAdjust(dimension, adjustment, this.props.details.id));
     }
