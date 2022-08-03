@@ -1,5 +1,107 @@
+@use "../../styles/partials/global" as *;
+
 .puzzle-pg {
   background-color: black;
-  color: white;
   height: 100vh;
+  display: flex;
+}
+
+.puzzle-section {
+  width: 40%;
+  flex-grow: 1;
+  border-left: 2px solid $Primary-Dark;
+  border-right: 2px solid $Primary-Dark;
+  position: relative;
+  background-color: $Primary-Light;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $half-padding-between-mobile;
+
+  &--goal{
+    border-right: none;
+  }
+
+  &__title {
+    font-family: Allan;
+    background-color: $Primary-Dark;
+    padding: $half-padding-between-mobile;
+    width: 100%;
+
+    @include page-header-fontstats;
+  }
+
+  &__info-navbar{
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    padding: $padding-between-mobile;
+    align-items: center;
+    background-color: $Primary;
+  }
+
+}
+
+.action-btn-subsection {
+  display: flex;
+  gap: $half-padding-between-mobile;
+}
+
+.save-btn {
+  background-color: $Primary-Dark;
+  padding: $qtr-padding-between-mobile $half-padding-between-mobile;
+  border-radius: $btn-border-radius;
+  border: 4px solid $Primary-Dark;
+  border-style: inset;
+}
+
+.submit-btn {
+  background-color: $Secondary;
+  color: $Primary-Dark;
+  padding: $qtr-padding-between-mobile $half-padding-between-mobile;
+  border-radius: $btn-border-radius;
+  border: 4px solid $Primary-Dark;
+  border-style: inset;
+  font-size: 16px;
+  font-weight: 900;
+}
+
+.layer-subsection {
+  display: flex;
+  flex-direction: column;
+  gap: $qtr-padding-between-mobile;
+
+  // &__title {
+  //   text-align: left;
+  // }
+}
+
+.layer-legend {
+  display: flex;
+  gap: $half-padding-between-mobile;
+}
+
+.layer-info-ctr {
+  display: flex;
+  flex-direction: column;
+  gap: $qtr-padding-between-mobile;
+
+  &__level {
+    @include body-fontstats;
+  }
+
+  &__color {
+    width: 16px;
+    height: 16px;
+    border: 1px solid black;
+    
+    $colors: white, blue, red, green, yellow, orange, purple;
+    
+    @for $i from 1 through length($colors) {
+      &--#{$i} {
+        background-color: nth($colors, $i)
+      }
+    }
+  }
 }

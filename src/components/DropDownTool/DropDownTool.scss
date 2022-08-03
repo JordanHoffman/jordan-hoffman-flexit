@@ -6,6 +6,7 @@
   color: $Secondary;
   padding: $qtr-padding-between-mobile;
   font-weight: 700;
+  border: 2px solid $Primary-Light;
 
   &__option {
     color: $Font-Primary-Color;

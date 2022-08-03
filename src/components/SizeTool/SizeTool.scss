@@ -7,7 +7,7 @@
 //   justify-content: center;
 
   .adjust-button {
-    width: 25px;
+    width: 2rem;
     background-color: transparent;
     display: flex;
     justify-content: center;
@@ -16,6 +16,7 @@
     &__arrow {
       fill: $Secondary;
       display: block;
+      pointer-events: none;
     }
   }
 

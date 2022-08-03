@@ -1,15 +1,20 @@
 @use "../../styles/partials/global" as *;
 
 .toolkit {
-  width: 33%;
+  width: 20%;
+  min-width: 200px;
   height: 100%;
   display: flex;
   flex-direction: column;
   background-color: $Primary-Light;
+  border-right: 2px solid $Primary-Dark;
+
+  @include tablet {
+    min-width: 250px;
+  }
 
   &__title {
     font-family: Allan;
-    font-weight: 700;
     background-color: $Primary-Dark;
     padding: $half-padding-between-mobile;
 
@@ -45,18 +50,19 @@
 .creation-btn {
   background-color: $Primary-Dark;
   padding: $qtr-padding-between-mobile $half-padding-between-mobile;
-  font-weight: 700;
   border-radius: $btn-border-radius;
-  border: 8px solid inset;
+  border: 2px solid $Primary-Dark;
+  border-style: inset;
 }
 
 .deletion-btn {
-  width: 75%;
+  width: 60%;
   max-width: 150px;
   background-color: $Warn;
   padding: $qtr-padding-between-mobile 0;
   border-radius: $btn-border-radius;
-  font-weight: 700;
+  border: 4px solid $Warn-Dark;
+  border-style: inset;
 }
 
 .detail-ctr {
