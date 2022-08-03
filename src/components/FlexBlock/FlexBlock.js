@@ -7,25 +7,22 @@ import helperFunctions from '../../Utility/HelperFunctions';
 
 /**
  * List of props
+ * 
  * key
  * details - an object with details pertaining to this specific flexblock
- * parentAsk - a function to allow communication to the parent flexblock
- * selectedListener - a function to give a handle to the newly selected flexblock onclick.
- * initialChildData - gives array of child data objects for constructing the goal puzzle and/or building up a loaded puzzle to continue.
+ * parent - a reference to the parent flexblock
+ * selectedListener - a function which is passed a handle to this flexblock when it gets clicked.
+ * initialChildDetailsArray - gives array of child flexblock details objects this flexblock will render as its flexblock children.
  */
 class FlexBlock extends React.Component {
 
   state = {
-    // details: this.props.details,
     boardOffset: this.props.boardOffset,
     childDetailsArray: this.props.initialChildDetailsArray
   }
 
   //meant for getting the position in the DOM.
   selfRef = React.createRef();
-  //will hold a callback function from toolkit to allow initiation of a request to toolkit.
-  toolkitHandler = null;
-
   getBoardPos = () => {
     let [xPos, yPos] = [this.selfRef.current.getBoundingClientRect().x, this.selfRef.current.getBoundingClientRect().y]
     if (this.props.boardOffset.x || this.props.boardOffset.y) {
@@ -35,18 +32,8 @@ class FlexBlock extends React.Component {
     return { x: xPos, y: yPos };
   }
 
-  // parentAsk = (request, theChild) => {
-  //   switch (request) {
-  //     case "listNumber":
-  //       console.log(theChild);
-  //       break;
-  //     default:
-  //       console.warn('invalid request asked to parent')
-  //   }
-  // }
-
   componentDidMount() {
-    //Initial setup for the base flexblock involves 
+    //Initial setup for the base flexblock 
     if (this.props.details.isBaseBoard) {
       //set the boardOffset that all other inner flexblocks will need for their location calculation. Update this board offset on window resize.
       const [xPos, yPos] = [this.selfRef.current.getBoundingClientRect().x, this.selfRef.current.getBoundingClientRect().y]
