@@ -71,7 +71,7 @@ class PuzzlePlay extends React.Component {
         <section className='puzzle-section'>
           <h2 className='puzzle-section__title'>Workspace</h2>
 
-          <div className='puzzle-section__info-navbar'>
+          <div className='puzzle-section__infobar'>
 
             <div className='layer-subsection'>
               <h3 className='layer-subsection__title'>Layer Legend</h3>
@@ -101,6 +101,13 @@ class PuzzlePlay extends React.Component {
 
         <section className='puzzle-section puzzle-section--goal'>
           <h2 className='puzzle-section__title'>Goal</h2>
+          <div className='puzzle-section__infobar'>
+            <div className='puzzle-stats'>
+              <p className='puzzle-stats__name'>Puzzle #1</p>
+              <p className='puzzle-stats__difficulty'>Difficulty: Easy</p>
+            </div>
+            <button className='exit-btn'>EXIT</button>
+          </div>
         </section>
       </div>
 

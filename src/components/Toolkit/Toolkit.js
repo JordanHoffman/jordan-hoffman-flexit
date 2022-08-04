@@ -90,8 +90,6 @@ class Toolkit extends React.Component {
               </div>
             </div>
 
-
-
           </div>
 
           <div className="detail-ctr">

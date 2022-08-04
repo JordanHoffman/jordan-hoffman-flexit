@@ -32,13 +32,14 @@
     @include page-header-fontstats;
   }
 
-  &__info-navbar{
+  &__infobar{
     display: flex;
     width: 100%;
     justify-content: space-between;
     padding: $padding-between-mobile;
     align-items: center;
     background-color: $Primary;
+    height: 100px;
   }
 
 }
@@ -104,4 +105,32 @@
       }
     }
   }
+}
+
+// <div className='puzzle-section__infobar'>
+// <div className='puzzle-stats'>
+//   <p className='puzzle-stats__name'>Puzzle #1</p>
+//   <p className='puzzle-stats__difficulty'>Difficulty: Easy</p>
+// </div>
+// <button className='exit-btn'>EXIT</button>
+// </div>
+
+.puzzle-stats {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  &__name {
+    @include subheader-fontstats;
+  }
+}
+
+.exit-btn {
+  background-color: $Warn;
+  padding: $qtr-padding-between-mobile 0;
+  border-radius: $btn-border-radius;
+  border: 4px solid $Warn-Dark;
+  border-style: inset;
+  font-size: 16px;
+  padding: $qtr-padding-between-mobile $half-padding-between-mobile;
 }
