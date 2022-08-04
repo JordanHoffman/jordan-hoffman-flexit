@@ -17,6 +17,8 @@
     font-family: Allan;
     background-color: $Primary-Dark;
     padding: $half-padding-between-mobile;
+    width: 100%;
+    text-align: center;
 
     @include page-header-fontstats;
   }
@@ -110,5 +112,6 @@
 
   &__svg {
     fill: $Secondary;
+    pointer-events: none;
   }
 }

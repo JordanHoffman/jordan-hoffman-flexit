@@ -30,7 +30,7 @@ class PuzzlePlay extends React.Component {
   }
 
   createPuzzle = () => {
-    const details = helperFunctions.createDetailsObj({ isBaseBoard: true, size: { x: 5, y: 5 }, flexDirection: 'column' })
+    const details = helperFunctions.createDetailsObj({ isBaseBoard: true, size: { x: 5, y: 5 }, flexDirection: 'row' })
 
     let children = this.createChildren();
     const parent = <FlexBlock

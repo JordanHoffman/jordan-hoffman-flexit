@@ -1,4 +1,3 @@
-import './App.css';
 import PuzzlePlay from './pages/PuzzlePlay';
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 

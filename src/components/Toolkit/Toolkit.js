@@ -46,6 +46,14 @@ class Toolkit extends React.Component {
     this.props.selectedFlexBlock.attemptDelete();
   }
 
+  handleChangeDirection = (e) => {
+    const desiredDirection = e.target.dataset.direction;
+    if (this.state.selectedFlexBlockDetails.flexDirection !== desiredDirection) {
+      const updatedDetails = this.props.selectedFlexBlock.attemptChangeFlexDirection(desiredDirection);
+      this.setState({selectedFlexBlockDetails: updatedDetails});
+    }
+  }
+
   //TODO CONTINUE FROM HERE
   handleSizeAdjust = (e) => {
     //result will either be the new details of the updated flexblock or false if it was unable to update
@@ -59,6 +67,7 @@ class Toolkit extends React.Component {
   render() {
     const width = this.state.selectedFlexBlockDetails ? this.state.selectedFlexBlockDetails.size.x : 0;
     const height = this.state.selectedFlexBlockDetails ? this.state.selectedFlexBlockDetails.size.y : 0;
+    const directionRow = this.state.selectedFlexBlockDetails ? this.state.selectedFlexBlockDetails.flexDirection === 'row' : false;
 
     return (
       <div className="toolkit">
@@ -86,14 +95,15 @@ class Toolkit extends React.Component {
             <div className="detail-ctr__controls detail-ctr__controls--flexDirection">
               <div className="radio-ctr">
                 <h5 className="detail-ctr__subtitle">row</h5>
-                <button className="radio-button">
-                  <RadioOff className="radio-button__svg" />
+                <button className="radio-button" data-direction="row" onClick={this.handleChangeDirection}>
+                  {directionRow ? <RadioOn className="radio-button__svg" /> : <RadioOff className="radio-button__svg" />}
                 </button>
               </div>
+
               <div className="radio-ctr">
                 <h5 className="detail-ctr__subtitle">column</h5>
-                <button className="radio-button">
-                  <RadioOn className="radio-button__svg" />
+                <button className="radio-button" data-direction="column" onClick={this.handleChangeDirection}>
+                  {directionRow ? <RadioOff className="radio-button__svg" /> : <RadioOn className="radio-button__svg" />}
                 </button>
               </div>
             </div>
@@ -112,17 +122,17 @@ class Toolkit extends React.Component {
 
           <div className="detail-ctr">
             <h4 className="detail-ctr__title">Justify Content:</h4>
-            <DropDownTool ctrClass="detail-ctr__controls" options={['start','center','end','between','around','evenly']}/>
+            <DropDownTool ctrClass="detail-ctr__controls" options={['start', 'center', 'end', 'between', 'around', 'evenly']} />
           </div>
 
           <div className="detail-ctr">
             <h4 className="detail-ctr__title">Align Items:</h4>
-            <DropDownTool ctrClass="detail-ctr__controls" options={['start','center','end','between','around','evenly']}/>
+            <DropDownTool ctrClass="detail-ctr__controls" options={['start', 'center', 'end', 'between', 'around', 'evenly']} />
           </div>
 
           <div className="detail-ctr">
             <h4 className="detail-ctr__title">Align Self:</h4>
-            <DropDownTool ctrClass="detail-ctr__controls" options={['start','center','end','between','around','evenly']}/>
+            <DropDownTool ctrClass="detail-ctr__controls" options={['start', 'center', 'end', 'between', 'around', 'evenly']} />
           </div>
 
         </section>

@@ -17,6 +17,7 @@ import helperFunctions from '../../Utility/HelperFunctions';
 class FlexBlock extends React.Component {
 
   state = {
+    baseBoardDetails: this.props.details.isBaseBoard ? this.props.details : null,
     boardOffset: this.props.boardOffset,
     childDetailsArray: this.props.initialChildDetailsArray,
     isSelected: false
@@ -59,6 +60,31 @@ class FlexBlock extends React.Component {
   deselect = () => {
     this.setState({ isSelected: false });
   }
+
+  parentHandleChangeFlexDirection = (direction, id) => {
+    let updatedChildDetailsArray = cloneDeep(this.state.childDetailsArray);
+    let updatedChildDetailObj = updatedChildDetailsArray.find(childDetailObj => childDetailObj.id === id);
+    updatedChildDetailObj.flexDirection = direction;
+    this.setState({childDetailsArray: updatedChildDetailsArray});
+    return (updatedChildDetailObj);
+  }
+
+  attemptChangeFlexDirection = (direction) => {
+    //NEED TO WARN IF YOU HAVE CHILDREN
+    if (this.state.childDetailsArray.length) {
+      this.setState({childDetailsArray: []});
+    }
+
+    if (this.props.details.isBaseBoard) {
+      let updatedBaseBoardDetails = cloneDeep(this.state.baseBoardDetails)
+      updatedBaseBoardDetails.flexDirection = direction;
+      this.setState({baseBoardDetails: updatedBaseBoardDetails})
+      return updatedBaseBoardDetails
+    }
+    else {
+      return (this.props.parent.parentHandleChangeFlexDirection(direction, this.props.details.id))
+    }
+  } 
 
   //This function is only called by a child of this flexblock in order to get this flexblock to update its childDetailsArray and thus pass down new props for the child to actually be updated.
   parentHandleSizeAdjust = (dimension, adjustment, id) => {
@@ -341,16 +367,17 @@ class FlexBlock extends React.Component {
     //styling preparation obeying BEM
     let className = 'flexblock';
     const base = className;
+    const details = this.props.details.isBaseBoard ? this.state.baseBoardDetails : this.props.details;
 
-    if (this.props.details.isBaseBoard) className += ` ${base}--base-board`;
-    if (this.props.details.flexDirection === "column") className += ` ${base}--dir-column`;
+    if (details.isBaseBoard) className += ` ${base}--base-board`;
+    if (details.flexDirection === "column") className += ` ${base}--dir-column`;
     className += ` ${base}--layer${this.props.layer}`
 
     //active (selected) styling
     if (this.state.isSelected) className += ` ${base}--selected`;
 
     //Dynamic inline width/height styling
-    const isBaseBoard = this.props.details.isBaseBoard;
+    const isBaseBoard = details.isBaseBoard;
     let parentSize;
     let width;
     let height;

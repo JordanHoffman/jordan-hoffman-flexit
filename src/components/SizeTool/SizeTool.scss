@@ -1,34 +1,27 @@
 @use "../../styles/partials/global" as *;
 
-// .sizetool {
-//   display: flex;
-//   width: 50%;
-//   gap: $qtr-padding-between-mobile;
-//   justify-content: center;
+.adjust-button {
+  width: 2rem;
+  background-color: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-  .adjust-button {
-    width: 2rem;
-    background-color: transparent;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    &__arrow {
-      fill: $Secondary;
-      display: block;
-      pointer-events: none;
-    }
+  &__arrow {
+    fill: $Secondary;
+    display: block;
+    pointer-events: none;
   }
+}
 
 
 
-  .display {
-    width: 2rem;
-    border-radius: 8px;
-    background-color: $Primary-Dark;
-    padding: $qtr-padding-between-mobile;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-// }
+.display {
+  width: 2rem;
+  border-radius: 8px;
+  background-color: $Primary-Dark;
+  padding: $qtr-padding-between-mobile;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
