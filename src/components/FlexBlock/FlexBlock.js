@@ -47,9 +47,13 @@ class FlexBlock extends React.Component {
 
       //Give the toolkit an initial handle to the base board flexblock.
       this.props.receiveBaseBoardHandle(this);
-      this.props.selectedListener(this);
-      this.setState({ isSelected: true });
+      this.selectSelf();
     }
+  }
+
+  selectSelf() {
+    this.props.selectedListener(this);
+    this.setState({ isSelected: true });
   }
 
   //This function is only called by a child of this flexblock in order to get this flexblock to update its childDetailsArray and thus pass down new props for the child to actually be updated.
@@ -268,6 +272,19 @@ class FlexBlock extends React.Component {
     }
   }
 
+  parentHandleDelete = (id) => {
+    let updatedChildDetailsArray = cloneDeep(this.state.childDetailsArray).filter(childDetailObj => childDetailObj.id !== id);
+    this.setState({childDetailsArray: updatedChildDetailsArray})
+    this.selectSelf();
+  }
+
+  attemptDelete = () => {
+    if (this.props.details.isBaseBoard) return false;
+
+    this.deselect();
+    this.props.parent.parentHandleDelete(this.props.details.id)
+  }
+
   createInside = () => {
     //flex dir: row
     if (this.props.details.flexDirection === 'row') {
@@ -295,13 +312,12 @@ class FlexBlock extends React.Component {
     }
   }
 
-  deselect = (e) => {
+  deselect = () => {
     this.setState({ isSelected: false });
   }
 
   handleClick = (e) => {
-    this.props.selectedListener(this);
-    this.setState({ isSelected: true });
+    this.selectSelf();
     e.stopPropagation();
   }
 
@@ -316,7 +332,6 @@ class FlexBlock extends React.Component {
 
     //active (selected) styling
     if (this.state.isSelected) className += ` ${base}--selected`;
-    
 
     //Dynamic inline width/height styling
     const isBaseBoard = this.props.details.isBaseBoard;
@@ -329,8 +344,6 @@ class FlexBlock extends React.Component {
       width = (this.props.details.size.x / parentSize.x) * 100 + '%';
       height = (this.props.details.size.y / parentSize.y) * 100 + '%';
     }
-
-
 
     return (
       <div className={className} style={!isBaseBoard ? { width: width, height: height } : {}} ref={this.selfRef} onClick={this.handleClick}>

@@ -36,6 +36,10 @@ class Toolkit extends React.Component {
     this.props.selectedFlexBlock.createInside();
   }
 
+  handleDelete = () => {
+    this.props.selectedFlexBlock.attemptDelete();
+  }
+
   //TODO CONTINUE FROM HERE
   handleSizeAdjust = (e) => {
     //result will either be the new details of the updated flexblock or false if it was unable to update
@@ -72,7 +76,7 @@ class Toolkit extends React.Component {
             <button className="creation-btn" onClick={this.handleCreateInside}>inside</button>
             <button className="creation-btn">after</button>
           </div>
-          <button className="deletion-btn">DELETE</button>
+          <button className="deletion-btn" onClick={this.handleDelete}>DELETE</button>
         </section>
 
 
