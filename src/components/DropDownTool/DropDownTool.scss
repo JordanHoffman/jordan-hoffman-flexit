@@ -1,7 +1,8 @@
 @use "../../styles/partials/global" as *;
 
 .select-dropdown {
-  min-width: 75%;
+  width: 100%;
+  margin-left: $half-padding-between-mobile;
   background-color: $Primary-Dark;
   color: $Secondary;
   padding: $qtr-padding-between-mobile;

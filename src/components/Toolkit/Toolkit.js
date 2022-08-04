@@ -4,11 +4,8 @@ import './Toolkit.scss'
 import SizeTool from "../SizeTool";
 import { RadioOff, RadioOn } from "../../Utility/svg-loader"
 import DropDownTool from "../DropDownTool";
-
-//Gameplan:
-/* 
-Instead of the Toolkit having to know about the current flexblock, its parent, and its children (which is a mess of info to know) in order to put constraints on its buttons (like disabling them), it is easier just to allow the user to push the buttons and then send the requests to the flexblocks. If the flexblocks can do it, they will and send back a success message, if not then they won't and send back a failure message, and the toolkit can just display that failure message if it didn't work.
-*/
+import C from "../../Utility/Constants";
+import { times } from "lodash";
 
 class Toolkit extends React.Component {
 
@@ -50,7 +47,7 @@ class Toolkit extends React.Component {
     const desiredDirection = e.target.dataset.direction;
     if (this.state.selectedFlexBlockDetails.flexDirection !== desiredDirection) {
       const updatedDetails = this.props.selectedFlexBlock.attemptChangeFlexDirection(desiredDirection);
-      this.setState({selectedFlexBlockDetails: updatedDetails});
+      this.setState({ selectedFlexBlockDetails: updatedDetails });
     }
   }
 
@@ -64,10 +61,17 @@ class Toolkit extends React.Component {
     }
   }
 
+  handleDistribution = (e) => {
+    this.setState(this.props.selectedFlexBlock.attemptDistribution(e.target.name, e.target.value))
+  }
+
   render() {
     const width = this.state.selectedFlexBlockDetails ? this.state.selectedFlexBlockDetails.size.x : 0;
     const height = this.state.selectedFlexBlockDetails ? this.state.selectedFlexBlockDetails.size.y : 0;
     const directionRow = this.state.selectedFlexBlockDetails ? this.state.selectedFlexBlockDetails.flexDirection === 'row' : false;
+    const justifyContent = this.state.selectedFlexBlockDetails ? this.state.selectedFlexBlockDetails.justifyContent : '';
+    const alignItems = this.state.selectedFlexBlockDetails ? this.state.selectedFlexBlockDetails.alignItems : '';
+    const alignSelf = this.state.selectedFlexBlockDetails ? this.state.selectedFlexBlockDetails.alignSelf : '';
 
     return (
       <div className="toolkit">
@@ -112,27 +116,45 @@ class Toolkit extends React.Component {
 
           <div className="detail-ctr">
             <h4 className="detail-ctr__title">Width:</h4>
-            <SizeTool ctrClass="detail-ctr__controls detail-ctr__controls--sizetool" value={width} dimension='width' handleSizeAdjust={this.handleSizeAdjust} />
+            <SizeTool ctrClass="detail-ctr__controls detail-ctr__controls--sizetool" 
+            value={width} 
+            dimension='width' 
+            handleSizeAdjust={this.handleSizeAdjust} />
           </div>
 
           <div className="detail-ctr">
             <h4 className="detail-ctr__title">Height:</h4>
-            <SizeTool ctrClass="detail-ctr__controls detail-ctr__controls--sizetool" value={height} dimension='height' handleSizeAdjust={this.handleSizeAdjust} />
+            <SizeTool ctrClass="detail-ctr__controls detail-ctr__controls--sizetool" 
+            value={height} 
+            dimension='height' 
+            handleSizeAdjust={this.handleSizeAdjust} />
           </div>
 
           <div className="detail-ctr">
             <h4 className="detail-ctr__title">Justify Content:</h4>
-            <DropDownTool ctrClass="detail-ctr__controls" options={['start', 'center', 'end', 'between', 'around', 'evenly']} />
+            <DropDownTool ctrClass="detail-ctr__controls"
+              name="justifyContent"
+              value={justifyContent}
+              options={C.justifyContent}
+              handleDistribution={this.handleDistribution} />
           </div>
 
           <div className="detail-ctr">
             <h4 className="detail-ctr__title">Align Items:</h4>
-            <DropDownTool ctrClass="detail-ctr__controls" options={['start', 'center', 'end', 'between', 'around', 'evenly']} />
+            <DropDownTool ctrClass="detail-ctr__controls"
+              name="alignItems"
+              value={alignItems}
+              options={C.alignContentSelf} 
+              handleDistribution={this.handleDistribution} />
           </div>
 
           <div className="detail-ctr">
             <h4 className="detail-ctr__title">Align Self:</h4>
-            <DropDownTool ctrClass="detail-ctr__controls" options={['start', 'center', 'end', 'between', 'around', 'evenly']} />
+            <DropDownTool ctrClass="detail-ctr__controls"
+              name="alignSelf"
+              value={alignSelf}
+              options={C.alignContentSelf} 
+              handleDistribution={this.handleDistribution} />
           </div>
 
         </section>

@@ -55,4 +55,54 @@
     outline: $flexblock-outline-selected;
     z-index: 1;
   }
+
+  &--justifyContent {
+    &-start {
+      justify-content: flex-start;
+    }
+
+    &-center {
+      justify-content: center;
+    }
+
+    &-end {
+      justify-content: flex-end;
+    }
+
+    &-between {
+      justify-content: space-between;
+    }
+
+    &-around {
+      justify-content: space-around;
+    }
+
+    &-evenly {
+      justify-content: space-evenly;
+    }
+  }
+
+  &--alignItems {
+    &-start{
+      align-items: flex-start;
+    }
+    &-center{
+      align-items: center;
+    }
+    &-end{
+      align-items: flex-end;
+    }
+  }
+
+  &--alignSelf {
+    &-start{
+      align-self: flex-start;
+    }
+    &-center{
+      align-self: center;
+    }
+    &-end{
+      align-self: flex-end;
+    }
+  }
 }

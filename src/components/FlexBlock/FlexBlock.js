@@ -358,6 +358,26 @@ class FlexBlock extends React.Component {
     return this.props.parent.parentHandleDelete(this.props.details.id)
   }
 
+  parentHandleDistribution = (category, value, id) => {
+    let updatedChildDetailsArray = cloneDeep(this.state.childDetailsArray);
+    let updatedChildDetailObj = updatedChildDetailsArray.find(childDetailObj => childDetailObj.id === id);
+    updatedChildDetailObj[category] = value;
+    this.setState({childDetailsArray: updatedChildDetailsArray});
+    return (updatedChildDetailObj);
+  }
+
+  attemptDistribution = (category, value) =>{
+    if (this.props.details.isBaseBoard) {
+      let updatedBaseBoardDetails = cloneDeep(this.state.baseBoardDetails)
+      updatedBaseBoardDetails[category] = value;
+      this.setState({baseBoardDetails: updatedBaseBoardDetails})
+      return updatedBaseBoardDetails
+    }
+    else {
+      return (this.props.parent.parentHandleDistribution(category, value, this.props.details.id))
+    }
+  }
+
   handleClick = (e) => {
     this.selectSelf();
     e.stopPropagation();
@@ -371,6 +391,9 @@ class FlexBlock extends React.Component {
 
     if (details.isBaseBoard) className += ` ${base}--base-board`;
     if (details.flexDirection === "column") className += ` ${base}--dir-column`;
+    className += ` ${base}--justifyContent-${details.justifyContent}`;
+    className += ` ${base}--alignItems-${details.alignItems}`;
+    className += ` ${base}--alignSelf-${details.alignSelf}`;
     className += ` ${base}--layer${this.props.layer}`
 
     //active (selected) styling

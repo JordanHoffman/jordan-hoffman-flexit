@@ -5,10 +5,10 @@ function DropDownTool(props) {
   return (
     <div className={props.ctrClass}>
       <select 
-      // name="category" 
+      name={props.name} 
       className='select-dropdown' 
-      // value={props.selection} 
-      // onChange={this.handleInputChange}
+      value={props.value} 
+      onChange={props.handleDistribution}
       >
 
         {props.options.map(option => {
