@@ -1,5 +1,5 @@
 import React from 'react';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, update } from 'lodash';
 
 import './FlexBlock.scss';
 import helperFunctions from '../../Utility/HelperFunctions';
@@ -54,6 +54,10 @@ class FlexBlock extends React.Component {
   selectSelf() {
     this.props.selectedListener(this);
     this.setState({ isSelected: true });
+  }
+
+  deselect = () => {
+    this.setState({ isSelected: false });
   }
 
   //This function is only called by a child of this flexblock in order to get this flexblock to update its childDetailsArray and thus pass down new props for the child to actually be updated.
@@ -272,48 +276,60 @@ class FlexBlock extends React.Component {
     }
   }
 
+  spaceAvailableToCreateInside = () => {
+    //special case of 1 x 1 block
+    if (this.props.details.size.x === 1 && this.props.details.size.y === 1) return false;
+
+    const key = this.props.details.flexDirection === 'row' ? 'x' : 'y';
+
+    const childSum = this.state.childDetailsArray.reduce((prevSum, currChildDetails) => prevSum + currChildDetails.size[key], 0)
+    if (childSum < this.props.details.size[key]) {
+      return true;
+    }
+    return false;
+  }
+
+  attemptCreateInside = () => {
+    if (this.spaceAvailableToCreateInside()) {
+      const newChild = helperFunctions.createDefaultDetailsObj();
+      this.setState({ childDetailsArray: [...this.state.childDetailsArray, newChild] })
+      return true;
+    }
+    return false;
+  }
+
+  parentHandleCreateSibling = (sibling, id) => {
+    //check if room is available
+    if (this.spaceAvailableToCreateInside()) {
+      const relativeIndex = this.state.childDetailsArray.findIndex(childDetailObj => childDetailObj.id === id);
+      let updatedChildDetailsArray = [...this.state.childDetailsArray];
+      let actualIndex = sibling === "before" ? relativeIndex : relativeIndex + 1;
+      updatedChildDetailsArray.splice(actualIndex, 0, helperFunctions.createDefaultDetailsObj());
+
+      this.setState({ childDetailsArray: updatedChildDetailsArray });
+      return true;
+    }
+
+    return false;
+  }
+
+  attemptCreateSibling = (sibling) => {
+    if (this.props.details.isBaseBoard) return false;
+    return this.props.parent.parentHandleCreateSibling(sibling, this.props.details.id);
+  }
+
   parentHandleDelete = (id) => {
     let updatedChildDetailsArray = cloneDeep(this.state.childDetailsArray).filter(childDetailObj => childDetailObj.id !== id);
-    this.setState({childDetailsArray: updatedChildDetailsArray})
+    this.setState({ childDetailsArray: updatedChildDetailsArray })
     this.selectSelf();
+    return true;
   }
 
   attemptDelete = () => {
     if (this.props.details.isBaseBoard) return false;
 
     this.deselect();
-    this.props.parent.parentHandleDelete(this.props.details.id)
-  }
-
-  createInside = () => {
-    //flex dir: row
-    if (this.props.details.flexDirection === 'row') {
-      let totalChildrenWidth = 0;
-      for (const childDetails of this.state.childDetailsArray) {
-        totalChildrenWidth += childDetails.size.x;
-      }
-      if (totalChildrenWidth < this.props.details.size.x) {
-        const newChild = helperFunctions.createDefaultDetailsObj();
-
-        this.setState({ childDetailsArray: [...this.state.childDetailsArray, newChild] })
-      }
-    }
-    //flex dir: column
-    else {
-      let totalChildrenHeight = 0;
-      for (const childDetails of this.state.childDetailsArray) {
-        totalChildrenHeight += childDetails.size.y;
-      }
-      if (totalChildrenHeight < this.props.details.size.y) {
-        const newChild = helperFunctions.createDefaultDetailsObj();
-
-        this.setState({ childDetailsArray: [...this.state.childDetailsArray, newChild] })
-      }
-    }
-  }
-
-  deselect = () => {
-    this.setState({ isSelected: false });
+    return this.props.parent.parentHandleDelete(this.props.details.id)
   }
 
   handleClick = (e) => {

@@ -33,7 +33,13 @@ class Toolkit extends React.Component {
   }
 
   handleCreateInside = () => {
-    this.props.selectedFlexBlock.createInside();
+    this.props.selectedFlexBlock.attemptCreateInside();
+  }
+
+  handleCreateSibling = (e) => {
+    //sibling will be the string "before" or "after"
+    let sibling = e.target.dataset.sibling;
+    this.props.selectedFlexBlock.attemptCreateSibling(sibling);
   }
 
   handleDelete = () => {
@@ -48,16 +54,6 @@ class Toolkit extends React.Component {
     if (result) {
       this.setState({ selectedFlexBlockDetails: result })
     }
-    // this.props.selectedFlexBlock.attemptSizeAdjust(e.data)
-    // if (dimension === 'width') {
-
-    // }
-    // else if (dimension === 'height') {
-
-    // }
-    // else {
-    //   throw new Error(`invalid dimension of name: ${dimension}`)
-    // }
   }
 
   render() {
@@ -72,9 +68,9 @@ class Toolkit extends React.Component {
           <h3 className="toolkit__section-title">FlexBlock Creation</h3>
 
           <div className="creation-btn-ctr">
-            <button className="creation-btn">before</button>
+            <button className="creation-btn" data-sibling="before" onClick={this.handleCreateSibling}>before</button>
             <button className="creation-btn" onClick={this.handleCreateInside}>inside</button>
-            <button className="creation-btn">after</button>
+            <button className="creation-btn" data-sibling="after" onClick={this.handleCreateSibling}>after</button>
           </div>
           <button className="deletion-btn" onClick={this.handleDelete}>DELETE</button>
         </section>
