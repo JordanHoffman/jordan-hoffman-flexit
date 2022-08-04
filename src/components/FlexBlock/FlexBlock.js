@@ -18,7 +18,8 @@ class FlexBlock extends React.Component {
 
   state = {
     boardOffset: this.props.boardOffset,
-    childDetailsArray: this.props.initialChildDetailsArray
+    childDetailsArray: this.props.initialChildDetailsArray,
+    isSelected: false
   }
 
   //meant for getting the position in the DOM.
@@ -47,6 +48,7 @@ class FlexBlock extends React.Component {
       //Give the toolkit an initial handle to the base board flexblock.
       this.props.receiveBaseBoardHandle(this);
       this.props.selectedListener(this);
+      this.setState({ isSelected: true });
     }
   }
 
@@ -170,7 +172,7 @@ class FlexBlock extends React.Component {
     if (adjustment === 'decrement') {
       //Special case: can't decrement if its already at its smallest
       if ((dimension === 'width' && this.props.details.size.x === 1) || (dimension === 'height' && this.props.details.size.y === 1)) {
-        return false; 
+        return false;
       }
 
       //FLEX DIRECTION ROW
@@ -293,12 +295,18 @@ class FlexBlock extends React.Component {
     }
   }
 
+  deselect = (e) => {
+    this.setState({ isSelected: false });
+  }
+
   handleClick = (e) => {
     this.props.selectedListener(this);
+    this.setState({ isSelected: true });
     e.stopPropagation();
   }
 
   render() {
+    //styling preparation obeying BEM
     let className = 'flexblock';
     const base = className;
 
@@ -306,6 +314,11 @@ class FlexBlock extends React.Component {
     if (this.props.details.flexDirection === "column") className += ` ${base}--dir-column`;
     className += ` ${base}--layer${this.props.layer}`
 
+    //active (selected) styling
+    if (this.state.isSelected) className += ` ${base}--selected`;
+    
+
+    //Dynamic inline width/height styling
     const isBaseBoard = this.props.details.isBaseBoard;
     let parentSize;
     let width;
@@ -316,6 +329,8 @@ class FlexBlock extends React.Component {
       width = (this.props.details.size.x / parentSize.x) * 100 + '%';
       height = (this.props.details.size.y / parentSize.y) * 100 + '%';
     }
+
+
 
     return (
       <div className={className} style={!isBaseBoard ? { width: width, height: height } : {}} ref={this.selfRef} onClick={this.handleClick}>

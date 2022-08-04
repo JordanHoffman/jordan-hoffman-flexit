@@ -4,6 +4,7 @@
   // width and height set inline due to dynamic calculation
   display: flex;
   flex-shrink: 0;
+  outline: $flexblock-outline;
 
   &--layer0 {
     background-color: white;
@@ -48,5 +49,10 @@
 
   &--dir-column {
     flex-direction: column;
+  }
+
+  &--selected {
+    outline: $flexblock-outline-selected;
+    z-index: 1;
   }
 }

@@ -16,11 +16,19 @@ class Toolkit extends React.Component {
     selectedFlexBlockDetails: null,
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
 
+    //logic mainly for initial mounting to check if there's a selected flexblock and assign the state once it comes in.
     if (this.props.selectedFlexBlock) {
       if (!this.state.selectedFlexBlockDetails || this.state.selectedFlexBlockDetails.id !== this.props.selectedFlexBlock.props.details.id)
         this.setState({ selectedFlexBlockDetails: this.props.selectedFlexBlock.props.details })
+    }
+
+    //logic for deselecting an old flexblock when a new one is selected.
+    if (prevProps.selectedFlexBlock) {
+      if (this.props.selectedFlexBlock.props.details.id !== prevProps.selectedFlexBlock.props.details.id) {
+        prevProps.selectedFlexBlock.deselect()
+      }
     }
   }
 
