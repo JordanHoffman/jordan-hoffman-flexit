@@ -27,6 +27,7 @@ class FlexBlock extends React.Component {
   selfRef = React.createRef();
   //References to the child objects needed for recursive saving. Cant be stored in state because it has to be synchronously updated b/c initial creation of puzzle causes multiple instant calls to updating the childHandles array.
   childHandles= []
+  firstRender = true;
 
   getBoardPos = () => {
     let [xPos, yPos] = [this.selfRef.current.getBoundingClientRect().x, this.selfRef.current.getBoundingClientRect().y]
@@ -413,7 +414,11 @@ class FlexBlock extends React.Component {
       const childFlexBlock = this.childHandles[i];
       initialChildDetailsArray.push(childFlexBlock.attemptSave());
     }
-    return {flexBlockDetails: saveDetails, initialChildDetailsArray: initialChildDetailsArray};
+
+    saveDetails.initialChildDetailsArray = initialChildDetailsArray;
+
+    // return {flexBlockDetails: saveDetails, initialChildFlexBlocks: initialChildFlexBlocks};
+    return saveDetails;
   }
 
   handleClick = (e) => {
@@ -452,6 +457,10 @@ class FlexBlock extends React.Component {
     return (
       <div className={className} style={!isBaseBoard ? { width: width, height: height } : {}} ref={this.selfRef} onClick={this.handleClick}>
         {this.state.childDetailsArray.map(childDetailObj => {
+          // let puzzleObject = this.props.childPuzzleConstructionArray[i]
+          // let initialChildDetailsArray = puzzleObject.initialChildFlexBlocks.filter(flexBlockInfo => helperFunctions.createDetailsObj(flexBlockInfo.details));
+          // let childPuzzleConstructionArray = puzzleObject.initialChildFlexBlocks.filter(flexBlockInfo => flexBlockInfo.initialChildFlexBlocks);
+
           return (
             <FlexBlock
               key={childDetailObj.id}
@@ -460,6 +469,10 @@ class FlexBlock extends React.Component {
               boardOffset={this.state.boardOffset}
               selectedListener={this.props.selectedListener}
               layer={this.props.layer + 1}
+              initialChildDetailsArray={childDetailObj.initialChildDetailsArray}
+
+
+              // initialChildDetailsArray={this.props.childPuzzleConstructionArray[i]}
             />
           )
         })}

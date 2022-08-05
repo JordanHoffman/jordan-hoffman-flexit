@@ -1,0 +1,87 @@
+{
+  "flexBlockDetails": {
+    "isBaseBoard": true,
+    "flexDirection": "row",
+    "size": {
+      "x": 5,
+      "y": 5
+    },
+    "justifyContent": "start",
+    "alignItems": "start",
+    "alignSelf": "center",
+    "initialChildDetailsArray": [
+      {
+        "flexBlockDetails": {
+          "isBaseBoard": false,
+          "flexDirection": "row",
+          "size": {
+            "x": 3,
+            "y": 3
+          },
+          "justifyContent": "start",
+          "alignItems": "start",
+          "alignSelf": "default",
+          "initialChildDetailsArray": [
+            {
+              "flexBlockDetails": {
+                "isBaseBoard": false,
+                "flexDirection": "row",
+                "size": {
+                  "x": 1,
+                  "y": 1
+                },
+                "justifyContent": "start",
+                "alignItems": "start",
+                "alignSelf": "default",
+                "initialChildDetailsArray": []
+              }
+            },
+            {
+              "flexBlockDetails": {
+                "isBaseBoard": false,
+                "flexDirection": "row",
+                "size": {
+                  "x": 1,
+                  "y": 1
+                },
+                "justifyContent": "start",
+                "alignItems": "start",
+                "alignSelf": "default",
+                "initialChildDetailsArray": []
+              }
+            }
+          ]
+        }
+      },
+      {
+        "flexBlockDetails": {
+          "isBaseBoard": false,
+          "flexDirection": "row",
+          "size": {
+            "x": 2,
+            "y": 2
+          },
+          "justifyContent": "start",
+          "alignItems": "start",
+          "alignSelf": "default",
+          "initialChildDetailsArray": [
+            {
+              "flexBlockDetails": {
+                "isBaseBoard": false,
+                "flexDirection": "row",
+                "size": {
+                  "x": 1,
+                  "y": 1
+                },
+                "justifyContent": "start",
+                "alignItems": "start",
+                "alignSelf": "default",
+                "initialChildDetailsArray": []
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

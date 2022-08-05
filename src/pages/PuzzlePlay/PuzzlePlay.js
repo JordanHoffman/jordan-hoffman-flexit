@@ -1,10 +1,13 @@
 import React from 'react';
+import {v4 as uuidv4} from 'uuid';
+import { cloneDeep } from 'lodash';
 
 import './PuzzlePlay.scss';
 import Toolkit from '../../components/Toolkit';
 import FlexBlock from '../../components/FlexBlock';
 import helperFunctions from '../../Utility/HelperFunctions';
 import C from '../../Utility/Constants';
+import puzzleObject from '../../data/FlexBlock_Puzzle_6.json';
 
 class PuzzlePlay extends React.Component {
 
@@ -17,14 +20,14 @@ class PuzzlePlay extends React.Component {
   }
 
   componentDidMount() {
-    this.setState({ flexBlockPuzzle: this.createPuzzle() })
+    this.setState({ flexBlockPuzzle: this.loadPuzzle() })
   }
 
   componentDidUpdate() {
 
   }
 
-  createChildren = () => {
+  createChildren = (initialChildDetailsArray) => {
     let children = [helperFunctions.createDefaultDetailsObj(), helperFunctions.createDefaultDetailsObj()];
     return children;
   }
@@ -33,6 +36,7 @@ class PuzzlePlay extends React.Component {
     const parentDetails = helperFunctions.createDetailsObj({ isBaseBoard: true, size: { x: 5, y: 5 }, flexDirection: 'row', alignSelf: 'center' })
 
     let children = this.createChildren();
+
     const parent = <FlexBlock
       key={parentDetails.id}
       details={parentDetails}
@@ -41,6 +45,33 @@ class PuzzlePlay extends React.Component {
       receiveBaseBoardHandle={this.receiveBaseBoardHandle}
       layer={0}
     />
+
+    return parent;
+  }
+
+  createDetailIDs = (puzzleDetailObject) => {
+    puzzleDetailObject.id = uuidv4();
+
+    if (puzzleDetailObject.initialChildDetailsArray.length) {
+      puzzleDetailObject.initialChildDetailsArray.forEach(detail => {
+        this.createDetailIDs(detail)
+      });
+    }
+  }
+
+  loadPuzzle = () => {
+    // const parentDetails = helperFunctions.createDetailsObj(puzzleObject.flexBlockDetails)
+    this.createDetailIDs(puzzleObject);
+
+    const parent = <FlexBlock
+      key={puzzleObject.id}
+      details={puzzleObject}
+      initialChildDetailsArray={puzzleObject.initialChildDetailsArray}
+      selectedListener={this.newFlexBlockSelected}
+      receiveBaseBoardHandle={this.receiveBaseBoardHandle}
+      layer={0}
+    />
+
     return parent;
   }
 

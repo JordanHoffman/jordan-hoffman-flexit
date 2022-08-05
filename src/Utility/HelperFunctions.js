@@ -10,6 +10,7 @@ function createDefaultDetailsObj() {
     justifyContent: "start",
     alignItems: "start",
     alignSelf: "default",
+    initialChildDetailsArray: [],
     id: uuidv4()
   }
 }

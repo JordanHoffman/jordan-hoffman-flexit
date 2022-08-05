@@ -1,5 +1,5 @@
 const Constants = {
-  acceptedDetailKeys : ['isBaseBoard', 'flexDirection', 'size', 'justifyContent', 'alignItems', 'alignSelf'],
+  acceptedDetailKeys : ['isBaseBoard', 'flexDirection', 'size', 'justifyContent', 'alignItems', 'alignSelf', 'initialChildDetailsArray'],
   layers: ['white', 'blue', 'red', 'green', 'yellow', 'orange', 'purple'],
   justifyContent: ['start', 'center', 'end', 'between', 'around', 'evenly'],
   alignContent: ['start', 'center', 'end'],
