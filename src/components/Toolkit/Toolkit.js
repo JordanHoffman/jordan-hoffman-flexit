@@ -17,8 +17,12 @@ class Toolkit extends React.Component {
 
     //logic mainly for initial mounting to check if there's a selected flexblock and assign the state once it comes in.
     if (this.props.selectedFlexBlock) {
-      if (!this.state.selectedFlexBlockDetails || this.state.selectedFlexBlockDetails.id !== this.props.selectedFlexBlock.props.details.id)
-        this.setState({ selectedFlexBlockDetails: this.props.selectedFlexBlock.props.details })
+      if (!this.state.selectedFlexBlockDetails || this.state.selectedFlexBlockDetails.id !== this.props.selectedFlexBlock.props.details.id){
+        let currentDetails = this.props.selectedFlexBlock.props.details; 
+        if (currentDetails.isBaseBoard) currentDetails = this.props.selectedFlexBlock.getBaseBoardDetails();
+
+        this.setState({ selectedFlexBlockDetails: currentDetails });
+      }
     }
 
     //logic for deselecting an old flexblock when a new one is selected.
@@ -61,8 +65,10 @@ class Toolkit extends React.Component {
     }
   }
 
+  //TODO: children cant rely on default values, because they end up inheriting from parent. So they must explicitly always be set.
   handleDistribution = (e) => {
-    this.setState(this.props.selectedFlexBlock.attemptDistribution(e.target.name, e.target.value))
+    const updatedDetails = this.props.selectedFlexBlock.attemptDistribution(e.target.name, e.target.value);
+    this.setState({ selectedFlexBlockDetails: updatedDetails })
   }
 
   render() {
@@ -72,6 +78,7 @@ class Toolkit extends React.Component {
     const justifyContent = this.state.selectedFlexBlockDetails ? this.state.selectedFlexBlockDetails.justifyContent : '';
     const alignItems = this.state.selectedFlexBlockDetails ? this.state.selectedFlexBlockDetails.alignItems : '';
     const alignSelf = this.state.selectedFlexBlockDetails ? this.state.selectedFlexBlockDetails.alignSelf : '';
+    const isBaseBoard = this.state.selectedFlexBlockDetails ? this.state.selectedFlexBlockDetails.isBaseBoard : true;
 
     return (
       <div className="toolkit">
@@ -81,11 +88,11 @@ class Toolkit extends React.Component {
           <h3 className="toolkit__section-title">FlexBlock Creation</h3>
 
           <div className="creation-btn-ctr">
-            <button className="creation-btn" data-sibling="before" onClick={this.handleCreateSibling}>before</button>
+            {!isBaseBoard && <button className="creation-btn" data-sibling="before" onClick={this.handleCreateSibling}>before</button>}
             <button className="creation-btn" onClick={this.handleCreateInside}>inside</button>
-            <button className="creation-btn" data-sibling="after" onClick={this.handleCreateSibling}>after</button>
+            {!isBaseBoard && <button className="creation-btn" data-sibling="after" onClick={this.handleCreateSibling}>after</button>}
           </div>
-          <button className="deletion-btn" onClick={this.handleDelete}>DELETE</button>
+          {!isBaseBoard && <button className="deletion-btn" onClick={this.handleDelete}>DELETE</button>}
         </section>
 
 
@@ -116,18 +123,20 @@ class Toolkit extends React.Component {
 
           <div className="detail-ctr">
             <h4 className="detail-ctr__title">Width:</h4>
-            <SizeTool ctrClass="detail-ctr__controls detail-ctr__controls--sizetool" 
-            value={width} 
-            dimension='width' 
-            handleSizeAdjust={this.handleSizeAdjust} />
+            <SizeTool ctrClass="detail-ctr__controls detail-ctr__controls--sizetool"
+              value={width}
+              dimension='width'
+              isBaseBoard={isBaseBoard}
+              handleSizeAdjust={this.handleSizeAdjust} />
           </div>
 
           <div className="detail-ctr">
             <h4 className="detail-ctr__title">Height:</h4>
-            <SizeTool ctrClass="detail-ctr__controls detail-ctr__controls--sizetool" 
-            value={height} 
-            dimension='height' 
-            handleSizeAdjust={this.handleSizeAdjust} />
+            <SizeTool ctrClass="detail-ctr__controls detail-ctr__controls--sizetool"
+              value={height}
+              dimension='height'
+              isBaseBoard={isBaseBoard}
+              handleSizeAdjust={this.handleSizeAdjust} />
           </div>
 
           <div className="detail-ctr">
@@ -144,18 +153,19 @@ class Toolkit extends React.Component {
             <DropDownTool ctrClass="detail-ctr__controls"
               name="alignItems"
               value={alignItems}
-              options={C.alignContentSelf} 
+              options={C.alignContent}
               handleDistribution={this.handleDistribution} />
           </div>
 
-          <div className="detail-ctr">
+          {!isBaseBoard && <div className="detail-ctr">
             <h4 className="detail-ctr__title">Align Self:</h4>
             <DropDownTool ctrClass="detail-ctr__controls"
               name="alignSelf"
               value={alignSelf}
-              options={C.alignContentSelf} 
+              options={C.alignSelf}
               handleDistribution={this.handleDistribution} />
           </div>
+          }
 
         </section>
 

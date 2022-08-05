@@ -52,6 +52,10 @@ class FlexBlock extends React.Component {
     }
   }
 
+  getBaseBoardDetails = () => {
+    return cloneDeep(this.state.baseBoardDetails);
+  }
+
   selectSelf() {
     this.props.selectedListener(this);
     this.setState({ isSelected: true });
@@ -393,7 +397,7 @@ class FlexBlock extends React.Component {
     if (details.flexDirection === "column") className += ` ${base}--dir-column`;
     className += ` ${base}--justifyContent-${details.justifyContent}`;
     className += ` ${base}--alignItems-${details.alignItems}`;
-    className += ` ${base}--alignSelf-${details.alignSelf}`;
+    className += ` ${base}--alignSelf-${details.alignSelf === "default" ? "stretch" : details.alignSelf}`;
     className += ` ${base}--layer${this.props.layer}`
 
     //active (selected) styling

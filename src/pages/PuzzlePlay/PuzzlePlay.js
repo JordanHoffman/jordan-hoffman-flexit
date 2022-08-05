@@ -30,12 +30,12 @@ class PuzzlePlay extends React.Component {
   }
 
   createPuzzle = () => {
-    const details = helperFunctions.createDetailsObj({ isBaseBoard: true, size: { x: 5, y: 5 }, flexDirection: 'row' })
+    const parentDetails = helperFunctions.createDetailsObj({ isBaseBoard: true, size: { x: 5, y: 5 }, flexDirection: 'row', alignSelf: 'center' })
 
     let children = this.createChildren();
     const parent = <FlexBlock
-      key={details.id}
-      details={details}
+      key={parentDetails.id}
+      details={parentDetails}
       initialChildDetailsArray={children}
       selectedListener={this.newFlexBlockSelected}
       receiveBaseBoardHandle={this.receiveBaseBoardHandle}
@@ -51,15 +51,6 @@ class PuzzlePlay extends React.Component {
   newFlexBlockSelected = (selectedFlexBlock) => {
 
     this.setState({ selectedFlexBlock: selectedFlexBlock });
-    // const key = Object.keys(req)[0]
-    // const data = req[key]
-    // switch (key) {
-    //   case 'selected':
-    //     this.setState({selectedFlexBlockHandler: data});
-    //     break;
-    //   default:
-    //     console.warn('invalid request to puzze play pg from flexblock: ' + req)
-    // }
   }
 
 

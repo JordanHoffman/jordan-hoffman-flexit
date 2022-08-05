@@ -7,6 +7,9 @@ function createDefaultDetailsObj() {
     isBaseBoard: false,
     flexDirection: 'row',
     size: { x: 1, y: 1 },
+    justifyContent: "start",
+    alignItems: "start",
+    alignSelf: "default",
     id: uuidv4()
   }
 }

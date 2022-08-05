@@ -95,6 +95,9 @@
   }
 
   &--alignSelf {
+    &-normal {
+      align-self: normal;
+    }
     &-start{
       align-self: flex-start;
     }

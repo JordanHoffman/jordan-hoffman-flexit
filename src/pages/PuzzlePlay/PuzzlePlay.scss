@@ -87,6 +87,7 @@
 .layer-info-ctr {
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: $qtr-padding-between-mobile;
 
   &__level {
