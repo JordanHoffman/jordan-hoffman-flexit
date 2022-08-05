@@ -99,7 +99,7 @@
     height: 16px;
     border: 1px solid black;
     
-    $colors: white, blue, red, green, yellow, orange, purple;
+    $colors: $layer0, $layer1, $layer2, $layer3, $layer4, $layer5, $layer6;
     
     @for $i from 1 through length($colors) {
       &--#{$i} {
@@ -108,14 +108,6 @@
     }
   }
 }
-
-// <div className='puzzle-section__infobar'>
-// <div className='puzzle-stats'>
-//   <p className='puzzle-stats__name'>Puzzle #1</p>
-//   <p className='puzzle-stats__difficulty'>Difficulty: Easy</p>
-// </div>
-// <button className='exit-btn'>EXIT</button>
-// </div>
 
 .puzzle-stats {
   display: flex;

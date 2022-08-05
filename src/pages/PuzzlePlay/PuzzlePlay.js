@@ -1,26 +1,29 @@
 import React from 'react';
 import {v4 as uuidv4} from 'uuid';
-import { cloneDeep } from 'lodash';
+import { clone, cloneDeep, result } from 'lodash';
 
 import './PuzzlePlay.scss';
 import Toolkit from '../../components/Toolkit';
 import FlexBlock from '../../components/FlexBlock';
 import helperFunctions from '../../Utility/HelperFunctions';
 import C from '../../Utility/Constants';
-import puzzleObject from '../../data/FlexBlock_Puzzle_6.json';
+import puzzleObject from '../../data/FlexBlock_Puzzle_7.json';
 
 class PuzzlePlay extends React.Component {
 
   state = {
     //The fully created puzzle component
-    flexBlockPuzzle: null,
+    flexBlockGoalPuzzle: null,
+    flexBlockWorkPuzzle: null,
     //the flow is that upon flexblock selection (via user click), it calls PuzzlePlay's handleFlexBlockRequest which updates the state's selectedFlexBlockHandler. The sole purpose is to pass the flexblock's handler to the toolkit via props. From that point, toolkit handshakes with the flexblock to allow the two to communicate together.
     selectedFlexBlock: null,
-    baseBoard: null
+    workBaseBoard: null,
+    goalBaseBoard: null,
   }
 
   componentDidMount() {
-    this.setState({ flexBlockPuzzle: this.loadPuzzle() })
+    this.setState({flexBlockWorkPuzzle: this.loadWorkPuzzle()})
+    this.setState({ flexBlockGoalPuzzle: this.loadGoalPuzzle() })
   }
 
   componentDidUpdate() {
@@ -59,24 +62,52 @@ class PuzzlePlay extends React.Component {
     }
   }
 
-  loadPuzzle = () => {
+  loadGoalPuzzle = () => {
     // const parentDetails = helperFunctions.createDetailsObj(puzzleObject.flexBlockDetails)
-    this.createDetailIDs(puzzleObject);
+    let puzzleObjectClone = cloneDeep(puzzleObject)
+    this.createDetailIDs(puzzleObjectClone);
 
     const parent = <FlexBlock
-      key={puzzleObject.id}
-      details={puzzleObject}
-      initialChildDetailsArray={puzzleObject.initialChildDetailsArray}
+      key={puzzleObjectClone.id}
+      details={puzzleObjectClone}
+      initialChildDetailsArray={puzzleObjectClone.initialChildDetailsArray}
       selectedListener={this.newFlexBlockSelected}
       receiveBaseBoardHandle={this.receiveBaseBoardHandle}
       layer={0}
+      isWorkPuzzle={false}
     />
 
     return parent;
   }
 
-  receiveBaseBoardHandle = (baseBoardHandle) => {
-    this.setState({ baseBoard: baseBoardHandle })
+  //Loads the empty baseboard for this puzzle with standard initialization
+  loadWorkPuzzle = () => {
+    const {initialChildDetailsArray, ...details} = puzzleObject
+    let parentDetails = cloneDeep(details);
+    parentDetails.alignItems = "start";
+    parentDetails.justifyContent = "start";
+    parentDetails.flexDirection = "row";
+    parentDetails = helperFunctions.createDetailsObj(parentDetails);
+    const parent = <FlexBlock
+    key={parentDetails.id}
+    details={parentDetails}
+    initialChildDetailsArray={[]}
+    selectedListener={this.newFlexBlockSelected}
+    receiveBaseBoardHandle={this.receiveBaseBoardHandle}
+    layer={0}
+    isWorkPuzzle={true}
+    />
+
+    return parent;
+  }
+
+  receiveBaseBoardHandle = (baseBoardHandle, isWorkBaseBoard) => {
+    if (isWorkBaseBoard){
+      this.setState({ workBaseBoard: baseBoardHandle })
+    }
+    else {
+      this.setState({ goalBaseBoard: baseBoardHandle })
+    }
   }
 
   newFlexBlockSelected = (selectedFlexBlock) => {
@@ -85,7 +116,7 @@ class PuzzlePlay extends React.Component {
   }
 
   attemptSave = () => {
-    let saveObject = this.state.baseBoard.attemptSave();
+    let saveObject = this.state.workBaseBoard.attemptSave();
     console.log(saveObject);
 
     const a = document.createElement("a");
@@ -94,6 +125,61 @@ class PuzzlePlay extends React.Component {
     a.href = URL.createObjectURL(file);
     a.download = 'FlexBlock_Puzzle.json';
     a.click();
+  }
+
+  checkEquivalence = (goalChildren, submissionChildren, goalIdTrail, submissionIdTrail) => {
+    // {size: size, position: position, childSubmissionInfo: childSubmissionInfo};
+    let matchingSubmissionIndexes = [];
+
+    //any goalChilds that the relating submission failed to match
+    let goalMismatches = []
+    //any extra submission childs remaining after all goalChilds were matched.
+    let submissionMismatches = []
+
+    for (const goalChild of goalChildren) {
+      const match = submissionChildren.findIndex(submissionChild => {
+        const sizeX = submissionChild.size.x === goalChild.size.x;
+        const sizeY = submissionChild.size.y === goalChild.size.y;
+        const posX = submissionChild.position.x === goalChild.position.x;
+        const posY = submissionChild.position.y === goalChild.position.y;
+        return (sizeX && sizeY && posX && posY);
+      })
+
+      if (match === -1) {
+        goalMismatches.push([...goalIdTrail, goalChild.id]);
+      }
+      else {
+        matchingSubmissionIndexes.push(match);
+      }
+    }
+
+    if (goalMismatches.length) return {result: false, goalMismatches: goalMismatches};
+
+    //By this point all the goal ids were matched, but there may be extra submissionChildren to cause a mismatch
+    const remainingSubmissionChildren = submissionChildren.filter( (submissionChild, possibleRemainingIndex)=>{
+      return matchingSubmissionIndexes.indexOf(possibleRemainingIndex) === -1
+    })
+    for (const remainingSubmissionChild of remainingSubmissionChildren) {
+      submissionMismatches.push([...submissionIdTrail, remainingSubmissionChild.id])
+    }
+
+    if (submissionMismatches.length) return {result: false, submissionMismatches};
+
+    //By this point everything should match.
+    //TODO: make this recursive
+    return {result: true};
+  }
+
+  attemptSubmit = () => {
+    const goal = this.state.goalBaseBoard.getSubmissionInfo();
+    const submission = this.state.workBaseBoard.getSubmissionInfo();
+
+    let layer = 0;
+    let match = true;
+
+
+    console.log(goal);
+    console.log(submission);
   }
 
   render() {
@@ -121,12 +207,12 @@ class PuzzlePlay extends React.Component {
 
             <div className='action-btn-subsection'>
               <button className='save-btn' onClick={this.attemptSave}>SAVE</button>
-              <button className='submit-btn'>SUBMIT</button>
+              <button className='submit-btn' onClick={this.attemptSubmit}>SUBMIT</button>
             </div>
 
           </div>
 
-          {this.state.flexBlockPuzzle}
+          {this.state.flexBlockWorkPuzzle}
 
         </section>
 
@@ -140,6 +226,9 @@ class PuzzlePlay extends React.Component {
             </div>
             <button className='exit-btn'>EXIT</button>
           </div>
+
+          {this.state.flexBlockGoalPuzzle}
+
         </section>
       </div>
 

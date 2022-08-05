@@ -18,7 +18,7 @@ class FlexBlock extends React.Component {
 
   state = {
     baseBoardDetails: this.props.details.isBaseBoard ? this.props.details : null,
-    boardOffset: this.props.boardOffset,
+    baseBoardOffset: this.props.baseBoardOffset,
     childDetailsArray: this.props.initialChildDetailsArray,
     isSelected: false,
   }
@@ -31,9 +31,9 @@ class FlexBlock extends React.Component {
 
   getBoardPos = () => {
     let [xPos, yPos] = [this.selfRef.current.getBoundingClientRect().x, this.selfRef.current.getBoundingClientRect().y]
-    if (this.props.boardOffset.x || this.props.boardOffset.y) {
-      xPos -= this.props.boardOffset.x;
-      yPos -= this.props.boardOffset.y;
+    if (this.props.baseBoardOffset.x || this.props.baseBoardOffset.y) {
+      xPos -= this.props.baseBoardOffset.x;
+      yPos -= this.props.baseBoardOffset.y;
     }
     return { x: xPos, y: yPos };
   }
@@ -41,18 +41,18 @@ class FlexBlock extends React.Component {
   componentDidMount() {
     //Initial setup for the base flexblock 
     if (this.props.details.isBaseBoard) {
-      //set the boardOffset that all other inner flexblocks will need for their location calculation. Update this board offset on window resize.
+      //set the baseBoardOffset that all other inner flexblocks will need for their location calculation. Update this board offset on window resize.
       const [xPos, yPos] = [this.selfRef.current.getBoundingClientRect().x, this.selfRef.current.getBoundingClientRect().y]
-      this.setState({ boardOffset: { x: xPos, y: yPos } })
+      this.setState({ baseBoardOffset: { x: xPos, y: yPos } })
 
       window.addEventListener('resize', e => {
         const [xPos, yPos] = [this.selfRef.current.getBoundingClientRect().x, this.selfRef.current.getBoundingClientRect().y]
-        this.setState({ boardOffset: { x: xPos, y: yPos } })
+        this.setState({ baseBoardOffset: { x: xPos, y: yPos } })
       })
 
       //Give the toolkit an initial handle to the base board flexblock.
-      this.props.receiveBaseBoardHandle(this);
-      this.selectSelf();
+      this.props.receiveBaseBoardHandle(this, this.props.isWorkPuzzle);
+      if (this.props.isWorkPuzzle) this.selectSelf();
     }
     else {
       //Children will pass their handle to the parent
@@ -398,14 +398,6 @@ class FlexBlock extends React.Component {
     }
   }
 
-    /*
-  {
-    flexblockDetails: {...Details minus id},
-    initialChildDetailsArray: [{flexblockDetails: xxx, array: [xxx]}, {flexblockDetails: yyy, array:[yyy]}]
-  }
-  */
-
-
   attemptSave = () => {
     const {id, ...saveDetails} = this.props.details.isBaseBoard ? this.state.baseBoardDetails : this.props.details;
     let initialChildDetailsArray = []
@@ -419,6 +411,23 @@ class FlexBlock extends React.Component {
 
     // return {flexBlockDetails: saveDetails, initialChildFlexBlocks: initialChildFlexBlocks};
     return saveDetails;
+  }
+
+  getSubmissionInfo = () => {
+    const size = this.props.details.size;
+    let position = {x:0, y:0}
+    if (!this.props.details.isBaseBoard) position = this.getBoardPos();
+    position.x = Math.floor(position.x);
+    position.y = Math.floor(position.y);
+
+    const childSubmissionInfo = []
+    for (let i=0; i<this.childHandles.length; i++) {
+      const childFlexBlock = this.childHandles[i];
+      childSubmissionInfo.push(childFlexBlock.getSubmissionInfo());
+    }
+
+    let submissionInfo = {size: size, position: position, id:this.props.details.id, childSubmissionInfo: childSubmissionInfo};
+    return submissionInfo;
   }
 
   handleClick = (e) => {
@@ -454,25 +463,26 @@ class FlexBlock extends React.Component {
       height = (this.props.details.size.y / parentSize.y) * 100 + '%';
     }
 
-    return (
-      <div className={className} style={!isBaseBoard ? { width: width, height: height } : {}} ref={this.selfRef} onClick={this.handleClick}>
-        {this.state.childDetailsArray.map(childDetailObj => {
-          // let puzzleObject = this.props.childPuzzleConstructionArray[i]
-          // let initialChildDetailsArray = puzzleObject.initialChildFlexBlocks.filter(flexBlockInfo => helperFunctions.createDetailsObj(flexBlockInfo.details));
-          // let childPuzzleConstructionArray = puzzleObject.initialChildFlexBlocks.filter(flexBlockInfo => flexBlockInfo.initialChildFlexBlocks);
+    const baseBoardOffset = isBaseBoard ? this.state.baseBoardOffset : this.props.baseBoardOffset;
 
+    return (
+      <div 
+      className={className} 
+      style={!isBaseBoard ? { width: width, height: height } : {}} 
+      ref={this.selfRef} 
+      onClick={this.props.isWorkPuzzle ? this.handleClick : null}
+      >
+        {this.state.childDetailsArray.map(childDetailObj => {
           return (
             <FlexBlock
               key={childDetailObj.id}
               details={childDetailObj}
               parent={this}
-              boardOffset={this.state.boardOffset}
+              baseBoardOffset={baseBoardOffset}
               selectedListener={this.props.selectedListener}
               layer={this.props.layer + 1}
               initialChildDetailsArray={childDetailObj.initialChildDetailsArray}
-
-
-              // initialChildDetailsArray={this.props.childPuzzleConstructionArray[i]}
+              isWorkPuzzle={this.props.isWorkPuzzle}
             />
           )
         })}
@@ -482,7 +492,7 @@ class FlexBlock extends React.Component {
 }
 
 FlexBlock.defaultProps = {
-  boardOffset: { x: 0, y: 0 },
+  baseBoardOffset: { x: 0, y: 0 },
   initialChildDetailsArray: [],
   parent: null
 };
