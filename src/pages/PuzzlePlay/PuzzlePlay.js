@@ -53,7 +53,17 @@ class PuzzlePlay extends React.Component {
     this.setState({ selectedFlexBlock: selectedFlexBlock });
   }
 
+  attemptSave = () => {
+    let saveObject = this.state.baseBoard.attemptSave();
+    console.log(saveObject);
 
+    const a = document.createElement("a");
+    const content = JSON.stringify(saveObject);
+    const file = new Blob([content], { type: 'text/plain' });
+    a.href = URL.createObjectURL(file);
+    a.download = 'FlexBlock_Puzzle.json';
+    a.click();
+  }
 
   render() {
     return (
@@ -79,7 +89,7 @@ class PuzzlePlay extends React.Component {
             </div>
 
             <div className='action-btn-subsection'>
-              <button className='save-btn'>SAVE</button>
+              <button className='save-btn' onClick={this.attemptSave}>SAVE</button>
               <button className='submit-btn'>SUBMIT</button>
             </div>
 

@@ -20,11 +20,14 @@ class FlexBlock extends React.Component {
     baseBoardDetails: this.props.details.isBaseBoard ? this.props.details : null,
     boardOffset: this.props.boardOffset,
     childDetailsArray: this.props.initialChildDetailsArray,
-    isSelected: false
+    isSelected: false,
   }
 
   //meant for getting the position in the DOM.
   selfRef = React.createRef();
+  //References to the child objects needed for recursive saving. Cant be stored in state because it has to be synchronously updated b/c initial creation of puzzle causes multiple instant calls to updating the childHandles array.
+  childHandles= []
+
   getBoardPos = () => {
     let [xPos, yPos] = [this.selfRef.current.getBoundingClientRect().x, this.selfRef.current.getBoundingClientRect().y]
     if (this.props.boardOffset.x || this.props.boardOffset.y) {
@@ -50,6 +53,16 @@ class FlexBlock extends React.Component {
       this.props.receiveBaseBoardHandle(this);
       this.selectSelf();
     }
+    else {
+      //Children will pass their handle to the parent
+      this.props.parent.addChildHandle(this);
+    }
+  }
+
+  addChildHandle(flexblockObject) {
+    let id = flexblockObject.props.details.id;
+    const childIndex = this.state.childDetailsArray.findIndex(detailObj => detailObj.id === id);
+    this.childHandles[childIndex] = flexblockObject;
   }
 
   getBaseBoardDetails = () => {
@@ -76,6 +89,7 @@ class FlexBlock extends React.Component {
   attemptChangeFlexDirection = (direction) => {
     //NEED TO WARN IF YOU HAVE CHILDREN
     if (this.state.childDetailsArray.length) {
+      this.childHandles = [];
       this.setState({childDetailsArray: []});
     }
 
@@ -350,6 +364,7 @@ class FlexBlock extends React.Component {
 
   parentHandleDelete = (id) => {
     let updatedChildDetailsArray = cloneDeep(this.state.childDetailsArray).filter(childDetailObj => childDetailObj.id !== id);
+    this.childHandles = this.childHandles.filter(childHandle => childHandle.props.details.id !== id);
     this.setState({ childDetailsArray: updatedChildDetailsArray })
     this.selectSelf();
     return true;
@@ -380,6 +395,25 @@ class FlexBlock extends React.Component {
     else {
       return (this.props.parent.parentHandleDistribution(category, value, this.props.details.id))
     }
+  }
+
+    /*
+  {
+    flexblockDetails: {...Details minus id},
+    initialChildDetailsArray: [{flexblockDetails: xxx, array: [xxx]}, {flexblockDetails: yyy, array:[yyy]}]
+  }
+  */
+
+
+  attemptSave = () => {
+    const {id, ...saveDetails} = this.props.details.isBaseBoard ? this.state.baseBoardDetails : this.props.details;
+    let initialChildDetailsArray = []
+
+    for (let i=0; i<this.childHandles.length; i++){
+      const childFlexBlock = this.childHandles[i];
+      initialChildDetailsArray.push(childFlexBlock.attemptSave());
+    }
+    return {flexBlockDetails: saveDetails, initialChildDetailsArray: initialChildDetailsArray};
   }
 
   handleClick = (e) => {
