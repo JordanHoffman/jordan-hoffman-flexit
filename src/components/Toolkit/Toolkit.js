@@ -17,8 +17,8 @@ class Toolkit extends React.Component {
 
     //logic mainly for initial mounting to check if there's a selected flexblock and assign the state once it comes in.
     if (this.props.selectedFlexBlock) {
-      if (!this.state.selectedFlexBlockDetails || this.state.selectedFlexBlockDetails.id !== this.props.selectedFlexBlock.props.details.id){
-        let currentDetails = this.props.selectedFlexBlock.props.details; 
+      if (!this.state.selectedFlexBlockDetails || this.state.selectedFlexBlockDetails.id !== this.props.selectedFlexBlock.props.details.id) {
+        let currentDetails = this.props.selectedFlexBlock.props.details;
         if (currentDetails.isBaseBoard) currentDetails = this.props.selectedFlexBlock.getBaseBoardDetails();
 
         this.setState({ selectedFlexBlockDetails: currentDetails });
@@ -84,95 +84,95 @@ class Toolkit extends React.Component {
       <div className="toolkit">
         <h2 className="toolkit__title">Toolkit</h2>
 
-        <div className="barf">
+        <div className="toolkit__contents">
+
+          <section className="toolkit__section">
+            <h3 className="toolkit__section-title">FlexBlock Creation</h3>
+
+            <div className="creation-btn-ctr">
+              {!isBaseBoard && <button className="creation-btn" data-sibling="before" onClick={this.handleCreateSibling}>before</button>}
+              <button className="creation-btn" onClick={this.handleCreateInside}>inside</button>
+              {!isBaseBoard && <button className="creation-btn" data-sibling="after" onClick={this.handleCreateSibling}>after</button>}
+            </div>
+            {!isBaseBoard && <button className="deletion-btn" onClick={this.handleDelete}>DELETE</button>}
+          </section>
 
 
-        <section className="toolkit__section">
-          <h3 className="toolkit__section-title">FlexBlock Creation</h3>
+          <section className="toolkit__section toolkit__section--details">
 
-          <div className="creation-btn-ctr">
-            {!isBaseBoard && <button className="creation-btn" data-sibling="before" onClick={this.handleCreateSibling}>before</button>}
-            <button className="creation-btn" onClick={this.handleCreateInside}>inside</button>
-            {!isBaseBoard && <button className="creation-btn" data-sibling="after" onClick={this.handleCreateSibling}>after</button>}
-          </div>
-          {!isBaseBoard && <button className="deletion-btn" onClick={this.handleDelete}>DELETE</button>}
-        </section>
+            <h3 className="toolkit__section-title">FlexBlock Details</h3>
 
+            <div className="detail-ctr">
+              <h4 className="detail-ctr__title">Flex Direction:</h4>
 
-        <section className="toolkit__section toolkit__section--details">
+              <div className="detail-ctr__controls detail-ctr__controls--flexDirection">
+                <div className="radio-ctr">
+                  <h5 className="detail-ctr__subtitle">row</h5>
+                  <button className="radio-button" data-direction="row" onClick={this.handleChangeDirection}>
+                    {directionRow ? <RadioOn className="radio-button__svg" /> : <RadioOff className="radio-button__svg" />}
+                  </button>
+                </div>
 
-          <h3 className="toolkit__section-title">FlexBlock Details</h3>
-
-          <div className="detail-ctr">
-            <h4 className="detail-ctr__title">Flex Direction:</h4>
-
-            <div className="detail-ctr__controls detail-ctr__controls--flexDirection">
-              <div className="radio-ctr">
-                <h5 className="detail-ctr__subtitle">row</h5>
-                <button className="radio-button" data-direction="row" onClick={this.handleChangeDirection}>
-                  {directionRow ? <RadioOn className="radio-button__svg" /> : <RadioOff className="radio-button__svg" />}
-                </button>
+                <div className="radio-ctr">
+                  <h5 className="detail-ctr__subtitle">column</h5>
+                  <button className="radio-button" data-direction="column" onClick={this.handleChangeDirection}>
+                    {directionRow ? <RadioOff className="radio-button__svg" /> : <RadioOn className="radio-button__svg" />}
+                  </button>
+                </div>
               </div>
 
-              <div className="radio-ctr">
-                <h5 className="detail-ctr__subtitle">column</h5>
-                <button className="radio-button" data-direction="column" onClick={this.handleChangeDirection}>
-                  {directionRow ? <RadioOff className="radio-button__svg" /> : <RadioOn className="radio-button__svg" />}
-                </button>
-              </div>
             </div>
 
-          </div>
+            <div className="detail-ctr">
+              <h4 className="detail-ctr__title">Width:</h4>
+              <SizeTool ctrClass="detail-ctr__controls detail-ctr__controls--sizetool"
+                value={width}
+                dimension='width'
+                isBaseBoard={isBaseBoard}
+                handleSizeAdjust={this.handleSizeAdjust} />
+            </div>
 
-          <div className="detail-ctr">
-            <h4 className="detail-ctr__title">Width:</h4>
-            <SizeTool ctrClass="detail-ctr__controls detail-ctr__controls--sizetool"
-              value={width}
-              dimension='width'
-              isBaseBoard={isBaseBoard}
-              handleSizeAdjust={this.handleSizeAdjust} />
-          </div>
+            <div className="detail-ctr">
+              <h4 className="detail-ctr__title">Height:</h4>
+              <SizeTool ctrClass="detail-ctr__controls detail-ctr__controls--sizetool"
+                value={height}
+                dimension='height'
+                isBaseBoard={isBaseBoard}
+                handleSizeAdjust={this.handleSizeAdjust} />
+            </div>
 
-          <div className="detail-ctr">
-            <h4 className="detail-ctr__title">Height:</h4>
-            <SizeTool ctrClass="detail-ctr__controls detail-ctr__controls--sizetool"
-              value={height}
-              dimension='height'
-              isBaseBoard={isBaseBoard}
-              handleSizeAdjust={this.handleSizeAdjust} />
-          </div>
+            <div className="detail-ctr">
+              <h4 className="detail-ctr__title">Justify Content:</h4>
+              <DropDownTool ctrClass="detail-ctr__controls"
+                name="justifyContent"
+                value={justifyContent}
+                options={C.justifyContent}
+                handleDistribution={this.handleDistribution} />
+            </div>
 
-          <div className="detail-ctr">
-            <h4 className="detail-ctr__title">Justify Content:</h4>
-            <DropDownTool ctrClass="detail-ctr__controls"
-              name="justifyContent"
-              value={justifyContent}
-              options={C.justifyContent}
-              handleDistribution={this.handleDistribution} />
-          </div>
+            <div className="detail-ctr">
+              <h4 className="detail-ctr__title">Align Items:</h4>
+              <DropDownTool ctrClass="detail-ctr__controls"
+                name="alignItems"
+                value={alignItems}
+                options={C.alignContent}
+                handleDistribution={this.handleDistribution} />
+            </div>
 
-          <div className="detail-ctr">
-            <h4 className="detail-ctr__title">Align Items:</h4>
-            <DropDownTool ctrClass="detail-ctr__controls"
-              name="alignItems"
-              value={alignItems}
-              options={C.alignContent}
-              handleDistribution={this.handleDistribution} />
-          </div>
+            {!isBaseBoard && <div className="detail-ctr">
+              <h4 className="detail-ctr__title">Align Self:</h4>
+              <DropDownTool ctrClass="detail-ctr__controls"
+                name="alignSelf"
+                value={alignSelf}
+                options={C.alignSelf}
+                handleDistribution={this.handleDistribution} />
+            </div>
+            }
 
-          {!isBaseBoard && <div className="detail-ctr">
-            <h4 className="detail-ctr__title">Align Self:</h4>
-            <DropDownTool ctrClass="detail-ctr__controls"
-              name="alignSelf"
-              value={alignSelf}
-              options={C.alignSelf}
-              handleDistribution={this.handleDistribution} />
-          </div>
-          }
-
-        </section>
+          </section>
 
         </div>
+        
       </div>
     )
   }

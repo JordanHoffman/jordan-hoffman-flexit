@@ -1,0 +1,50 @@
+@use "../../styles/partials/global" as *;
+
+.stage-select {
+  background-color: $Primary;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  &__title {
+    font-family: Allan;
+    @include title-fontstats;
+    
+    &--special-char {
+      color: $Secondary;
+    }
+  }
+
+  &__select-message {
+    @include page-header-fontstats;
+  }
+}
+
+.difficulty-selector {
+  display: flex;
+
+
+  &__option{
+    display: flex;
+    justify-content: center;
+    padding: $half-padding-between-mobile $padding-between-mobile;
+    background-color: $Primary-Dark;
+    border: 1px solid black;
+    width: 100px;
+
+    &--left{
+      border-top-left-radius: $select-btn-border-radius;
+      border-bottom-left-radius: $select-btn-border-radius;
+    }
+    &--right {
+      border-top-right-radius: $select-btn-border-radius;
+      border-bottom-right-radius: $select-btn-border-radius;
+    }
+    &--chosen {
+      background-color: $Secondary;
+      color: $Primary-Dark;
+      font-weight: 900;
+    }
+  }
+}
