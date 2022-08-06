@@ -13,6 +13,7 @@
   border-right: 2px solid $Primary-Dark;
   position: relative;
   background-color: $Primary-Light;
+  overflow-y: auto;
 
   display: flex;
   flex-direction: column;
@@ -47,6 +48,7 @@
 
 .action-btn-subsection {
   display: flex;
+  flex-direction: column;
   gap: $half-padding-between-mobile;
 }
 

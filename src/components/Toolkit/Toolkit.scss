@@ -1,5 +1,12 @@
 @use "../../styles/partials/global" as *;
 
+.barf {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
 .toolkit {
   width: 20%;
   min-width: 200px;

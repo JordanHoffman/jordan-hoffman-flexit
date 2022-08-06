@@ -84,6 +84,9 @@ class Toolkit extends React.Component {
       <div className="toolkit">
         <h2 className="toolkit__title">Toolkit</h2>
 
+        <div className="barf">
+
+
         <section className="toolkit__section">
           <h3 className="toolkit__section-title">FlexBlock Creation</h3>
 
@@ -169,7 +172,7 @@ class Toolkit extends React.Component {
 
         </section>
 
-
+        </div>
       </div>
     )
   }
