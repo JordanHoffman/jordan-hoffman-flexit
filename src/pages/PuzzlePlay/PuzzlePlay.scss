@@ -99,7 +99,7 @@
     height: 16px;
     border: 1px solid black;
     
-    $colors: $layer0, $layer1, $layer2, $layer3, $layer4, $layer5, $layer6;
+    $colors: $layer0, $layer1, $layer2, $layer3, $layer4, $layer5, $layer6, $layer7, $layer8;
     
     @for $i from 1 through length($colors) {
       &--#{$i} {

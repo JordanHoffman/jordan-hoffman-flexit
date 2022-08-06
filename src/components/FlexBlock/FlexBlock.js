@@ -21,13 +21,14 @@ class FlexBlock extends React.Component {
     baseBoardOffset: this.props.baseBoardOffset,
     childDetailsArray: this.props.initialChildDetailsArray,
     isSelected: false,
+    mismatchDisplay: false
   }
 
   //meant for getting the position in the DOM.
   selfRef = React.createRef();
   //References to the child objects needed for recursive saving. Cant be stored in state because it has to be synchronously updated b/c initial creation of puzzle causes multiple instant calls to updating the childHandles array.
-  childHandles= []
-  firstRender = true;
+  childHandles = []
+  mismatchTimerId = null;
 
   getBoardPos = () => {
     let [xPos, yPos] = [this.selfRef.current.getBoundingClientRect().x, this.selfRef.current.getBoundingClientRect().y]
@@ -58,6 +59,10 @@ class FlexBlock extends React.Component {
       //Children will pass their handle to the parent
       this.props.parent.addChildHandle(this);
     }
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this.mismatchTimerId);
   }
 
   addChildHandle(flexblockObject) {
@@ -436,6 +441,28 @@ class FlexBlock extends React.Component {
     return submissionInfo;
   }
 
+  //mismatchIdTrailsArray is an array of arrays (even if just one array within it). This is recursive. The first index of each idTrail represents the current flexblock. The next index is the id of the child where the mismatch leads towards. If the next index is the last, it means that that child has the mismatch. But if its not the last, it recursively calls this function on its child while passing it a new version of the array that has the first index clipped off.
+  findAndDisplayMismatches = (mismatchIdTrailsArray) => {
+    for (const mismatchIdTrail of mismatchIdTrailsArray) {
+      const targetChild = this.childHandles.find(childHandle => childHandle.props.details.id === mismatchIdTrail[1]);
+      if (mismatchIdTrail.length === 2) {
+        targetChild.displayMismatch()
+      }
+      else {
+        targetChild.findAndDisplayMismatches([mismatchIdTrail.slice(1)])
+      }
+    }
+  }
+
+  displayMismatch = () => {
+    this.setState({mismatchDisplay: true})
+    if (this.mismatchTimerId) clearTimeout(this.mismatchTimerId)
+
+    this.mismatchTimerId = setTimeout(() => {
+      this.setState({mismatchDisplay: false})
+    }, 1500);
+  }
+
   handleClick = (e) => {
     this.selectSelf();
     e.stopPropagation();
@@ -447,6 +474,7 @@ class FlexBlock extends React.Component {
     const base = className;
     const details = this.props.details.isBaseBoard ? this.state.baseBoardDetails : this.props.details;
 
+    if (this.props.isWorkPuzzle) className += ` ${base}--work-puzzle`;
     if (details.isBaseBoard) className += ` ${base}--base-board`;
     if (details.flexDirection === "column") className += ` ${base}--dir-column`;
     className += ` ${base}--justifyContent-${details.justifyContent}`;
@@ -454,8 +482,9 @@ class FlexBlock extends React.Component {
     className += ` ${base}--alignSelf-${details.alignSelf === "default" ? "stretch" : details.alignSelf}`;
     className += ` ${base}--layer${this.props.layer}`
 
-    //active (selected) styling
+    //active (selected) styling & mismatch styling
     if (this.state.isSelected) className += ` ${base}--selected`;
+    if (this.state.mismatchDisplay) className += ` ${base}--mismatch`;
 
     //Dynamic inline width/height styling
     const isBaseBoard = details.isBaseBoard;

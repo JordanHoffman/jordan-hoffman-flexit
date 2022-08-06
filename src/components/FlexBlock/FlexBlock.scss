@@ -6,6 +6,10 @@
   flex-shrink: 0;
   outline: $flexblock-outline;
 
+  &--work-puzzle {
+    cursor: pointer;
+  }
+
   &--layer0 {
     background-color: $layer0;
   }
@@ -34,6 +38,14 @@
     background-color: $layer6;
   }
 
+  &--layer7 {
+    background-color: $layer7;
+  }
+
+  &--layer8 {
+    background-color: $layer8;
+  }
+
   &--base-board {
     width: 30vw;
     height: 30vw;
@@ -48,6 +60,30 @@
   &--selected {
     outline: $flexblock-outline-selected;
     z-index: 1;
+    animation: selectedAnimation 2s linear infinite;
+  }
+
+  @keyframes selectedAnimation {
+
+    //4px solid #7e57c2;
+    0% {
+      outline: 4px solid #7e57c2;
+    }
+
+    25% {
+      outline: 5px solid #7e57c2;
+    }
+
+    50% {
+      outline: 7px solid #7e57c2;
+    }
+
+    75% {
+      outline: 5px solid #7e57c2;
+    }
+    100% {
+      outline: 4px solid #7e57c2;
+    }
   }
 
   &--justifyContent {
@@ -77,13 +113,15 @@
   }
 
   &--alignItems {
-    &-start{
+    &-start {
       align-items: flex-start;
     }
-    &-center{
+
+    &-center {
       align-items: center;
     }
-    &-end{
+
+    &-end {
       align-items: flex-end;
     }
   }
@@ -92,14 +130,37 @@
     &-normal {
       align-self: normal;
     }
-    &-start{
+
+    &-start {
       align-self: flex-start;
     }
-    &-center{
+
+    &-center {
       align-self: center;
     }
-    &-end{
+
+    &-end {
       align-self: flex-end;
+    }
+  }
+
+  &--mismatch {
+    z-index: 1;
+    animation: flashIncorrect 0.25s linear infinite;
+    outline: 6px solid transparent;
+  }
+
+  @keyframes flashIncorrect {
+    0% {
+      outline-color: rgba(198, 40, 40, 0.75);
+    }
+
+    50% {
+      outline-color: rgba(142,0,0,1);
+    }
+
+    100% {
+      outline-color: rgba(198, 40, 40, 0.75);
     }
   }
 }

@@ -194,17 +194,27 @@ class PuzzlePlay extends React.Component {
     const submission = this.state.workBaseBoard.getSubmissionInfo();
     const result = this.checkEquivalence(goal.childSubmissionInfoArray, submission.childSubmissionInfoArray, [goal.id], [submission.id]);
 
-    console.log(`---
-    goal`);
-    console.log(goal);
+    let victory = true;
+    if (result.goalMismatches.length) {
+      victory = false;
+      this.state.goalBaseBoard.findAndDisplayMismatches(result.goalMismatches)
+    }
+    if (result.submissionMismatches.length) {
+      victory = false;
+      this.state.workBaseBoard.findAndDisplayMismatches(result.submissionMismatches)
+    }
 
-    console.log(`---
-    submission`);
-    console.log(submission);
+    // console.log(`---
+    // goal`);
+    // console.log(goal);
 
-    console.log(`---
-    result`);
-    console.log(result)
+    // console.log(`---
+    // submission`);
+    // console.log(submission);
+
+    // console.log(`---
+    // result`);
+    // console.log(result)
   }
 
   render() {
