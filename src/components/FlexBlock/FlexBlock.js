@@ -63,7 +63,12 @@ class FlexBlock extends React.Component {
   addChildHandle(flexblockObject) {
     let id = flexblockObject.props.details.id;
     const childIndex = this.state.childDetailsArray.findIndex(detailObj => detailObj.id === id);
-    this.childHandles[childIndex] = flexblockObject;
+    if (this.childHandles[childIndex]) {
+      this.childHandles.splice(childIndex, 0, flexblockObject);
+    }
+    else {
+      this.childHandles[childIndex] = flexblockObject;
+    }
   }
 
   getBaseBoardDetails = () => {
@@ -349,6 +354,7 @@ class FlexBlock extends React.Component {
       const relativeIndex = this.state.childDetailsArray.findIndex(childDetailObj => childDetailObj.id === id);
       let updatedChildDetailsArray = [...this.state.childDetailsArray];
       let actualIndex = sibling === "before" ? relativeIndex : relativeIndex + 1;
+      
       updatedChildDetailsArray.splice(actualIndex, 0, helperFunctions.createDefaultDetailsObj());
 
       this.setState({ childDetailsArray: updatedChildDetailsArray });
@@ -420,13 +426,13 @@ class FlexBlock extends React.Component {
     position.x = Math.floor(position.x);
     position.y = Math.floor(position.y);
 
-    const childSubmissionInfo = []
+    const childSubmissionInfoArray = []
     for (let i=0; i<this.childHandles.length; i++) {
       const childFlexBlock = this.childHandles[i];
-      childSubmissionInfo.push(childFlexBlock.getSubmissionInfo());
+      childSubmissionInfoArray.push(childFlexBlock.getSubmissionInfo());
     }
 
-    let submissionInfo = {size: size, position: position, id:this.props.details.id, childSubmissionInfo: childSubmissionInfo};
+    let submissionInfo = {size: size, position: position, id:this.props.details.id, childSubmissionInfoArray: childSubmissionInfoArray};
     return submissionInfo;
   }
 

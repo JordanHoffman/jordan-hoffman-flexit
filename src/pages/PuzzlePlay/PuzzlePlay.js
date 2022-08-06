@@ -1,6 +1,6 @@
 import React from 'react';
-import {v4 as uuidv4} from 'uuid';
-import { clone, cloneDeep, result } from 'lodash';
+import { v4 as uuidv4 } from 'uuid';
+import { cloneDeep } from 'lodash';
 
 import './PuzzlePlay.scss';
 import Toolkit from '../../components/Toolkit';
@@ -22,7 +22,7 @@ class PuzzlePlay extends React.Component {
   }
 
   componentDidMount() {
-    this.setState({flexBlockWorkPuzzle: this.loadWorkPuzzle()})
+    this.setState({ flexBlockWorkPuzzle: this.loadWorkPuzzle() })
     this.setState({ flexBlockGoalPuzzle: this.loadGoalPuzzle() })
   }
 
@@ -82,27 +82,27 @@ class PuzzlePlay extends React.Component {
 
   //Loads the empty baseboard for this puzzle with standard initialization
   loadWorkPuzzle = () => {
-    const {initialChildDetailsArray, ...details} = puzzleObject
+    const { initialChildDetailsArray, ...details } = puzzleObject
     let parentDetails = cloneDeep(details);
     parentDetails.alignItems = "start";
     parentDetails.justifyContent = "start";
     parentDetails.flexDirection = "row";
     parentDetails = helperFunctions.createDetailsObj(parentDetails);
     const parent = <FlexBlock
-    key={parentDetails.id}
-    details={parentDetails}
-    initialChildDetailsArray={[]}
-    selectedListener={this.newFlexBlockSelected}
-    receiveBaseBoardHandle={this.receiveBaseBoardHandle}
-    layer={0}
-    isWorkPuzzle={true}
+      key={parentDetails.id}
+      details={parentDetails}
+      initialChildDetailsArray={[]}
+      selectedListener={this.newFlexBlockSelected}
+      receiveBaseBoardHandle={this.receiveBaseBoardHandle}
+      layer={0}
+      isWorkPuzzle={true}
     />
 
     return parent;
   }
 
   receiveBaseBoardHandle = (baseBoardHandle, isWorkBaseBoard) => {
-    if (isWorkBaseBoard){
+    if (isWorkBaseBoard) {
       this.setState({ workBaseBoard: baseBoardHandle })
     }
     else {
@@ -128,7 +128,8 @@ class PuzzlePlay extends React.Component {
   }
 
   checkEquivalence = (goalChildren, submissionChildren, goalIdTrail, submissionIdTrail) => {
-    // {size: size, position: position, childSubmissionInfo: childSubmissionInfo};
+    //submission/goal info objects: {size: size, position: position, id: id, childSubmissionInfoArray: childSubmissionInfoArray};
+
     let matchingSubmissionIndexes = [];
 
     //any goalChilds that the relating submission failed to match
@@ -153,33 +154,57 @@ class PuzzlePlay extends React.Component {
       }
     }
 
-    if (goalMismatches.length) return {result: false, goalMismatches: goalMismatches};
+    if (goalMismatches.length) return { goalMismatches: goalMismatches, submissionMismatches: [] };
 
     //By this point all the goal ids were matched, but there may be extra submissionChildren to cause a mismatch
-    const remainingSubmissionChildren = submissionChildren.filter( (submissionChild, possibleRemainingIndex)=>{
+    const remainingSubmissionChildren = submissionChildren.filter((submissionChild, possibleRemainingIndex) => {
       return matchingSubmissionIndexes.indexOf(possibleRemainingIndex) === -1
     })
     for (const remainingSubmissionChild of remainingSubmissionChildren) {
       submissionMismatches.push([...submissionIdTrail, remainingSubmissionChild.id])
     }
 
-    if (submissionMismatches.length) return {result: false, submissionMismatches};
+    if (submissionMismatches.length) return { goalMismatches: [], submissionMismatches: submissionMismatches };
 
-    //By this point everything should match.
-    //TODO: make this recursive
-    return {result: true};
+    //By this point everything should match. Now, we need to recursively go into the matching goal and submission children to see if their children also match. We already know which submission corresponds to which goal thanks to the matchingSubmissionIndexes array.
+    let result = { goalMismatches: [], submissionMismatches: [] }
+    for (let i = 0; i < goalChildren.length; i++) {
+      const goalChild = goalChildren[i];
+      const correspondingSubmissionChild = submissionChildren[matchingSubmissionIndexes[i]];
+
+      //To prevent infinite recursion, the recursion only occurs if the children themselves have further children to check equivalence for.
+      if (goalChild.childSubmissionInfoArray.length || correspondingSubmissionChild.childSubmissionInfoArray.length) {
+        const childResult = this.checkEquivalence(
+          goalChild.childSubmissionInfoArray,
+          correspondingSubmissionChild.childSubmissionInfoArray,
+          [...goalIdTrail, goalChild.id],
+          [...submissionIdTrail, correspondingSubmissionChild.id]
+        )
+
+        result.goalMismatches = result.goalMismatches.concat(childResult.goalMismatches);
+        result.submissionMismatches = result.submissionMismatches.concat(childResult.submissionMismatches);
+      }
+    }
+
+    return result;
   }
 
   attemptSubmit = () => {
     const goal = this.state.goalBaseBoard.getSubmissionInfo();
     const submission = this.state.workBaseBoard.getSubmissionInfo();
+    const result = this.checkEquivalence(goal.childSubmissionInfoArray, submission.childSubmissionInfoArray, [goal.id], [submission.id]);
 
-    let layer = 0;
-    let match = true;
-
-
+    console.log(`---
+    goal`);
     console.log(goal);
+
+    console.log(`---
+    submission`);
     console.log(submission);
+
+    console.log(`---
+    result`);
+    console.log(result)
   }
 
   render() {
