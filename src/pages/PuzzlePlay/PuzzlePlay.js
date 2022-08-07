@@ -7,7 +7,7 @@ import Toolkit from '../../components/Toolkit';
 import FlexBlock from '../../components/FlexBlock';
 import helperFunctions from '../../Utility/HelperFunctions';
 import C from '../../Utility/Constants';
-import puzzleObject from '../../data/FlexBlock_Puzzle_7.json';
+import puzzleObject from '../../data/FlexBlock_Puzzle_Simple.json';
 import { Link } from 'react-router-dom';
 
 class PuzzlePlay extends React.Component {
@@ -20,7 +20,10 @@ class PuzzlePlay extends React.Component {
     selectedFlexBlock: null,
     workBaseBoard: null,
     goalBaseBoard: null,
+    won: false
   }
+
+  winTimeoutId = null;
 
   componentDidMount() {
     this.setState({ flexBlockWorkPuzzle: this.loadWorkPuzzle() })
@@ -28,7 +31,17 @@ class PuzzlePlay extends React.Component {
   }
 
   componentDidUpdate() {
-
+    if (this.state.won && !this.winTimeoutId) {
+      setTimeout(() => {
+        //This safeguard is for if anyone should just bypass the stage select and put the url of an exact puzzle play pg to start off with.
+        if (this.props.location.state && this.props.location.state.prevPg === 'stage-select') {
+          this.props.history.pop();
+        }
+        else {
+          this.props.history.replace('/select')
+        }
+      }, 2500);
+    }
   }
 
   createChildren = (initialChildDetailsArray) => {
@@ -196,14 +209,16 @@ class PuzzlePlay extends React.Component {
     const result = this.checkEquivalence(goal.childSubmissionInfoArray, submission.childSubmissionInfoArray, [goal.id], [submission.id]);
 
     let victory = true;
-    if (result.goalMismatches.length) {
-      victory = false;
-      this.state.goalBaseBoard.findAndDisplayMismatches(result.goalMismatches)
-    }
-    if (result.submissionMismatches.length) {
-      victory = false;
-      this.state.workBaseBoard.findAndDisplayMismatches(result.submissionMismatches)
-    }
+    // if (result.goalMismatches.length) {
+    //   victory = false;
+    //   this.state.goalBaseBoard.findAndDisplayMismatches(result.goalMismatches)
+    // }
+    // if (result.submissionMismatches.length) {
+    //   victory = false;
+    //   this.state.workBaseBoard.findAndDisplayMismatches(result.submissionMismatches)
+    // }
+
+    if (victory) this.setState({won: true});
 
     // console.log(`---
     // goal`);
@@ -220,7 +235,8 @@ class PuzzlePlay extends React.Component {
 
   render() {
     return (
-      <div className='puzzle-pg'>
+      <div className={'puzzle-pg' + (this.state.won ? " puzzle-pg--disable" : "")}>
+        <div className={'win-screen' + (this.state.won ? " win-screen--show" : "")}>WINNER!</div>
         <Toolkit selectedFlexBlock={this.state.selectedFlexBlock} />
         <section className='puzzle-section'>
           <h2 className='puzzle-section__title'>Workspace</h2>

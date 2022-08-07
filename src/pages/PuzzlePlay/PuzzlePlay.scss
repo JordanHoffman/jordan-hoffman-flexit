@@ -4,6 +4,121 @@
   background-color: black;
   height: 100vh;
   display: flex;
+
+  &--disable {
+    pointer-events: none;
+  }
+}
+
+.win-screen {
+  overflow-x: hidden;
+  overflow-y: hidden;
+  width: 100vw;
+  height: 150vh;
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: $Primary;
+  @include title-fontstats;
+  color: $Secondary;
+  font-family: Allan;
+  top: 0;
+  // top: -100%;
+
+  transform: translateY(-150vh);
+  left: 0;
+  z-index: 2;
+
+  &--show {
+    // animation: win-easeOutBounce-deue 1s forwards;
+    transform: translateY(-25vh);
+    transition: transform 1.5s cubic-bezier(0.68, -0.6, 0.32, 1.6);
+  }
+}
+
+@keyframes win-easeOutBounce {
+	0% {
+		transform: translateY(0%);
+	}
+
+	12% {
+		transform: translateY(10.89%);
+	}
+
+	24% {
+		transform: translateY(43.56%);
+	}
+
+	36% {
+		transform: translateY(98.01%);
+	}
+
+	54% {
+		transform: translateY(75.02%);
+	}
+
+	74% {
+		transform: translateY(98.37%);
+	}
+
+	82% {
+		transform: translateY(93.75%);
+	}
+
+	92% {
+		transform: translateY(99.34%);
+	}
+
+	96% {
+		transform: translateX(98.46%);
+	}
+
+	100% {
+		transform: translateY(100%);
+	}
+}
+
+@keyframes win-easeOutBounce-deue {
+	0% {
+		transform: translateY(-100%);
+	}
+
+	12% {
+		transform: translateY(-89.11%);
+	}
+
+	24% {
+		transform: translateY(-56.44%);
+	}
+
+	36% {
+		transform: translateY(-1.99%);
+	}
+
+	54% {
+		transform: translateY(-24.98%);
+	}
+
+	74% {
+		transform: translateY(-1.63%);
+	}
+
+	82% {
+		transform: translateY(-6.25%);
+	}
+
+	92% {
+		transform: translateY(-0.66%);
+	}
+
+	96% {
+		transform: translateX(-1.54%);
+	}
+
+	100% {
+		transform: translateY(0%);
+	}
 }
 
 .puzzle-section {

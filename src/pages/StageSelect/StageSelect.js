@@ -48,9 +48,11 @@ class StageSelect extends React.Component {
           {emptyPuzzleData.map((puzzleLevel, i) => {
             return (
               <Link className="puzzle-card"
+              key={i+this.state.difficulty}
               to={{
                 pathname: "/play",
-                state: {id:"1234"}
+                state: {id:"1234"},
+                prevPg: 'stage-select'
               }}>
                 <span className="puzzle-card__number">{i+1}</span>
               </Link>
