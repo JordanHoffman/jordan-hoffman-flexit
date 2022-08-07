@@ -10,20 +10,22 @@
   &__title {
     font-family: Allan;
     @include title-fontstats;
-    
+    margin-top: $padding-H-before-larger;
+
     &--special-char {
       color: $Secondary;
     }
   }
 
   &__select-message {
+    margin-top: $padding-H-before-larger;
     @include page-header-fontstats;
   }
 }
 
 .difficulty-selector {
   display: flex;
-
+  margin-top: $padding-between-larger;
 
   &__option{
     display: flex;
@@ -45,6 +47,42 @@
       background-color: $Secondary;
       color: $Primary-Dark;
       font-weight: 900;
+      border-width: 2px;
     }
+  }
+}
+
+.puzzle-choices-holder {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  margin-top: calc(2*$padding-H-before-larger);
+  border-radius: 25px;
+  max-width: 600px;
+  gap: $padding-between-larger;
+  background-color: $Primary-Light;
+  padding: $padding-between-larger;
+
+}
+
+.puzzle-card {
+  background-color: $Primary-Dark;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: $padding-between-mobile $padding-H-before-larger;
+  border: 2px solid black;
+  border-radius: $select-btn-border-radius;
+  
+
+  &:hover {
+    background-color: $Secondary;
+    color: $Primary-Dark;
+  }
+
+  &__number {
+    color: inherit;
+    @include page-header-fontstats;
   }
 }

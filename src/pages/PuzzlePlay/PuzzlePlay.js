@@ -8,6 +8,7 @@ import FlexBlock from '../../components/FlexBlock';
 import helperFunctions from '../../Utility/HelperFunctions';
 import C from '../../Utility/Constants';
 import puzzleObject from '../../data/FlexBlock_Puzzle_7.json';
+import { Link } from 'react-router-dom';
 
 class PuzzlePlay extends React.Component {
 
@@ -259,7 +260,7 @@ class PuzzlePlay extends React.Component {
               <p className='puzzle-stats__name'>Puzzle #1</p>
               <p className='puzzle-stats__difficulty'>Difficulty: Easy</p>
             </div>
-            <button className='exit-btn'>EXIT</button>
+            <Link to={{pathname:'/'}} className='exit-btn'>EXIT</Link>
           </div>
 
           {this.state.flexBlockGoalPuzzle}

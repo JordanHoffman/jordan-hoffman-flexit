@@ -6,17 +6,20 @@
 @forward "./mixins.scss";
 
 *, *:before, *:after {
-  // font-family: 'Avenir', 'Arial', 'sans-serif';
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   border: none;
   outline: none;
-  font-family: MPlus;
+  font-family: 'MPlus', 'Arial', 'sans-serif';
   color: $Font-Primary-Color;
   @include buttonlabels-fontstats;
 }
 
 button:hover {
   cursor: pointer;
+}
+
+a {
+  text-decoration: none;
 }

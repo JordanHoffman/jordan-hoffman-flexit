@@ -20,7 +20,7 @@
   letter-spacing: 5px;
 
   @include tablet() {
-    font-size: 80px;
+    font-size: 100px;
   }
 }
 
@@ -30,7 +30,6 @@
 
   @include tablet {
     font-size: 33px;
-    font-weight: 700;
   }
 }
 
@@ -40,7 +39,6 @@
 
   @include tablet {
     font-size: 28px;
-    font-weight: 700;
   }
 }
 
@@ -50,7 +48,6 @@
 
   @include tablet {
     font-size: 18px;
-    font-weight: 700;
   }
 }
 
@@ -60,7 +57,6 @@
 
   @include tablet {
     font-size: 14px;
-    font-weight: 400;
   }
 }
 
@@ -70,6 +66,5 @@
 
   @include tablet {
     font-size: 14px;
-    font-weight: 700;
   }
 }

@@ -5,16 +5,13 @@ import { BrowserRouter, Switch, Route } from "react-router-dom";
 function App() {
   return (
     <BrowserRouter >
-    <div className="App">
-      <Switch>
-        <Route path={"/"} render={routerProps => <StageSelect {...routerProps} />}/>
-        <Route 
-          path={"/"}
-          render={routerProps => <PuzzlePlay {...routerProps} />}
-        />
-      </Switch>
+      <div className="App">
+        <Switch>
+          <Route path={"/play"} render={routerProps => <PuzzlePlay {...routerProps} />} />
+          <Route path={"/"} render={routerProps => <StageSelect {...routerProps} />} />
+        </Switch>
 
-    </div>
+      </div>
     </BrowserRouter>
   );
 }
