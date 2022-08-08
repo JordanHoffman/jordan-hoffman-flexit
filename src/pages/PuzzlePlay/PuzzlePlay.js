@@ -1,13 +1,14 @@
 import React from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { cloneDeep } from 'lodash';
+import axios from 'axios';
 
 import './PuzzlePlay.scss';
 import Toolkit from '../../components/Toolkit';
 import FlexBlock from '../../components/FlexBlock';
 import helperFunctions from '../../Utility/HelperFunctions';
 import C from '../../Utility/Constants';
-import puzzleObject from '../../data/FlexBlock_Puzzle_Medium.json';
+// import puzzleObject from '../../data/FlexBlock_Puzzle_Medium.json';
 import { Link } from 'react-router-dom';
 
 class PuzzlePlay extends React.Component {
@@ -24,10 +25,25 @@ class PuzzlePlay extends React.Component {
   winTimeoutId = null;
 
   componentDidMount() {
-    this.setState({ flexBlockWorkPuzzle: this.loadWorkPuzzle() })
-    // Use this for creating new puzzles for the user to play that have different baseboard sizes
+
+    // Use this instead of loadWorkPuzzle for developer mode where you can create new puzzles for the user to play that have different baseboard sizes
     // this.setState({flexBlockWorkPuzzle: this.createPuzzle()})
-    this.setState({ flexBlockGoalPuzzle: this.loadGoalPuzzle() })
+
+
+    // this.setState({ flexBlockWorkPuzzle: this.loadWorkPuzzle() })
+    // this.setState({ flexBlockGoalPuzzle: this.loadGoalPuzzle() })
+
+    const puzzleId = this.props.match.params.puzzleId;
+    axios.get('http://localhost:8080/api/puzzles/specific/' + puzzleId)
+      .then((resp) => {
+        const puzzleObject = JSON.parse(resp.data.puzzleObject);
+        console.log(puzzleObject);
+        this.setState({flexBlockWorkPuzzle: this.loadWorkPuzzle(puzzleObject)})
+        this.setState({ flexBlockGoalPuzzle: this.loadGoalPuzzle(puzzleObject) })
+      })
+      .catch((error) => {
+        console.error(error)
+      })
   }
 
   componentDidUpdate() {
@@ -71,7 +87,7 @@ class PuzzlePlay extends React.Component {
     }
   }
 
-  loadGoalPuzzle = () => {
+  loadGoalPuzzle = (puzzleObject) => {
     let puzzleObjectClone = cloneDeep(puzzleObject)
     this.createDetailIDs(puzzleObjectClone);
 
@@ -89,7 +105,7 @@ class PuzzlePlay extends React.Component {
   }
 
   //Loads the empty baseboard for this puzzle with standard initialization
-  loadWorkPuzzle = () => {
+  loadWorkPuzzle = (puzzleObject) => {
     const { initialChildDetailsArray, ...details } = puzzleObject
     let parentDetails = cloneDeep(details);
     parentDetails.alignItems = "start";

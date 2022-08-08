@@ -7,7 +7,7 @@ function App() {
     <BrowserRouter >
       <div className="App">
         <Switch>
-          <Route path={"/play"} render={routerProps => <PuzzlePlay {...routerProps} />} />
+          <Route path={"/play/:puzzleId"} render={routerProps => <PuzzlePlay {...routerProps} />} />
           <Route path={"/select"} render={routerProps => <StageSelect {...routerProps} />} />
           <Route path={"/"} render={routerProps => <StageSelect {...routerProps} />} />
         </Switch>

@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 import './StageSelect.scss'
 
@@ -7,6 +8,28 @@ class StageSelect extends React.Component {
 
   state = {
     difficulty: 'easy',
+    easyPuzzleData: [],
+    mediumPuzzleData: [],
+    hardPuzzleData: []
+  }
+
+  componentDidMount() {
+    //the response is an array of all puzzle data objects of the form [{id: 1234, difficulty:'medium', number: 4}]. Filter into seperate arrays for easy medium and hard, then sort by their "number" property.
+    axios.get('http://localhost:8080/api/puzzles/all-general')
+      .then((resp) => {
+        const easyPuzzleData = resp.data.filter(puzzleDataObject => puzzleDataObject.difficulty === 'easy').sort((a, b) => b.number - a.number);
+        const mediumPuzzleData = resp.data.filter(puzzleDataObject => puzzleDataObject.difficulty === 'medium').sort((a, b) => b.number - a.number);
+        const hardPuzzleData = resp.data.filter(puzzleDataObject => puzzleDataObject.difficulty === 'hard').sort((a, b) => b.number - a.number);
+
+        this.setState({
+          easyPuzzleData: easyPuzzleData,
+          mediumPuzzleData: mediumPuzzleData,
+          hardPuzzleData: hardPuzzleData
+        })
+      })
+      .catch((error) => {
+        console.error(error)
+      })
   }
 
   chooseDifficulty = (e) => {
@@ -14,7 +37,10 @@ class StageSelect extends React.Component {
   }
 
   render() {
-    const emptyPuzzleData = [{}, {}, {}]
+    let chosenDifficultyPuzzles = this.state.easyPuzzleData;
+    if (this.state.difficulty === 'medium') chosenDifficultyPuzzles = this.state.mediumPuzzleData;
+    else if (this.state.difficulty === 'hard') chosenDifficultyPuzzles = this.state.hardPuzzleData;
+
     return (
       <div className="stage-select">
 
@@ -38,23 +64,16 @@ class StageSelect extends React.Component {
             onClick={this.chooseDifficulty}>hard</button>
         </div>
 
-        {/* Map and create Link options. Use state to pass data object to new page. Ex <Link
-  to={{
-    pathname: "/courses",
-    state: { fromDashboard: true }
-  }}
-/> */}
         <div className="puzzle-choices-holder">
-          {emptyPuzzleData.map((puzzleLevel, i) => {
+          {chosenDifficultyPuzzles.map((puzzleObject, i) => {
             return (
               <Link className="puzzle-card"
-              key={i+this.state.difficulty}
-              to={{
-                pathname: "/play",
-                state: {id:"1234"},
-                prevPg: 'stage-select'
-              }}>
-                <span className="puzzle-card__number">{i+1}</span>
+                key={puzzleObject.id}
+                to={{
+                  pathname: ("/play/" + puzzleObject.id),
+                  prevPg: 'stage-select'
+                }}>
+                <span className="puzzle-card__number">{i + 1}</span>
               </Link>
             )
           })}
