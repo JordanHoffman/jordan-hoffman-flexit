@@ -119,6 +119,7 @@ class FlexBlock extends React.Component {
   parentHandleSizeAdjust = (dimension, adjustment, id) => {
     let updatedChildDetailsArray = cloneDeep(this.state.childDetailsArray);
     let updatedChildDetailObj = updatedChildDetailsArray.find(childDetailObj => childDetailObj.id === id);
+    const details = this.props.details.isBaseBoard ? this.state.baseBoardDetails : this.props.details;
 
     //DECREMENT logic handled in the child. By this point it's safe to update it.
     if (adjustment === 'decrement') {
@@ -134,17 +135,17 @@ class FlexBlock extends React.Component {
     //INCREMENT
     else {
       //FLEX DIRECTION ROW
-      if (this.props.details.flexDirection === 'row') {
+      if (details.flexDirection === 'row') {
         //WIDTH
         if (dimension === 'width') { //sum all to see
           const widthSum = this.state.childDetailsArray.reduce((prevSum, currChildDetails) => prevSum + currChildDetails.size.x, 0)
           //possible room to increase width further
-          if (widthSum < this.props.details.size.x) {
+          if (widthSum < details.size.x) {
             //Special case where increasing would cause single child to completely overlap parent
             if (this.state.childDetailsArray.length === 1) {
               const childWidth = this.state.childDetailsArray[0].size.x;
               const childHeight = this.state.childDetailsArray[0].size.y;
-              if (childWidth === this.props.details.size.x - 1 && childHeight === this.props.details.size.y) {
+              if (childWidth === details.size.x - 1 && childHeight === details.size.y) {
                 return false //special case met
               }
             }
@@ -160,12 +161,12 @@ class FlexBlock extends React.Component {
         //HEIGHT
         else {
           //possible room to increase height further
-          if (updatedChildDetailObj.size.y < this.props.details.size.y) {
+          if (updatedChildDetailObj.size.y < details.size.y) {
             //Special case where increasing would cause single child to completely overlap parent
             if (this.state.childDetailsArray.length === 1) {
               const childWidth = this.state.childDetailsArray[0].size.x;
               const childHeight = this.state.childDetailsArray[0].size.y;
-              if (childWidth === this.props.details.size.x && childHeight === this.props.details.size.y - 1) {
+              if (childWidth === details.size.x && childHeight === details.size.y - 1) {
                 return false //special case met
               }
             }
@@ -183,12 +184,13 @@ class FlexBlock extends React.Component {
         //WIDTH
         if (dimension === 'width') {
           //possible room to increase width further
-          if (updatedChildDetailObj.size.x < this.props.details.size.x) {
+          if (updatedChildDetailObj.size.x < details.size.x) {
             //Special case where increasing would cause single child to completely overlap parent
             if (this.state.childDetailsArray.length === 1) {
               const childWidth = this.state.childDetailsArray[0].size.x;
               const childHeight = this.state.childDetailsArray[0].size.y;
-              if (childWidth === this.props.details.size.x - 1 && childHeight === this.props.details.size.y) {
+              if (childWidth === details.size.x - 1 && childHeight === details.size.y) {
+                console.log('special')
                 return false //special case met
               }
             }
@@ -204,12 +206,12 @@ class FlexBlock extends React.Component {
         else {
           const heightSum = this.state.childDetailsArray.reduce((prevSum, currChildDetails) => prevSum + currChildDetails.size.y, 0)
           //possible room to increase height further
-          if (heightSum < this.props.details.size.y) {
+          if (heightSum < details.size.y) {
             //Special case where increasing would cause single child to completely overlap parent
             if (this.state.childDetailsArray.length === 1) {
               const childWidth = this.state.childDetailsArray[0].size.x;
               const childHeight = this.state.childDetailsArray[0].size.y;
-              if (childWidth === this.props.details.size.x && childHeight === this.props.details.size.y - 1) {
+              if (childWidth === details.size.x && childHeight === details.size.y - 1) {
                 return false //special case met
               }
             }
@@ -332,13 +334,14 @@ class FlexBlock extends React.Component {
   }
 
   spaceAvailableToCreateInside = () => {
+    const details = this.props.details.isBaseBoard ? this.state.baseBoardDetails : this.props.details;
     //special case of 1 x 1 block
-    if (this.props.details.size.x === 1 && this.props.details.size.y === 1) return false;
+    if (details.size.x === 1 && details.size.y === 1) return false;
 
-    const key = this.props.details.flexDirection === 'row' ? 'x' : 'y';
+    const key = details.flexDirection === 'row' ? 'x' : 'y';
 
     const childSum = this.state.childDetailsArray.reduce((prevSum, currChildDetails) => prevSum + currChildDetails.size[key], 0)
-    if (childSum < this.props.details.size[key]) {
+    if (childSum < details.size[key]) {
       return true;
     }
     return false;

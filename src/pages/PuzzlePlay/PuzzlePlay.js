@@ -7,16 +7,14 @@ import Toolkit from '../../components/Toolkit';
 import FlexBlock from '../../components/FlexBlock';
 import helperFunctions from '../../Utility/HelperFunctions';
 import C from '../../Utility/Constants';
-import puzzleObject from '../../data/FlexBlock_Puzzle_Simple.json';
+import puzzleObject from '../../data/FlexBlock_Puzzle_Medium.json';
 import { Link } from 'react-router-dom';
 
 class PuzzlePlay extends React.Component {
 
   state = {
-    //The fully created puzzle component
     flexBlockGoalPuzzle: null,
     flexBlockWorkPuzzle: null,
-    //the flow is that upon flexblock selection (via user click), it calls PuzzlePlay's handleFlexBlockRequest which updates the state's selectedFlexBlockHandler. The sole purpose is to pass the flexblock's handler to the toolkit via props. From that point, toolkit handshakes with the flexblock to allow the two to communicate together.
     selectedFlexBlock: null,
     workBaseBoard: null,
     goalBaseBoard: null,
@@ -209,14 +207,14 @@ class PuzzlePlay extends React.Component {
     const result = this.checkEquivalence(goal.childSubmissionInfoArray, submission.childSubmissionInfoArray, [goal.id], [submission.id]);
 
     let victory = true;
-    // if (result.goalMismatches.length) {
-    //   victory = false;
-    //   this.state.goalBaseBoard.findAndDisplayMismatches(result.goalMismatches)
-    // }
-    // if (result.submissionMismatches.length) {
-    //   victory = false;
-    //   this.state.workBaseBoard.findAndDisplayMismatches(result.submissionMismatches)
-    // }
+    if (result.goalMismatches.length) {
+      victory = false;
+      this.state.goalBaseBoard.findAndDisplayMismatches(result.goalMismatches)
+    }
+    if (result.submissionMismatches.length) {
+      victory = false;
+      this.state.workBaseBoard.findAndDisplayMismatches(result.submissionMismatches)
+    }
 
     if (victory) this.setState({won: true});
 

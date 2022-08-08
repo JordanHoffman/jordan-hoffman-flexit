@@ -5,6 +5,7 @@
   display: flex;
   flex-shrink: 0;
   outline: $flexblock-outline;
+  border: $flexblock-outline;
 
   &--work-puzzle {
     cursor: pointer;
