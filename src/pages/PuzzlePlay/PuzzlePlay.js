@@ -25,6 +25,8 @@ class PuzzlePlay extends React.Component {
 
   componentDidMount() {
     this.setState({ flexBlockWorkPuzzle: this.loadWorkPuzzle() })
+    // Use this for creating new puzzles for the user to play that have different baseboard sizes
+    // this.setState({flexBlockWorkPuzzle: this.createPuzzle()})
     this.setState({ flexBlockGoalPuzzle: this.loadGoalPuzzle() })
   }
 
@@ -42,23 +44,18 @@ class PuzzlePlay extends React.Component {
     }
   }
 
-  createChildren = (initialChildDetailsArray) => {
-    let children = [helperFunctions.createDefaultDetailsObj(), helperFunctions.createDefaultDetailsObj()];
-    return children;
-  }
-
+  //This legacy function is still useful for experimenting/creating puzzles with different baseboard sizes.
   createPuzzle = () => {
-    const parentDetails = helperFunctions.createDetailsObj({ isBaseBoard: true, size: { x: 5, y: 5 }, flexDirection: 'row', alignSelf: 'center' })
-
-    let children = this.createChildren();
+    const parentDetails = helperFunctions.createDetailsObj({ isBaseBoard: true, size: { x: 7, y: 7 }, flexDirection: 'row', alignSelf: 'center' })
 
     const parent = <FlexBlock
       key={parentDetails.id}
       details={parentDetails}
-      initialChildDetailsArray={children}
+      initialChildDetailsArray={[]}
       selectedListener={this.newFlexBlockSelected}
       receiveBaseBoardHandle={this.receiveBaseBoardHandle}
       layer={0}
+      isWorkPuzzle={true}
     />
 
     return parent;
@@ -75,7 +72,6 @@ class PuzzlePlay extends React.Component {
   }
 
   loadGoalPuzzle = () => {
-    // const parentDetails = helperFunctions.createDetailsObj(puzzleObject.flexBlockDetails)
     let puzzleObjectClone = cloneDeep(puzzleObject)
     this.createDetailIDs(puzzleObjectClone);
 
