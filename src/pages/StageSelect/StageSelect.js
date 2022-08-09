@@ -17,9 +17,9 @@ class StageSelect extends React.Component {
     //the response is an array of all puzzle data objects of the form [{id: 1234, difficulty:'medium', number: 4}]. Filter into seperate arrays for easy medium and hard, then sort by their "number" property.
     axios.get('http://localhost:8080/api/puzzles/all-general')
       .then((resp) => {
-        const easyPuzzleData = resp.data.filter(puzzleDataObject => puzzleDataObject.difficulty === 'easy').sort((a, b) => b.number - a.number);
-        const mediumPuzzleData = resp.data.filter(puzzleDataObject => puzzleDataObject.difficulty === 'medium').sort((a, b) => b.number - a.number);
-        const hardPuzzleData = resp.data.filter(puzzleDataObject => puzzleDataObject.difficulty === 'hard').sort((a, b) => b.number - a.number);
+        const easyPuzzleData = resp.data.filter(puzzleDataObject => puzzleDataObject.difficulty === 'easy').sort((a, b) => a.number - b.number);
+        const mediumPuzzleData = resp.data.filter(puzzleDataObject => puzzleDataObject.difficulty === 'medium').sort((a, b) => a.number - b.number);
+        const hardPuzzleData = resp.data.filter(puzzleDataObject => puzzleDataObject.difficulty === 'hard').sort((a, b) => a.number - b.number);
 
         this.setState({
           easyPuzzleData: easyPuzzleData,
