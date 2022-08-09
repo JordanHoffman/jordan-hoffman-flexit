@@ -143,7 +143,7 @@ class Toolkit extends React.Component {
 
             <div className="detail-ctr">
               <h4 className="detail-ctr__title">Justify Content:</h4>
-              <DropDownTool ctrClass="detail-ctr__controls"
+              <DropDownTool ctrClass="detail-ctr__controls detail-ctr__controls--dropdown"
                 name="justifyContent"
                 value={justifyContent}
                 options={C.justifyContent}
@@ -152,7 +152,7 @@ class Toolkit extends React.Component {
 
             <div className="detail-ctr">
               <h4 className="detail-ctr__title">Align Items:</h4>
-              <DropDownTool ctrClass="detail-ctr__controls"
+              <DropDownTool ctrClass="detail-ctr__controls detail-ctr__controls--dropdown"
                 name="alignItems"
                 value={alignItems}
                 options={C.alignContent}
@@ -161,7 +161,7 @@ class Toolkit extends React.Component {
 
             {!isBaseBoard && <div className="detail-ctr">
               <h4 className="detail-ctr__title">Align Self:</h4>
-              <DropDownTool ctrClass="detail-ctr__controls"
+              <DropDownTool ctrClass="detail-ctr__controls detail-ctr__controls--dropdown"
                 name="alignSelf"
                 value={alignSelf}
                 options={C.alignSelf}

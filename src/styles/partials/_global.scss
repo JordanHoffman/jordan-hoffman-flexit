@@ -16,10 +16,26 @@
   @include buttonlabels-fontstats;
 }
 
+// body {
+//   height: 100vh;
+// }
+
+// #root {
+//   height: 100%;
+// }
+
+// .App {
+//   height: 100%;
+// }
+
 button:hover {
   cursor: pointer;
 }
 
 a {
   text-decoration: none;
+}
+
+body {
+  overflow-x: hidden;
 }

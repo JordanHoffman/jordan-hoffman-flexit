@@ -6,11 +6,16 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 0 $padding-between-mobile $padding-between-mobile;
 
   &__title {
-    font-family: Allan;
+    font-family: Righteous;
     @include title-fontstats;
-    margin-top: $padding-H-before-larger;
+    margin-top: $padding-H-before-mobile;
+
+    @include tablet {
+      margin-top: $padding-H-before-larger;
+    }
 
     &--special-char {
       color: $Secondary;
@@ -18,14 +23,24 @@
   }
 
   &__select-message {
-    margin-top: $padding-H-before-larger;
+    margin-top: $padding-H-before-mobile;
+    @include tablet {
+      margin-top: $padding-H-before-larger;
+    }
     @include page-header-fontstats;
   }
 }
 
 .difficulty-selector {
   display: flex;
-  margin-top: $padding-between-larger;
+  margin-top: $padding-between-mobile;
+  width: 100%;
+  max-width: 400px;
+  justify-content: center;
+
+  @include tablet {
+    margin-top: $padding-between-larger;
+  }
 
   &__option{
     display: flex;
@@ -33,7 +48,12 @@
     padding: $half-padding-between-mobile $padding-between-mobile;
     background-color: $Primary-Dark;
     border: 1px solid black;
-    width: 100px;
+
+    width: 100%;
+    @include tablet {
+      width: 100px;
+    }
+
 
     &--left{
       border-top-left-radius: $select-btn-border-radius;
@@ -57,13 +77,21 @@
   justify-content: center;
   flex-wrap: wrap;
   align-items: flex-start;
-  margin-top: calc(2*$padding-H-before-larger);
+  margin-top: calc(1.25*$padding-H-before-larger);
   border-radius: 25px;
+  width: 100%;
   max-width: 600px;
   gap: $padding-between-larger;
   background-color: $Primary-Light;
   padding: $padding-between-larger;
 
+  &--medium {
+    background-color: $Secondary-Light;
+  }
+
+  &--hard {
+    background-color: $Warn-Light;
+  }
 }
 
 .puzzle-card {
@@ -74,6 +102,8 @@
   padding: $padding-between-mobile $padding-H-before-larger;
   border: 2px solid black;
   border-radius: $select-btn-border-radius;
+  max-width: 60px;
+  height: 90px;
   
 
   &:hover {

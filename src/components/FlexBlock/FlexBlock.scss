@@ -48,9 +48,19 @@
   }
 
   &--base-board {
-    width: 30vw;
-    height: 30vw;
+    width: 25vw;
+    height: 25vw;
+
+    @include tablet {
+      width: 30vw;
+      height: 30vw;
+    }
+
+
     margin-top: $padding-H-before-mobile;
+    @include tablet {
+      margin-top: $padding-H-before-larger;
+    }
     outline: 4px solid $Primary-Dark;
   }
 

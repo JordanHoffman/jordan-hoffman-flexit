@@ -2,7 +2,7 @@
 
 //Breakpoints
 @mixin tablet {
-  @media (min-width: $tablet-breakpoint) {
+  @media (min-width: $tablet-breakpoint) and (min-height: 650px) {
     @content;
   }
 }
@@ -15,7 +15,7 @@
 
 //Font Rules
 @mixin title-fontstats() {
-  fonst-size: 50px;
+  font-size: 50px;
   font-weight: 700;
   letter-spacing: 5px;
 
@@ -58,6 +58,11 @@
   @include tablet {
     font-size: 14px;
   }
+}
+
+@mixin body-fontstats-small() {
+  font-size: 10px;
+  font-weight: 400;
 }
 
 @mixin buttonlabels-fontstats() {

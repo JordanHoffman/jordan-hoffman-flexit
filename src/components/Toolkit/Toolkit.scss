@@ -15,7 +15,7 @@
   }
 
   &__title {
-    font-family: Allan;
+    font-family: Righteous;
     background-color: $Primary-Dark;
     padding: $half-padding-between-mobile;
     width: 100%;
@@ -36,10 +36,14 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 20px;
+    gap: $padding-between-mobile;
     margin-top: $half-padding-between-mobile;
     background-color: $Primary;
     padding: $padding-between-mobile;
+
+    @include tablet {
+      gap: 20px;
+    }
 
     &--details {
       flex-grow: 1;
@@ -62,8 +66,12 @@
   background-color: $Primary-Dark;
   padding: $qtr-padding-between-mobile $half-padding-between-mobile;
   border-radius: $btn-border-radius;
-  border: 2px solid $Primary-Dark;
-  border-style: inset;
+  border: 3px solid $Primary-Dark;
+  border-style: outset;
+
+  &:active {
+    border-style: inset;
+  }
 }
 
 .deletion-btn {
@@ -73,7 +81,11 @@
   padding: $qtr-padding-between-mobile 0;
   border-radius: $btn-border-radius;
   border: 4px solid $Warn-Dark;
-  border-style: inset;
+  border-style: outset;
+
+  &:active {
+    border-style: inset;
+  }
 }
 
 .detail-ctr {
@@ -101,6 +113,10 @@
     &--sizetool {
       gap: $qtr-padding-between-mobile;
     }
+
+    &--dropdown {
+      padding-left: $half-padding-between-mobile;
+    }
   }
 }
 
@@ -114,10 +130,23 @@
 
 .radio-button {
   width: 25px;
+
   display: flex;
   justify-content: center;
   align-items: center;
   background-color: transparent;
+
+  &:hover {
+    .radio-button__svg {
+      fill: $Secondary-Light;
+    }
+  }
+
+  &:active {
+    .radio-button__svg {
+      fill: $Secondary-Dark;
+    }
+  }
 
   &__svg {
     fill: $Secondary;

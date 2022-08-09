@@ -3,6 +3,8 @@
 .puzzle-pg {
   background-color: black;
   height: 100vh;
+  overflow-y: hidden;
+  overflow-x: auto;
   display: flex;
 
   &--disable {
@@ -22,103 +24,17 @@
   background-color: $Primary;
   @include title-fontstats;
   color: $Secondary;
-  font-family: Allan;
+  font-family: Righteous;
   top: 0;
-  // top: -100%;
 
   transform: translateY(-150vh);
   left: 0;
   z-index: 2;
 
   &--show {
-    // animation: win-easeOutBounce-deue 1s forwards;
     transform: translateY(-25vh);
     transition: transform 1.5s cubic-bezier(0.68, -0.6, 0.32, 1.6);
   }
-}
-
-@keyframes win-easeOutBounce {
-	0% {
-		transform: translateY(0%);
-	}
-
-	12% {
-		transform: translateY(10.89%);
-	}
-
-	24% {
-		transform: translateY(43.56%);
-	}
-
-	36% {
-		transform: translateY(98.01%);
-	}
-
-	54% {
-		transform: translateY(75.02%);
-	}
-
-	74% {
-		transform: translateY(98.37%);
-	}
-
-	82% {
-		transform: translateY(93.75%);
-	}
-
-	92% {
-		transform: translateY(99.34%);
-	}
-
-	96% {
-		transform: translateX(98.46%);
-	}
-
-	100% {
-		transform: translateY(100%);
-	}
-}
-
-@keyframes win-easeOutBounce-deue {
-	0% {
-		transform: translateY(-100%);
-	}
-
-	12% {
-		transform: translateY(-89.11%);
-	}
-
-	24% {
-		transform: translateY(-56.44%);
-	}
-
-	36% {
-		transform: translateY(-1.99%);
-	}
-
-	54% {
-		transform: translateY(-24.98%);
-	}
-
-	74% {
-		transform: translateY(-1.63%);
-	}
-
-	82% {
-		transform: translateY(-6.25%);
-	}
-
-	92% {
-		transform: translateY(-0.66%);
-	}
-
-	96% {
-		transform: translateX(-1.54%);
-	}
-
-	100% {
-		transform: translateY(0%);
-	}
 }
 
 .puzzle-section {
@@ -128,7 +44,7 @@
   border-right: 2px solid $Primary-Dark;
   position: relative;
   background-color: $Primary-Light;
-  overflow-y: auto;
+  height: 100%;
 
   display: flex;
   flex-direction: column;
@@ -140,7 +56,7 @@
   }
 
   &__title {
-    font-family: Allan;
+    font-family: Righteous;
     background-color: $Primary-Dark;
     padding: $half-padding-between-mobile;
     width: 100%;
@@ -153,10 +69,27 @@
     display: flex;
     width: 100%;
     justify-content: space-between;
-    padding: $padding-between-mobile;
+    padding: $half-padding-between-mobile;
+    padding-right: $padding-between-mobile;
     align-items: center;
     background-color: $Primary;
-    height: 100px;
+    min-height: 70px;
+    gap: $padding-between-mobile;
+
+    @include tablet {
+      padding: $padding-between-mobile;
+      padding-right: $padding-between-larger;
+      min-height: 100px;
+    }
+  }
+
+  &__contents {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    padding-bottom: $padding-between-mobile;
   }
 
 }
@@ -167,29 +100,44 @@
   gap: $half-padding-between-mobile;
 }
 
-.save-btn {
-  background-color: $Primary-Dark;
-  padding: $qtr-padding-between-mobile $half-padding-between-mobile;
-  border-radius: $btn-border-radius;
-  border: 4px solid $Primary-Dark;
+.action-btn {
+  font-size: 12px;
+  border: 3px solid $Primary-Dark;
   border-style: inset;
-}
-
-.submit-btn {
-  background-color: $Secondary;
-  color: $Primary-Dark;
-  padding: $qtr-padding-between-mobile $half-padding-between-mobile;
   border-radius: $btn-border-radius;
-  border: 4px solid $Primary-Dark;
-  border-style: inset;
-  font-size: 16px;
+  padding: $qtr-padding-between-mobile $half-padding-between-mobile;
   font-weight: 900;
+
+  @include tablet {
+    font-size: 15px;
+    border: 4px solid $Primary-Dark;
+  }
+
+  &--save {
+    background-color: $Primary-Dark;
+  }
+
+  &--submit {
+    background-color: $Secondary;
+    color: $Primary-Dark;
+  }
+  &--exit {
+    background-color: $Warn;
+    border: 3px solid $Warn-Dark;
+    @include tablet {
+      border: 4px solid $Warn-Dark;
+    }
+  }
 }
 
 .layer-subsection {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: $qtr-padding-between-mobile;
+
+  @include tablet {
+    flex-direction: column;
+  }
 
   // &__title {
   //   text-align: left;
@@ -198,6 +146,7 @@
 
 .layer-legend {
   display: flex;
+  flex-wrap: wrap;
   gap: $half-padding-between-mobile;
 }
 
@@ -209,12 +158,31 @@
 
   &__level {
     @include body-fontstats;
+
+    &--mobile {
+      color: black;
+      font-weight: 700;
+
+      @include tablet {
+        display: none;
+      }
+    }
+
+    &--tablet {
+      display: none;
+      @include tablet {
+        display: block;
+      }
+    }
   }
 
   &__color {
     width: 16px;
     height: 16px;
     border: 1px solid black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     
     $colors: $layer0, $layer1, $layer2, $layer3, $layer4, $layer5, $layer6, $layer7, $layer8;
     

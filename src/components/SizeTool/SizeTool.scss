@@ -7,6 +7,18 @@
   justify-content: center;
   align-items: center;
 
+  &:hover {
+    .adjust-button__arrow {
+      fill: $Secondary-Light;
+    }
+  }
+
+  &:active {
+    .adjust-button__arrow {
+      fill: $Secondary-Dark;
+    }
+  }
+
   &__arrow {
     fill: $Secondary;
     display: block;

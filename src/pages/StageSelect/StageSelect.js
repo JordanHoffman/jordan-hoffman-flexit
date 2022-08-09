@@ -15,7 +15,14 @@ class StageSelect extends React.Component {
 
   componentDidMount() {
     //the response is an array of all puzzle data objects of the form [{id: 1234, difficulty:'medium', number: 4}]. Filter into seperate arrays for easy medium and hard, then sort by their "number" property.
-    axios.get('http://localhost:8080/api/puzzles/all-general')
+
+    const origin = document.location.origin;
+
+
+    let reqst = 'http://' + document.location.hostname + ":8080";
+    console.log(reqst);
+    // axios.get('http://localhost:8080/api/puzzles/all-general')
+    axios.get(reqst + '/api/puzzles/all-general')
       .then((resp) => {
         const easyPuzzleData = resp.data.filter(puzzleDataObject => puzzleDataObject.difficulty === 'easy').sort((a, b) => a.number - b.number);
         const mediumPuzzleData = resp.data.filter(puzzleDataObject => puzzleDataObject.difficulty === 'medium').sort((a, b) => a.number - b.number);
@@ -64,7 +71,7 @@ class StageSelect extends React.Component {
             onClick={this.chooseDifficulty}>hard</button>
         </div>
 
-        <div className="puzzle-choices-holder">
+        <div className={"puzzle-choices-holder" + ` puzzle-choices-holder--${this.state.difficulty}` }>
           {chosenDifficultyPuzzles.map((puzzleObject, i) => {
             return (
               <Link className="puzzle-card"
@@ -77,6 +84,10 @@ class StageSelect extends React.Component {
               </Link>
             )
           })}
+          {[1,2,3,4,5,6,7,8].map((number) => {
+            return (
+              <button className="puzzle-card" key={'unused' + number}>coming soon</button>
+            )})}
         </div>
 
 

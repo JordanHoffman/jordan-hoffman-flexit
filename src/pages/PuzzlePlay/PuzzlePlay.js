@@ -19,26 +19,27 @@ class PuzzlePlay extends React.Component {
     selectedFlexBlock: null,
     workBaseBoard: null,
     goalBaseBoard: null,
+    puzzleDifficulty: null,
+    puzzleNumber: null,
     won: false
   }
 
   winTimeoutId = null;
 
   componentDidMount() {
+    // window.screen.orientation.lock('landscape');
 
     // Use this instead of loadWorkPuzzle for developer mode where you can create new puzzles for the user to play that have different baseboard sizes
     // this.setState({flexBlockWorkPuzzle: this.createPuzzle()})
 
-
-    // this.setState({ flexBlockWorkPuzzle: this.loadWorkPuzzle() })
-    // this.setState({ flexBlockGoalPuzzle: this.loadGoalPuzzle() })
-
     const puzzleId = this.props.match.params.puzzleId;
-    axios.get('http://localhost:8080/api/puzzles/specific/' + puzzleId)
+
+    let reqst = 'http://' + document.location.hostname + ":8080";
+    // axios.get('http://localhost:8080/api/puzzles/specific/' + puzzleId)
+    axios.get(reqst + '/api/puzzles/specific/' + puzzleId)
       .then((resp) => {
         const puzzleObject = JSON.parse(resp.data.puzzleObject);
-        console.log(puzzleObject);
-        this.setState({flexBlockWorkPuzzle: this.loadWorkPuzzle(puzzleObject)})
+        this.setState({ flexBlockWorkPuzzle: this.loadWorkPuzzle(puzzleObject), puzzleDifficulty: resp.data.difficulty, puzzleNumber: resp.data.number })
         this.setState({ flexBlockGoalPuzzle: this.loadGoalPuzzle(puzzleObject) })
       })
       .catch((error) => {
@@ -228,19 +229,7 @@ class PuzzlePlay extends React.Component {
       this.state.workBaseBoard.findAndDisplayMismatches(result.submissionMismatches)
     }
 
-    if (victory) this.setState({won: true});
-
-    // console.log(`---
-    // goal`);
-    // console.log(goal);
-
-    // console.log(`---
-    // submission`);
-    // console.log(submission);
-
-    // console.log(`---
-    // result`);
-    // console.log(result)
+    if (victory) this.setState({ won: true });
   }
 
   render() {
@@ -248,48 +237,59 @@ class PuzzlePlay extends React.Component {
       <div className={'puzzle-pg' + (this.state.won ? " puzzle-pg--disable" : "")}>
         <div className={'win-screen' + (this.state.won ? " win-screen--show" : "")}>WINNER!</div>
         <Toolkit selectedFlexBlock={this.state.selectedFlexBlock} />
+
         <section className='puzzle-section'>
+
           <h2 className='puzzle-section__title'>Workspace</h2>
 
-          <div className='puzzle-section__infobar'>
+          <div className='puzzle-section__contents'>
 
-            <div className='layer-subsection'>
-              <h3 className='layer-subsection__title'>Layer Legend</h3>
-              <div className='layer-legend'>
-                {C.layers.map((layerColor, i) => {
-                  return (
-                    <div key={'layerColor' + i} className={`layer-info-ctr`}>
-                      <p className='layer-info-ctr__level'>{i}</p>
-                      <div className={`layer-info-ctr__color layer-info-ctr__color--${i + 1}`}></div>
-                    </div>
-                  )
-                })}
+            <div className='puzzle-section__infobar'>
+
+              <div className='layer-subsection'>
+                <h3 className='layer-subsection__title'>Layer Legend</h3>
+                <div className='layer-legend'>
+                  {C.layers.map((layerColor, i) => {
+                    return (
+                      <div key={'layerColor' + i} className={`layer-info-ctr`}>
+                        <p className='layer-info-ctr__level layer-info-ctr__level--tablet'>{i}</p>
+                        <div className={`layer-info-ctr__color layer-info-ctr__color--${i + 1}`}>
+                          <p className='layer-info-ctr__level layer-info-ctr__level--mobile'>{i}</p>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
               </div>
+
+              <div className='action-btn-subsection'>
+                {/* <button className='action-btn action-btn--save save-btn' onClick={this.attemptSave}>Dwnld</button> */}
+                <button className='action-btn action-btn--submit submit-btn' onClick={this.attemptSubmit}>SUBMIT</button>
+              </div>
+
+
             </div>
 
-            <div className='action-btn-subsection'>
-              <button className='save-btn' onClick={this.attemptSave}>SAVE</button>
-              <button className='submit-btn' onClick={this.attemptSubmit}>SUBMIT</button>
-            </div>
-
+            {this.state.flexBlockWorkPuzzle}
           </div>
-
-          {this.state.flexBlockWorkPuzzle}
 
         </section>
 
 
         <section className='puzzle-section puzzle-section--goal'>
           <h2 className='puzzle-section__title'>Goal</h2>
-          <div className='puzzle-section__infobar'>
-            <div className='puzzle-stats'>
-              <p className='puzzle-stats__name'>Puzzle #1</p>
-              <p className='puzzle-stats__difficulty'>Difficulty: Easy</p>
-            </div>
-            <Link to={{pathname:'/'}} className='exit-btn'>EXIT</Link>
-          </div>
 
-          {this.state.flexBlockGoalPuzzle}
+          <div className='puzzle-section__contents'>
+            <div className='puzzle-section__infobar'>
+              <div className='puzzle-stats'>
+                <p className='puzzle-stats__name'>{`Puzzle #${this.state.puzzleNumber}`}</p>
+                <p className='puzzle-stats__difficulty'>{`Difficulty: ${this.state.puzzleDifficulty}`}</p>
+              </div>
+              <Link to={{ pathname: '/' }} className='action-btn action-btn--exit'>EXIT</Link>
+            </div>
+
+            {this.state.flexBlockGoalPuzzle}
+          </div>
 
         </section>
       </div>
