@@ -8,7 +8,7 @@ import Toolkit from '../../components/Toolkit';
 import FlexBlock from '../../components/FlexBlock';
 import helperFunctions from '../../Utility/HelperFunctions';
 import C from '../../Utility/Constants';
-// import puzzleObject from '../../data/FlexBlock_Puzzle_Medium.json';
+import { API_URL } from '../../config';
 import { Link } from 'react-router-dom';
 
 class PuzzlePlay extends React.Component {
@@ -27,16 +27,13 @@ class PuzzlePlay extends React.Component {
   winTimeoutId = null;
 
   componentDidMount() {
-    // window.screen.orientation.lock('landscape');
-
     // Use this instead of loadWorkPuzzle for developer mode where you can create new puzzles for the user to play that have different baseboard sizes
     // this.setState({flexBlockWorkPuzzle: this.createPuzzle()})
 
     const puzzleId = this.props.match.params.puzzleId;
 
-    let reqst = 'http://' + document.location.hostname + ":8080";
-    // axios.get('http://localhost:8080/api/puzzles/specific/' + puzzleId)
-    axios.get(reqst + '/api/puzzles/specific/' + puzzleId)
+    let reqst = API_URL ? API_URL : ('http://' + document.location.hostname + ":8080/");
+    axios.get(reqst + 'api/puzzles/specific/' + puzzleId)
       .then((resp) => {
         const puzzleObject = JSON.parse(resp.data.puzzleObject);
         this.setState({ flexBlockWorkPuzzle: this.loadWorkPuzzle(puzzleObject), puzzleDifficulty: resp.data.difficulty, puzzleNumber: resp.data.number })

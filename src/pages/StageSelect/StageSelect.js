@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 
 import './StageSelect.scss'
+import {API_URL} from '../../config/index';
 
 class StageSelect extends React.Component {
 
@@ -16,13 +17,8 @@ class StageSelect extends React.Component {
   componentDidMount() {
     //the response is an array of all puzzle data objects of the form [{id: 1234, difficulty:'medium', number: 4}]. Filter into seperate arrays for easy medium and hard, then sort by their "number" property.
 
-    const origin = document.location.origin;
-
-
-    let reqst = 'http://' + document.location.hostname + ":8080";
-    console.log(reqst);
-    // axios.get('http://localhost:8080/api/puzzles/all-general')
-    axios.get(reqst + '/api/puzzles/all-general')
+    let reqst = API_URL ? API_URL : ('http://' + document.location.hostname + ":8080/");
+    axios.get(reqst + 'api/puzzles/all-general')
       .then((resp) => {
         const easyPuzzleData = resp.data.filter(puzzleDataObject => puzzleDataObject.difficulty === 'easy').sort((a, b) => a.number - b.number);
         const mediumPuzzleData = resp.data.filter(puzzleDataObject => puzzleDataObject.difficulty === 'medium').sort((a, b) => a.number - b.number);
