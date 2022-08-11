@@ -46,17 +46,24 @@ class StageSelect extends React.Component {
 
     let loadingPuzzles = []
     if (chosenDifficultyPuzzles.length === 0) {
-      for (let i=0; i<2; i++) {
+      for (let i = 0; i < 2; i++) {
         loadingPuzzles.push(
           <button className="puzzle-card puzzle-card--loading" key={'loading' + i}>
-          <div className="spinner">
-            <div className="rect1"></div>
-            <div className="rect2"></div>
-            <div className="rect3"></div>
-            <div className="rect4"></div>
-            <div className="rect5"></div>
-          </div>
-        </button>
+            <div className="sk-fading-circle">
+              <div className="sk-circle1 sk-circle"></div>
+              <div className="sk-circle2 sk-circle"></div>
+              <div className="sk-circle3 sk-circle"></div>
+              <div className="sk-circle4 sk-circle"></div>
+              <div className="sk-circle5 sk-circle"></div>
+              <div className="sk-circle6 sk-circle"></div>
+              <div className="sk-circle7 sk-circle"></div>
+              <div className="sk-circle8 sk-circle"></div>
+              <div className="sk-circle9 sk-circle"></div>
+              <div className="sk-circle10 sk-circle"></div>
+              <div className="sk-circle11 sk-circle"></div>
+              <div className="sk-circle12 sk-circle"></div>
+            </div>
+          </button>
         )
       }
     }
