@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 
 import './StageSelect.scss'
-import {API_URL} from '../../config/index';
+import { API_URL } from '../../config/index';
 
 class StageSelect extends React.Component {
 
@@ -44,6 +44,23 @@ class StageSelect extends React.Component {
     if (this.state.difficulty === 'medium') chosenDifficultyPuzzles = this.state.mediumPuzzleData;
     else if (this.state.difficulty === 'hard') chosenDifficultyPuzzles = this.state.hardPuzzleData;
 
+    let loadingPuzzles = []
+    if (chosenDifficultyPuzzles.length === 0) {
+      for (let i=0; i<2; i++) {
+        loadingPuzzles.push(
+          <button className="puzzle-card puzzle-card--loading" key={'loading' + i}>
+          <div className="spinner">
+            <div className="rect1"></div>
+            <div className="rect2"></div>
+            <div className="rect3"></div>
+            <div className="rect4"></div>
+            <div className="rect5"></div>
+          </div>
+        </button>
+        )
+      }
+    }
+
     return (
       <div className="stage-select">
 
@@ -67,7 +84,7 @@ class StageSelect extends React.Component {
             onClick={this.chooseDifficulty}>hard</button>
         </div>
 
-        <div className={"puzzle-choices-holder" + ` puzzle-choices-holder--${this.state.difficulty}` }>
+        <div className={"puzzle-choices-holder" + ` puzzle-choices-holder--${this.state.difficulty}`}>
           {chosenDifficultyPuzzles.map((puzzleObject, i) => {
             return (
               <Link className="puzzle-card"
@@ -80,10 +97,16 @@ class StageSelect extends React.Component {
               </Link>
             )
           })}
-          {[1,2,3,4,5,6,7,8].map((number) => {
+
+          {loadingPuzzles}
+
+          {[1, 2, 3, 4, 5, 6, 7, 8].map((number) => {
             return (
-              <button className="puzzle-card" key={'unused' + number}>coming soon</button>
-            )})}
+              <button className="puzzle-card" key={'unused' + number}>
+                coming soon
+              </button>
+            )
+          })}
         </div>
 
 
