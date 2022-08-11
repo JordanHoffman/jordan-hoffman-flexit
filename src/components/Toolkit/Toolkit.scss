@@ -39,7 +39,7 @@
     gap: $padding-between-mobile;
     margin-top: $half-padding-between-mobile;
     background-color: $Primary;
-    padding: $padding-between-mobile;
+    padding: $padding-between-mobile $half-padding-between-mobile;
 
     @include tablet {
       gap: 20px;

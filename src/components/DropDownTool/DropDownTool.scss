@@ -8,6 +8,10 @@
   font-weight: 700;
   border: 2px solid $Primary-Light;
 
+  @include tablet {
+    font-size: 16px;
+  }
+
   &:hover {
     cursor: pointer;
   }
@@ -17,5 +21,9 @@
     border: 2px solid $Primary-Dark;
     background-color: $Primary-Light;
     font-weight: 700;
+
+    @include tablet {
+      font-size: 15px;
+    }
   }
 }
