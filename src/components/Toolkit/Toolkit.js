@@ -5,13 +5,16 @@ import SizeTool from "../SizeTool";
 import { RadioOff, RadioOn } from "../../Utility/svg-loader"
 import DropDownTool from "../DropDownTool";
 import Toast from "../Toast";
+import Confirmer from "../Confirmer";
 import C from "../../Utility/Constants";
 
 class Toolkit extends React.Component {
 
   state = {
     selectedFlexBlockDetails: null,
-    toastInfo: null
+    toastInfo: null,
+    displayDeleteConfirm: false,
+    displayFlexDirectionConfirm: false,
   }
 
   toastTimeoutId = null;
@@ -21,6 +24,21 @@ class Toolkit extends React.Component {
     adjustWidth: 'adjustWidth',
     adjustHeight: 'adjustHeight'
   })
+
+  //Logic to close confirmers if you click outside of them (like how a modal would work). There was a bug where you would click on something that would bring up a confirmer, but this would immediately hide that confirmer since it counts as clicking outside of them. So I needed to allow for clicks on elements which bring up the confirmer (which is fine because the confirmer overlaps them when it's active).
+  handleConfirmHiding = ({ target }) => {
+    if (!target.closest('.toolkit-confirmer--delete, .deletion-btn-ctr') && this.state.displayDeleteConfirm) {
+      this.setState({displayDeleteConfirm: false});
+    }
+    if (!target.closest('.toolkit-confirmer--flexDirection, .detail-ctr--flexDirection') && this.state.displayFlexDirectionConfirm) {
+      this.setState({displayFlexDirectionConfirm: false});
+    }
+  }
+
+  componentDidMount() {
+    //For listening for clicks outside of confirmers when they're active
+    document.addEventListener('click', this.handleConfirmHiding)
+  }
 
   componentDidUpdate(prevProps) {
 
@@ -34,10 +52,11 @@ class Toolkit extends React.Component {
       }
     }
 
-    //logic for deselecting an old flexblock when a new one is selected.
+    //logic for deselecting an old flexblock when a new one is selected, and resetting the confirmers if they're out.
     if (prevProps.selectedFlexBlock) {
       if (this.props.selectedFlexBlock.props.details.id !== prevProps.selectedFlexBlock.props.details.id) {
         prevProps.selectedFlexBlock.deselect()
+        this.setState({displayDeleteConfirm: false, displayFlexDirectionConfirm: false});
       }
     }
 
@@ -52,6 +71,7 @@ class Toolkit extends React.Component {
 
   componentWillUnmount() {
     if (this.toastTimeoutId) clearTimeout(this.toastTimeoutId);
+    document.removeEventListener('click', this.handleConfirmHiding);
   }
 
   handleCreate = (e) => {
@@ -79,15 +99,41 @@ class Toolkit extends React.Component {
   }
 
   handleDelete = () => {
-    this.props.selectedFlexBlock.attemptDelete();
+    const result = this.props.selectedFlexBlock.attemptDelete(false);
+    if (result.fail) {
+      this.setState({ displayDeleteConfirm: true })
+    }
+  }
+
+  onDeleteConfirm = (e) => {
+    let confirm = e.target.dataset.confirm;
+    if (confirm === 'confirm') {
+      this.props.selectedFlexBlock.attemptDelete(true);
+    }
+    this.setState({ displayDeleteConfirm: false })
   }
 
   handleChangeDirection = (e) => {
     const desiredDirection = e.target.dataset.direction;
     if (this.state.selectedFlexBlockDetails.flexDirection !== desiredDirection) {
-      const updatedDetails = this.props.selectedFlexBlock.attemptChangeFlexDirection(desiredDirection);
-      this.setState({ selectedFlexBlockDetails: updatedDetails });
+      const result = this.props.selectedFlexBlock.attemptChangeFlexDirection(desiredDirection, false);
+      if (result.fail) {
+        this.setState({ displayFlexDirectionConfirm: true })
+      }
+      else {
+        this.setState({ selectedFlexBlockDetails: result.details });
+      }
     }
+  }
+
+  onChangeDirectionConfirm = (e) => {
+    let confirm = e.target.dataset.confirm;
+    if (confirm === 'confirm') {
+      const desiredDirection = this.state.selectedFlexBlockDetails.flexDirection === 'row' ? 'column' : 'row';
+      const result = this.props.selectedFlexBlock.attemptChangeFlexDirection(desiredDirection, true);
+      this.setState({ selectedFlexBlockDetails: result.details });
+    }
+    this.setState({ displayFlexDirectionConfirm: false })
   }
 
   handleSizeAdjust = (e) => {
@@ -97,7 +143,7 @@ class Toolkit extends React.Component {
       const location = e.target.dataset.dimension === 'width' ? this.toastLocations.adjustWidth : this.toastLocations.adjustHeight;
 
       let message = ''
-      switch (result.reason){
+      switch (result.reason) {
         case C.flexFail.Room:
           message = 'not enough room'
           break;
@@ -141,6 +187,8 @@ class Toolkit extends React.Component {
     const toastLoc = this.state.toastInfo ? this.state.toastInfo.location : null;
     const toastMessage = this.state.toastInfo ? this.state.toastInfo.message : null;
 
+    const confirmMessage = "this will delete all children"
+
     return (
       <div className="toolkit">
         <h2 className="toolkit__title">Toolkit</h2>
@@ -161,7 +209,17 @@ class Toolkit extends React.Component {
               {!isBaseBoard && <button className="creation-btn" data-sibling="after" onClick={this.handleCreate}>after</button>}
             </div>
 
-            {!isBaseBoard && <button className="deletion-btn" onClick={this.handleDelete}>DELETE</button>}
+            {!isBaseBoard &&
+              <div className="deletion-btn-ctr">
+                <button className="deletion-btn" onClick={this.handleDelete}>DELETE</button>
+                <Confirmer
+                  ctrClass="toolkit__confirmer toolkit__confirmer--delete"
+                  visible={this.state.displayDeleteConfirm}
+                  message={confirmMessage}
+                  handleConfirm={this.onDeleteConfirm}>
+                </Confirmer>
+              </div>
+            }
 
           </section>
 
@@ -170,8 +228,14 @@ class Toolkit extends React.Component {
 
             <h3 className="toolkit__section-title">FlexBlock Details</h3>
 
-            <div className="detail-ctr">
+            <div className="detail-ctr detail-ctr--flexDirection">
               <h4 className="detail-ctr__title">Flex Direction:</h4>
+              <Confirmer
+                ctrClass="toolkit__confirmer toolkit__confirmer--flexDirection"
+                visible={this.state.displayFlexDirectionConfirm}
+                message={confirmMessage}
+                handleConfirm={this.onChangeDirectionConfirm}>
+              </Confirmer>
 
               <div className="detail-ctr__controls detail-ctr__controls--flexDirection">
                 <div className="radio-ctr">

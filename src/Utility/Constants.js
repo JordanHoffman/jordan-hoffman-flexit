@@ -6,7 +6,8 @@ const Constants = {
   alignSelf: ['default', 'start', 'center', 'end'],
   flexFail: Object.freeze({
     Room: 'Room',
-    Overlap: 'Overlap'
+    Overlap: 'Overlap',
+    Confirm: 'Confirm'
   })
 }
 

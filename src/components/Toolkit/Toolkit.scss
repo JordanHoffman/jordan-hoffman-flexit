@@ -76,6 +76,15 @@
     border-radius: 25px;
     z-index: 1; 
   }
+
+  &__confirmer{
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: calc(100% + $padding-between-mobile);
+    padding: $half-padding-between-mobile;
+    z-index: 1;
+  }
 }
 
 .creation-btn-ctr {
@@ -97,6 +106,12 @@
   }
 }
 
+.deletion-btn-ctr {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
 .deletion-btn {
   width: 60%;
   max-width: 150px;
@@ -105,6 +120,7 @@
   border-radius: $btn-border-radius;
   border: 4px solid $Warn-Dark;
   border-style: outset;
+  flex-shrink: 0;
 
   &:active {
     border-style: inset;

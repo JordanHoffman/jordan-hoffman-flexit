@@ -1,0 +1,60 @@
+@use '../../styles/partials/global' as *;
+
+.confirmer {
+  transition: transform 0.75s;
+  display: flex;
+  align-items: center;
+  gap: $padding-between-mobile;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+
+  background-color: $Primary-Dark;
+
+  left: calc(0px - $half-padding-between-mobile);
+
+  &--invisible {
+    transform: translateX(calc(100% + 50px));
+  }
+
+  &__message {
+    flex-grow: 1;
+    @include body-fontstats-small;
+    text-align: center;
+    font-weight: 700;
+  }
+
+  &__options {
+    display: flex;
+    align-items: center;
+    gap: $half-padding-between-mobile;
+  }
+
+  &__options-btn {
+    background-color: $Primary;
+    width: 2.5rem;
+    border-radius: $btn-border-radius;
+    border: 3px solid $Primary-Dark;
+    border-style: outset;
+    display: flex;
+    padding: $qtr-padding-between-mobile;
+  
+    &:active {
+      border-style: inset;
+    }
+  }
+
+  &__options-btn-svg {
+    width: 100%;
+    display: block;
+    pointer-events: none;
+
+    &--cancel {
+      stroke: white;
+      stroke: $Font-Primary-Color;
+    }
+
+    &--confirm {
+      stroke: $Secondary-Light;
+    }
+  }
+}

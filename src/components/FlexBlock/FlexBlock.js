@@ -98,9 +98,11 @@ class FlexBlock extends React.Component {
     return (updatedChildDetailObj);
   }
 
-  attemptChangeFlexDirection = (direction) => {
-    //NEED TO WARN IF YOU HAVE CHILDREN
-    if (this.state.childDetailsArray.length) {
+  attemptChangeFlexDirection = (direction, confirmed) => {
+    if (this.state.childDetailsArray.length && !confirmed) {
+      return {fail: true, reason: C.flexFail.Confirm}
+    }
+    else if (this.state.childDetailsArray.length) {
       this.childHandles = [];
       this.setState({childDetailsArray: []});
     }
@@ -109,10 +111,10 @@ class FlexBlock extends React.Component {
       let updatedBaseBoardDetails = cloneDeep(this.state.baseBoardDetails)
       updatedBaseBoardDetails.flexDirection = direction;
       this.setState({baseBoardDetails: updatedBaseBoardDetails})
-      return updatedBaseBoardDetails
+      return {details: updatedBaseBoardDetails}
     }
     else {
-      return (this.props.parent.parentHandleChangeFlexDirection(direction, this.props.details.id))
+      return ({details: this.props.parent.parentHandleChangeFlexDirection(direction, this.props.details.id)})
     }
   } 
 
@@ -390,12 +392,16 @@ class FlexBlock extends React.Component {
     this.childHandles = this.childHandles.filter(childHandle => childHandle.props.details.id !== id);
     this.setState({ childDetailsArray: updatedChildDetailsArray })
     this.selectSelf();
-    return true;
+    return ({});
   }
 
-  attemptDelete = () => {
+  attemptDelete = (confirmed) => {
     if (this.props.details.isBaseBoard) return false;
 
+    if (!confirmed && this.state.childDetailsArray.length) {
+      return ({fail: true, reason: C.flexFail.Confirm});
+    }
+    
     this.deselect();
     return this.props.parent.parentHandleDelete(this.props.details.id)
   }
