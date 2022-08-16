@@ -1,0 +1,8 @@
+.toast{
+  transition: opacity 0.25s linear;
+  opacity: 1;
+
+  &--invisible {
+    opacity: 0;
+  }
+}

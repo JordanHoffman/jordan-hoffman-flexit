@@ -10,6 +10,11 @@
   background-color: $Primary-Light;
   border-right: 2px solid $Primary-Dark;
 
+  //simple way to allow toast absolute positioning within any element of the toolkit
+  & * {
+    position: relative;
+  }
+
   @include tablet {
     min-width: 250px;
   }
@@ -52,6 +57,24 @@
 
   &__section-title {
     @include subheader-fontstats;
+    width: 100%;
+    text-align: center;
+  }
+
+  &__toast {
+    position: absolute; 
+    transform: translate(-50%, -50%);
+    left: 50%;
+    top: 50%;
+    width: 100%;
+    text-align: center;
+    padding: $half-padding-between-mobile;
+    @include body-fontstats;
+    background-color: $Primary-Dark;
+    border: 2px solid $Warn;
+    color: $Secondary-Light;
+    border-radius: 25px;
+    z-index: 1; 
   }
 }
 

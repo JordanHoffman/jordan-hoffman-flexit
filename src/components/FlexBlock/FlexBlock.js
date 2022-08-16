@@ -3,6 +3,7 @@ import { cloneDeep, update } from 'lodash';
 
 import './FlexBlock.scss';
 import helperFunctions from '../../Utility/HelperFunctions';
+import C from '../../Utility/Constants'
 
 
 /**
@@ -146,7 +147,8 @@ class FlexBlock extends React.Component {
               const childWidth = this.state.childDetailsArray[0].size.x;
               const childHeight = this.state.childDetailsArray[0].size.y;
               if (childWidth === details.size.x - 1 && childHeight === details.size.y) {
-                return false //special case met
+                this.childHandles[0].displayMismatch();
+                return {fail: true, reason: C.flexFail.Overlap} //special case met
               }
             }
 
@@ -156,7 +158,7 @@ class FlexBlock extends React.Component {
             return updatedChildDetailObj;
           }
           //no room to increase width further
-          else return false
+          else return {fail: true, reason: C.flexFail.Room};
         }
         //HEIGHT
         else {
@@ -167,7 +169,8 @@ class FlexBlock extends React.Component {
               const childWidth = this.state.childDetailsArray[0].size.x;
               const childHeight = this.state.childDetailsArray[0].size.y;
               if (childWidth === details.size.x && childHeight === details.size.y - 1) {
-                return false //special case met
+                this.childHandles[0].displayMismatch();
+                return {fail: true, reason: C.flexFail.Overlap} //special case met
               }
             }
             //height can safely be increased by this point
@@ -176,7 +179,7 @@ class FlexBlock extends React.Component {
             return updatedChildDetailObj;
           }
           //no room to increase height further
-          else return false;
+          else return {fail: true, reason: C.flexFail.Room};
         }
       }
       //FLEX DIRECTION COLUMN
@@ -190,8 +193,8 @@ class FlexBlock extends React.Component {
               const childWidth = this.state.childDetailsArray[0].size.x;
               const childHeight = this.state.childDetailsArray[0].size.y;
               if (childWidth === details.size.x - 1 && childHeight === details.size.y) {
-                console.log('special')
-                return false //special case met
+                this.childHandles[0].displayMismatch();
+                return {fail: true, reason: C.flexFail.Overlap} //special case met
               }
             }
             //width can safely be increased by this point
@@ -200,7 +203,7 @@ class FlexBlock extends React.Component {
             return updatedChildDetailObj;
           }
           //no room to increase width further
-          else return false;
+          else return {fail: true, reason: C.flexFail.Room};
         }
         //HEIGHT
         else {
@@ -212,7 +215,8 @@ class FlexBlock extends React.Component {
               const childWidth = this.state.childDetailsArray[0].size.x;
               const childHeight = this.state.childDetailsArray[0].size.y;
               if (childWidth === details.size.x && childHeight === details.size.y - 1) {
-                return false //special case met
+                this.childHandles[0].displayMismatch();
+                return {fail: true, reason: C.flexFail.Overlap} //special case met
               }
             }
 
@@ -222,7 +226,7 @@ class FlexBlock extends React.Component {
             return updatedChildDetailObj;
           }
           //no room to increase height further
-          else return false
+          else return {fail: true, reason: C.flexFail.Room};
         }
       }
     }
@@ -254,14 +258,15 @@ class FlexBlock extends React.Component {
               const childWidth = this.state.childDetailsArray[0].size.x;
               const childHeight = this.state.childDetailsArray[0].size.y;
               if (childWidth === this.props.details.size.x - 1 && childHeight === this.props.details.size.y) {
-                return false //special case met
+                this.childHandles[0].displayMismatch();
+                return {fail: true, reason: C.flexFail.Overlap} //special case met
               }
             }
             //Width can be reduced. Let parent handle it.
             return this.props.parent.parentHandleSizeAdjust(dimension, adjustment, this.props.details.id);
           }
           //Not enough space to reduce width anymore
-          else return false;
+          else return {fail: true, reason: C.flexFail.Room};
         }
         //HEIGHT
         else {
@@ -273,14 +278,15 @@ class FlexBlock extends React.Component {
               const childWidth = this.state.childDetailsArray[0].size.x;
               const childHeight = this.state.childDetailsArray[0].size.y;
               if (childWidth === this.props.details.size.x && childHeight === this.props.details.size.y - 1) {
-                return false //special case met
+                this.childHandles[0].displayMismatch();
+                return {fail: true, reason: C.flexFail.Overlap} //special case met
               }
             }
             //Height can be reduce. Let parent handle it.
             return this.props.parent.parentHandleSizeAdjust(dimension, adjustment, this.props.details.id);
           }
           //Not enough space to reduce height anymore
-          else return false
+          else return {fail: true, reason: C.flexFail.Room}
         }
       }
       //FLEX DIRECTION COLUMN
@@ -295,14 +301,15 @@ class FlexBlock extends React.Component {
               const childWidth = this.state.childDetailsArray[0].size.x;
               const childHeight = this.state.childDetailsArray[0].size.y;
               if (childWidth === this.props.details.size.x - 1 && childHeight === this.props.details.size.y) {
-                return false //special case met
+                this.childHandles[0].displayMismatch();
+                return {fail: true, reason: C.flexFail.Overlap} //special case met
               }
             }
             //Width can be reduced. Let parent handle it.
             return this.props.parent.parentHandleSizeAdjust(dimension, adjustment, this.props.details.id);
           }
           //Not enough space to reduce width anymore
-          else return false
+          else return {fail: true, reason: C.flexFail.Room}
         }
         //HEIGHT
         else {
@@ -316,14 +323,15 @@ class FlexBlock extends React.Component {
               const childWidth = this.state.childDetailsArray[0].size.x;
               const childHeight = this.state.childDetailsArray[0].size.y;
               if (childWidth === this.props.details.size.x && childHeight === this.props.details.size.y - 1) {
-                return false //special case met
+                this.childHandles[0].displayMismatch();
+                return {fail: true, reason: C.flexFail.Overlap} //special case met
               }
             }
             //Height can be reduced. Let parent handle it.
             return this.props.parent.parentHandleSizeAdjust(dimension, adjustment, this.props.details.id);
           }
           //Not enough space to reduce height anymore
-          else return false;
+          else return {fail: true, reason: C.flexFail.Room};
         }
       }
     }

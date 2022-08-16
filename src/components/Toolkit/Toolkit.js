@@ -4,14 +4,23 @@ import './Toolkit.scss'
 import SizeTool from "../SizeTool";
 import { RadioOff, RadioOn } from "../../Utility/svg-loader"
 import DropDownTool from "../DropDownTool";
+import Toast from "../Toast";
 import C from "../../Utility/Constants";
-import { times } from "lodash";
 
 class Toolkit extends React.Component {
 
   state = {
     selectedFlexBlockDetails: null,
+    toastInfo: null
   }
+
+  toastTimeoutId = null;
+
+  toastLocations = Object.freeze({
+    creation: 'creation',
+    adjustWidth: 'adjustWidth',
+    adjustHeight: 'adjustHeight'
+  })
 
   componentDidUpdate(prevProps) {
 
@@ -31,16 +40,42 @@ class Toolkit extends React.Component {
         prevProps.selectedFlexBlock.deselect()
       }
     }
+
+    // logic for displaying toast messages
+    if (this.state.toastInfo && !this.toastTimeoutId) {
+      this.toastTimeoutId = setTimeout(() => {
+        this.setState({ toastInfo: null })
+        this.toastTimeoutId = null;
+      }, 2000);
+    }
   }
 
-  handleCreateInside = () => {
-    this.props.selectedFlexBlock.attemptCreateInside();
+  componentWillUnmount() {
+    if (this.toastTimeoutId) clearTimeout(this.toastTimeoutId);
   }
 
-  handleCreateSibling = (e) => {
-    //sibling will be the string "before" or "after"
-    let sibling = e.target.dataset.sibling;
-    this.props.selectedFlexBlock.attemptCreateSibling(sibling);
+  handleCreate = (e) => {
+    let hasRoom;
+    const sibling = e.target.dataset.sibling;
+    if (!sibling) {
+      hasRoom = this.props.selectedFlexBlock.attemptCreateInside();
+    }
+    else {
+      hasRoom = this.props.selectedFlexBlock.attemptCreateSibling(sibling);
+    }
+
+    if (!hasRoom) {
+      if (this.toastTimeoutId) {
+        clearTimeout(this.toastTimeoutId);
+        this.toastTimeoutId = null;
+      }
+      this.setState({
+        toastInfo: {
+          location: this.toastLocations.creation,
+          message: "not enough room",
+        }
+      })
+    }
   }
 
   handleDelete = () => {
@@ -55,17 +90,40 @@ class Toolkit extends React.Component {
     }
   }
 
-  //TODO CONTINUE FROM HERE
   handleSizeAdjust = (e) => {
-    //result will either be the new details of the updated flexblock or false if it was unable to update
     const result = this.props.selectedFlexBlock.attemptSizeAdjust(e.target.dataset.dimension, e.target.dataset.adjustment)
 
-    if (result) {
+    if (result.fail) {
+      const location = e.target.dataset.dimension === 'width' ? this.toastLocations.adjustWidth : this.toastLocations.adjustHeight;
+
+      let message = ''
+      switch (result.reason){
+        case C.flexFail.Room:
+          message = 'not enough room'
+          break;
+        case C.flexFail.Overlap:
+          message = `a single child cannot entirely overlap its parent`
+          break;
+        default:
+          console.warn('unidentified flex fail message: ' + result.reason);
+          break;
+      }
+      if (this.toastTimeoutId) {
+        clearTimeout(this.toastTimeoutId);
+        this.toastTimeoutId = null;
+      }
+      this.setState({
+        toastInfo: {
+          location: location,
+          message: message,
+        }
+      })
+    }
+    else {
       this.setState({ selectedFlexBlockDetails: result })
     }
   }
 
-  //TODO: children cant rely on default values, because they end up inheriting from parent. So they must explicitly always be set.
   handleDistribution = (e) => {
     const updatedDetails = this.props.selectedFlexBlock.attemptDistribution(e.target.name, e.target.value);
     this.setState({ selectedFlexBlockDetails: updatedDetails })
@@ -80,6 +138,9 @@ class Toolkit extends React.Component {
     const alignSelf = this.state.selectedFlexBlockDetails ? this.state.selectedFlexBlockDetails.alignSelf : '';
     const isBaseBoard = this.state.selectedFlexBlockDetails ? this.state.selectedFlexBlockDetails.isBaseBoard : true;
 
+    const toastLoc = this.state.toastInfo ? this.state.toastInfo.location : null;
+    const toastMessage = this.state.toastInfo ? this.state.toastInfo.message : null;
+
     return (
       <div className="toolkit">
         <h2 className="toolkit__title">Toolkit</h2>
@@ -87,14 +148,21 @@ class Toolkit extends React.Component {
         <div className="toolkit__contents">
 
           <section className="toolkit__section">
-            <h3 className="toolkit__section-title">FlexBlock Creation</h3>
+            <h3 className="toolkit__section-title">
+              {(toastLoc === this.toastLocations.creation) && <Toast ctrClass='toolkit__toast' message={toastMessage} />}
+              FlexBlock Creation
+            </h3>
 
             <div className="creation-btn-ctr">
-              {!isBaseBoard && <button className="creation-btn" data-sibling="before" onClick={this.handleCreateSibling}>before</button>}
-              <button className="creation-btn" onClick={this.handleCreateInside}>inside</button>
-              {!isBaseBoard && <button className="creation-btn" data-sibling="after" onClick={this.handleCreateSibling}>after</button>}
+              {!isBaseBoard && <button className="creation-btn" data-sibling="before" onClick={this.handleCreate}>before</button>}
+
+              <button className="creation-btn" onClick={this.handleCreate}>inside</button>
+
+              {!isBaseBoard && <button className="creation-btn" data-sibling="after" onClick={this.handleCreate}>after</button>}
             </div>
+
             {!isBaseBoard && <button className="deletion-btn" onClick={this.handleDelete}>DELETE</button>}
+
           </section>
 
 
@@ -124,7 +192,10 @@ class Toolkit extends React.Component {
             </div>
 
             <div className="detail-ctr">
-              <h4 className="detail-ctr__title">Width:</h4>
+              <h4 className="detail-ctr__title">
+                {(toastLoc === this.toastLocations.adjustWidth) && <Toast ctrClass='toolkit__toast' message={toastMessage} />}
+                Width:
+              </h4>
               <SizeTool ctrClass="detail-ctr__controls detail-ctr__controls--sizetool"
                 value={width}
                 dimension='width'
@@ -133,7 +204,10 @@ class Toolkit extends React.Component {
             </div>
 
             <div className="detail-ctr">
-              <h4 className="detail-ctr__title">Height:</h4>
+              <h4 className="detail-ctr__title">
+                {(toastLoc === this.toastLocations.adjustHeight) && <Toast ctrClass='toolkit__toast' message={toastMessage} />}
+                Height:
+              </h4>
               <SizeTool ctrClass="detail-ctr__controls detail-ctr__controls--sizetool"
                 value={height}
                 dimension='height'
@@ -172,7 +246,7 @@ class Toolkit extends React.Component {
           </section>
 
         </div>
-        
+
       </div>
     )
   }
