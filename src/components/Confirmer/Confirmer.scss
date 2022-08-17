@@ -4,10 +4,9 @@
   transition: transform 0.75s;
   display: flex;
   align-items: center;
-  gap: $padding-between-mobile;
+  gap: $half-padding-between-mobile;
   border-top-left-radius: 10px;
   border-bottom-left-radius: 10px;
-
   background-color: $Primary-Dark;
 
   left: calc(0px - $half-padding-between-mobile);
@@ -26,17 +25,26 @@
   &__options {
     display: flex;
     align-items: center;
-    gap: $half-padding-between-mobile;
+    height: 100%;
+    gap: $qtr-padding-between-mobile;
+    @include tablet {
+      gap: $half-padding-between-mobile;
+    }
+
   }
 
   &__options-btn {
     background-color: $Primary;
-    width: 2.5rem;
+    width: 2.25rem;
     border-radius: $btn-border-radius;
     border: 3px solid $Primary-Dark;
     border-style: outset;
     display: flex;
     padding: $qtr-padding-between-mobile;
+
+    @include tablet {
+      width: 2.5rem;
+    }
   
     &:active {
       border-style: inset;
@@ -45,7 +53,6 @@
 
   &__options-btn-svg {
     width: 100%;
-    display: block;
     pointer-events: none;
 
     &--cancel {

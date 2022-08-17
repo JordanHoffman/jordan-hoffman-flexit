@@ -61,8 +61,12 @@
 }
 
 @mixin body-fontstats-small() {
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 400;
+
+  @include tablet() {
+    font-size: 11px;
+  }
 }
 
 @mixin buttonlabels-fontstats() {

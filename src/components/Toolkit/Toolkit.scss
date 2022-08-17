@@ -83,6 +83,8 @@
     top: 0;
     width: calc(100% + $padding-between-mobile);
     padding: $half-padding-between-mobile;
+    padding-left: $qtr-padding-between-mobile;
+    min-height: 100%;
     z-index: 1;
   }
 }
