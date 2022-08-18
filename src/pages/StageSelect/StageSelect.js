@@ -1,9 +1,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { useAuth0 } from "@auth0/auth0-react";
 
 import './StageSelect.scss'
 import { API_URL } from '../../config/index';
+import Login from "../../components/Login";
 
 class StageSelect extends React.Component {
 
@@ -70,6 +72,14 @@ class StageSelect extends React.Component {
 
     return (
       <div className="stage-select">
+        <Login ctrClass="login" />
+        {/* <div className="login">
+          <div className="login__btn-ctr">
+            <LoginButton />
+            <LogoutButton />
+          </div>
+          <Profile />
+        </div> */}
 
         <h1 className="stage-select__title">
           <span className="stage-select__title stage-select__title--special-char">F</span>lex<span className="stage-select__title stage-select__title--special-char">I</span>t

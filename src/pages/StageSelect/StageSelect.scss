@@ -126,6 +126,32 @@
   }
 }
 
+//LOGIN
+.login {
+  position: absolute;
+  right: 0;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  margin-top: $padding-H-before-mobile;
+  margin-right: $padding-between-mobile;
+
+  &__btn-ctr {
+    display: flex;
+    gap: $padding-between-mobile;
+  }
+
+  &__btn {
+    background-color: $Primary-Dark;
+    padding: $half-padding-between-mobile $padding-between-mobile;
+  }
+  &__profile {
+    background-color: $Primary-Dark;
+  }
+}
+
+
+
 //special loading animation styling from spinner reference website
 .sk-fading-circle {
   width: 40px;
