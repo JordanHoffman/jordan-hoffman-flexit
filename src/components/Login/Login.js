@@ -22,10 +22,31 @@ function Login(props) {
   //Every time the user logs in or out, this fires.
   useEffect(() => {
     const getToken = async () => {
+      //TODO: SETUP THIS ROUTE AND CREATE NEW USER IF HES NOT IN DATABASE AND RETRIEVE SAVED DATA EXCEPT FOR ACTUAL PUZZLE SAVES!
       if (isLoggedIn) {
-        const token = await getAccessTokenSilently()
+        //Fetch User saved data (stage completed and/or stage saved)
+        try {
+          const token = await getAccessTokenSilently()
+          let reqst = API_URL ? API_URL : ('http://' + document.location.hostname + ":8080/");
 
-        console.log(token);
+          const response = await axios.get(reqst + 'api/users/general-saved', {
+            headers: {
+              authorization: `Bearer ${token}`,
+            }
+          });
+          console.log(response.data)
+        }
+        catch (error) {
+          console.error(error)
+          if (error.message && error.message === 'Login required') {
+            console.log('properly caught not logged in');
+          }
+          else {
+            console.log('login and retrieving user info failed for some other reason')
+            console.log(error)
+          }
+        }
+
       }
     }
     getToken().catch(e => console.log(e));
@@ -66,6 +87,9 @@ function Login(props) {
     }
     catch (error) {
       console.error(error)
+      if (error.message && error.message === 'Login required') {
+        console.log('properly caught not logged in');
+      }
     }
   }
 
@@ -77,11 +101,12 @@ function Login(props) {
     )
   }
 
+  //NOTE: if the user actually creates their own account, there will not be a user.given_name field. 
   return (
     <div className={props.ctrClass}>
       {!isAuthenticated && <button className='login__btn' onClick={handleLogin}>Login</button>}
       {isAuthenticated && <button className='login__btn' onClick={handleLogout}>Logout</button>}
-      {user && <div>Hello {user.given_name}</div>}
+      {user && <div>Welcome {user.given_name}</div>}
       <button className='login__btn' onClick={apiCallPublic}>Public</button>
       <button className='login__btn' onClick={apiCallPrivate}>Private</button>
     </div>
