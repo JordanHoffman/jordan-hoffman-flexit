@@ -19,22 +19,78 @@ class StageSelect extends React.Component {
   componentDidMount() {
     //the response is an array of all puzzle data objects of the form [{id: 1234, difficulty:'medium', number: 4}]. Filter into seperate arrays for easy medium and hard, then sort by their "number" property.
 
-    let reqst = API_URL ? API_URL : ('http://' + document.location.hostname + ":8080/");
-    axios.get(reqst + 'api/puzzles/all-general')
-      .then((resp) => {
-        const easyPuzzleData = resp.data.filter(puzzleDataObject => puzzleDataObject.difficulty === 'easy').sort((a, b) => a.number - b.number);
-        const mediumPuzzleData = resp.data.filter(puzzleDataObject => puzzleDataObject.difficulty === 'medium').sort((a, b) => a.number - b.number);
-        const hardPuzzleData = resp.data.filter(puzzleDataObject => puzzleDataObject.difficulty === 'hard').sort((a, b) => a.number - b.number);
+    // let reqst = API_URL ? API_URL : ('http://' + document.location.hostname + ":8080/");
+    // axios.get(reqst + 'api/puzzles/all-general')
+    //   .then((resp) => {
+    //     const easyPuzzleData = resp.data.filter(puzzleDataObject => puzzleDataObject.difficulty === 'easy').sort((a, b) => a.number - b.number);
+    //     const mediumPuzzleData = resp.data.filter(puzzleDataObject => puzzleDataObject.difficulty === 'medium').sort((a, b) => a.number - b.number);
+    //     const hardPuzzleData = resp.data.filter(puzzleDataObject => puzzleDataObject.difficulty === 'hard').sort((a, b) => a.number - b.number);
 
+    //     this.setState({
+    //       easyPuzzleData: easyPuzzleData,
+    //       mediumPuzzleData: mediumPuzzleData,
+    //       hardPuzzleData: hardPuzzleData
+    //     })
+    //   })
+    //   .catch((error) => {
+    //     console.error(error)
+    //   })
+  }
+
+  onLoggedInOut = (result) => {
+    if (!result.loggedIn) {
+      //User not logged in, but we have no puzzle data at all. It needs to be loaded.
+      if (!this.state.easyPuzzleData.length) {
+        let reqst = API_URL ? API_URL : ('http://' + document.location.hostname + ":8080/");
+        axios.get(reqst + 'api/puzzles/all-general')
+          .then((resp) => {
+            const easyPuzzleData = resp.data.filter(puzzleDataObject => puzzleDataObject.difficulty === 'easy').sort((a, b) => a.number - b.number);
+            const mediumPuzzleData = resp.data.filter(puzzleDataObject => puzzleDataObject.difficulty === 'medium').sort((a, b) => a.number - b.number);
+            const hardPuzzleData = resp.data.filter(puzzleDataObject => puzzleDataObject.difficulty === 'hard').sort((a, b) => a.number - b.number);
+
+            this.setState({
+              easyPuzzleData: easyPuzzleData,
+              mediumPuzzleData: mediumPuzzleData,
+              hardPuzzleData: hardPuzzleData
+            })
+          })
+          .catch((error) => {
+            console.error(error)
+          })
+      }
+      //User not logged in, but we have puzzle data. Any user info (saved, completed) for the puzzles needs to taken out.
+      else {
+        const easyPuzzleData = this.state.easyPuzzleData.map(puzzleDataObject => {
+          const updatedObj = { ...puzzleDataObject, complete: false, savedProgress: null };
+          return updatedObj;
+        })
+        const mediumPuzzleData = this.state.mediumPuzzleData.map(puzzleDataObject => {
+          const updatedObj = { ...puzzleDataObject, complete: false, savedProgress: null };
+          return updatedObj;
+        })
+        const hardPuzzleData = this.state.hardPuzzleData.map(puzzleDataObject => {
+          const updatedObj = { ...puzzleDataObject, complete: false, savedProgress: null };
+          return updatedObj;
+        })
         this.setState({
           easyPuzzleData: easyPuzzleData,
           mediumPuzzleData: mediumPuzzleData,
           hardPuzzleData: hardPuzzleData
         })
+      }
+    }
+
+    //User is logged in. Result will always give us the puzzle data
+    else {
+      const easyPuzzleData = result.data.filter(puzzleDataObject => puzzleDataObject.difficulty === 'easy').sort((a, b) => a.number - b.number);
+      const mediumPuzzleData = result.data.filter(puzzleDataObject => puzzleDataObject.difficulty === 'medium').sort((a, b) => a.number - b.number);
+      const hardPuzzleData = result.data.filter(puzzleDataObject => puzzleDataObject.difficulty === 'hard').sort((a, b) => a.number - b.number);
+      this.setState({
+        easyPuzzleData: easyPuzzleData,
+        mediumPuzzleData: mediumPuzzleData,
+        hardPuzzleData: hardPuzzleData
       })
-      .catch((error) => {
-        console.error(error)
-      })
+    }
   }
 
   chooseDifficulty = (e) => {
@@ -72,14 +128,7 @@ class StageSelect extends React.Component {
 
     return (
       <div className="stage-select">
-        <Login ctrClass="login" />
-        {/* <div className="login">
-          <div className="login__btn-ctr">
-            <LoginButton />
-            <LogoutButton />
-          </div>
-          <Profile />
-        </div> */}
+        <Login ctrClass="login" onLoggedInOut={this.onLoggedInOut} />
 
         <h1 className="stage-select__title">
           <span className="stage-select__title stage-select__title--special-char">F</span>lex<span className="stage-select__title stage-select__title--special-char">I</span>t
@@ -111,6 +160,7 @@ class StageSelect extends React.Component {
                   prevPg: 'stage-select'
                 }}>
                 <span className="puzzle-card__number">{i + 1}</span>
+                {puzzleObject.complete && <span>complete</span>}
               </Link>
             )
           })}

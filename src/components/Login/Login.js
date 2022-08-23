@@ -22,7 +22,6 @@ function Login(props) {
   //Every time the user logs in or out, this fires.
   useEffect(() => {
     const getToken = async () => {
-      //TODO: SETUP THIS ROUTE AND CREATE NEW USER IF HES NOT IN DATABASE AND RETRIEVE SAVED DATA EXCEPT FOR ACTUAL PUZZLE SAVES!
       if (isLoggedIn) {
         //Fetch User saved data (stage completed and/or stage saved)
         try {
@@ -34,19 +33,26 @@ function Login(props) {
               authorization: `Bearer ${token}`,
             }
           });
-          console.log(response.data)
+          props.onLoggedInOut({
+            loggedIn: true,
+            data: response.data
+          })
         }
         catch (error) {
-          console.error(error)
+          //I'm not even sure how a user could be logged in but their access token be rejected. They wouldn't be logged in in the first place. But this will catch it just in case.
           if (error.message && error.message === 'Login required') {
             console.log('properly caught not logged in');
+            props.onLoggedInOut({loggedIn:false})
           }
           else {
-            console.log('login and retrieving user info failed for some other reason')
+            console.error('login and retrieving user info failed for some other reason')
             console.log(error)
           }
         }
-
+      } 
+      //user logged out
+      else {
+        props.onLoggedInOut({loggedIn: false});
       }
     }
     getToken().catch(e => console.log(e));
@@ -62,37 +68,6 @@ function Login(props) {
     });
   }
 
-  const apiCallPublic = () => {
-    let reqst = API_URL ? API_URL : ('http://' + document.location.hostname + ":8080/");
-    axios.get(reqst + 'api/public')
-      .then((resp) => {
-        console.log(resp.data)
-      })
-      .catch((error) => {
-        console.error(error)
-      })
-  }
-
-  const apiCallPrivate = async () => {
-    let reqst = API_URL ? API_URL : ('http://' + document.location.hostname + ":8080/");
-
-    try {
-      const token = await getAccessTokenSilently();
-      const response = await axios.get(reqst + 'api/private', {
-        headers: {
-          authorization: `Bearer ${token}`,
-        }
-      });
-      console.log(response.data)
-    }
-    catch (error) {
-      console.error(error)
-      if (error.message && error.message === 'Login required') {
-        console.log('properly caught not logged in');
-      }
-    }
-  }
-
   if (isLoading) {
     return (
       <div className={props.ctrClass}>
@@ -104,11 +79,9 @@ function Login(props) {
   //NOTE: if the user actually creates their own account, there will not be a user.given_name field. 
   return (
     <div className={props.ctrClass}>
+      {user && <div>Welcome {user.given_name}</div>}
       {!isAuthenticated && <button className='login__btn' onClick={handleLogin}>Login</button>}
       {isAuthenticated && <button className='login__btn' onClick={handleLogout}>Logout</button>}
-      {user && <div>Welcome {user.given_name}</div>}
-      <button className='login__btn' onClick={apiCallPublic}>Public</button>
-      <button className='login__btn' onClick={apiCallPrivate}>Private</button>
     </div>
   )
 }
