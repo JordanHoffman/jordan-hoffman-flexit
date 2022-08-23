@@ -265,7 +265,8 @@ class PuzzlePlay extends React.Component {
             this.setState({ won: true });
           })
           .catch((error) => {
-            console.error(error)
+            console.error(error);
+            this.setState({ won: true });
           })
       } else {
         this.setState({ won: true });
