@@ -35,6 +35,7 @@ function Login(props) {
           });
           props.onLoggedInOut({
             loggedIn: true,
+            token: token,
             data: response.data
           })
         }

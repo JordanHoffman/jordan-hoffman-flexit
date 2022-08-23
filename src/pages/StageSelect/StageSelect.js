@@ -13,7 +13,8 @@ class StageSelect extends React.Component {
     difficulty: 'easy',
     easyPuzzleData: [],
     mediumPuzzleData: [],
-    hardPuzzleData: []
+    hardPuzzleData: [],
+    loginToken: null,
   }
 
   componentDidMount() {
@@ -51,7 +52,8 @@ class StageSelect extends React.Component {
             this.setState({
               easyPuzzleData: easyPuzzleData,
               mediumPuzzleData: mediumPuzzleData,
-              hardPuzzleData: hardPuzzleData
+              hardPuzzleData: hardPuzzleData,
+              login: null
             })
           })
           .catch((error) => {
@@ -75,7 +77,8 @@ class StageSelect extends React.Component {
         this.setState({
           easyPuzzleData: easyPuzzleData,
           mediumPuzzleData: mediumPuzzleData,
-          hardPuzzleData: hardPuzzleData
+          hardPuzzleData: hardPuzzleData,
+          login: null
         })
       }
     }
@@ -88,7 +91,8 @@ class StageSelect extends React.Component {
       this.setState({
         easyPuzzleData: easyPuzzleData,
         mediumPuzzleData: mediumPuzzleData,
-        hardPuzzleData: hardPuzzleData
+        hardPuzzleData: hardPuzzleData,
+        loginToken: result.token
       })
     }
   }
@@ -157,7 +161,8 @@ class StageSelect extends React.Component {
                 key={puzzleObject.id}
                 to={{
                   pathname: ("/play/" + puzzleObject.id),
-                  prevPg: 'stage-select'
+                  prevPg: 'stage-select',
+                  state: {loginToken: this.state.token}
                 }}>
                 <span className="puzzle-card__number">{i + 1}</span>
                 {puzzleObject.complete && <span>complete</span>}
