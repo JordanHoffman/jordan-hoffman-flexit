@@ -162,7 +162,7 @@ class StageSelect extends React.Component {
                 to={{
                   pathname: ("/play/" + puzzleObject.id),
                   prevPg: 'stage-select',
-                  state: {loginToken: this.state.token}
+                  state: {loginToken: this.state.loginToken, complete:puzzleObject.complete}
                 }}>
                 <span className="puzzle-card__number">{i + 1}</span>
                 {puzzleObject.complete && <span>complete</span>}

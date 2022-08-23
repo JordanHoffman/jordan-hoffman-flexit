@@ -21,7 +21,8 @@ class PuzzlePlay extends React.Component {
     goalBaseBoard: null,
     puzzleDifficulty: null,
     puzzleNumber: null,
-    won: false
+    won: false,
+    userAlreadyCompleted: false
   }
 
   winTimeoutId = null;
@@ -33,15 +34,37 @@ class PuzzlePlay extends React.Component {
     const puzzleId = this.props.match.params.puzzleId;
 
     let reqst = API_URL ? API_URL : ('http://' + document.location.hostname + ":8080/");
-    axios.get(reqst + 'api/puzzles/specific/' + puzzleId)
-      .then((resp) => {
-        const puzzleObject = JSON.parse(resp.data.puzzleObject);
-        this.setState({ flexBlockWorkPuzzle: this.loadWorkPuzzle(puzzleObject), puzzleDifficulty: resp.data.difficulty, puzzleNumber: resp.data.number })
-        this.setState({ flexBlockGoalPuzzle: this.loadGoalPuzzle(puzzleObject) })
+
+    //If user is logged in, retrieve specific user data on puzzle
+    if (this.props.location.state && this.props.location.state.loginToken) {
+
+      axios.get((reqst + 'api/users/specific/' + puzzleId), {
+        headers: {
+          authorization: `Bearer ${this.props.location.state.loginToken}`,
+        }
       })
-      .catch((error) => {
-        console.error(error)
-      })
+        .then((resp) => {
+          console.log(resp.data)
+          const puzzleObject = JSON.parse(resp.data.puzzleObject);
+          this.setState({ flexBlockWorkPuzzle: this.loadWorkPuzzle(puzzleObject), puzzleDifficulty: resp.data.difficulty, puzzleNumber: resp.data.number, userAlreadyCompleted: resp.data.complete })
+          this.setState({ flexBlockGoalPuzzle: this.loadGoalPuzzle(puzzleObject) })
+        })
+        .catch((error) => {
+          console.error(error)
+        })
+    }
+    //If user is not logged in, retrieve specific generic data on puzzle
+    else {
+      axios.get(reqst + 'api/puzzles/specific/' + puzzleId)
+        .then((resp) => {
+          const puzzleObject = JSON.parse(resp.data.puzzleObject);
+          this.setState({ flexBlockWorkPuzzle: this.loadWorkPuzzle(puzzleObject), puzzleDifficulty: resp.data.difficulty, puzzleNumber: resp.data.number })
+          this.setState({ flexBlockGoalPuzzle: this.loadGoalPuzzle(puzzleObject) })
+        })
+        .catch((error) => {
+          console.error(error)
+        })
+    }
   }
 
   componentDidUpdate() {
@@ -226,7 +249,28 @@ class PuzzlePlay extends React.Component {
       this.state.workBaseBoard.findAndDisplayMismatches(result.submissionMismatches)
     }
 
-    if (victory) this.setState({ won: true });
+    if (victory) {
+      //if user logged in and this puzzle is not recorded as a win, the submit to DB that it was won
+      const puzzleId = this.props.match.params.puzzleId;
+      let reqst = API_URL ? API_URL : ('http://' + document.location.hostname + ":8080/");
+
+      console.log(this.props.location.state.loginToken)
+      if (this.props.location.state && this.props.location.state.loginToken && !this.state.userAlreadyCompleted) {
+        axios.put((reqst + 'api/users/completedSpecific/' + puzzleId),{}, {
+          headers: {
+            authorization: `Bearer ${this.props.location.state.loginToken}`,
+          }
+        })
+          .then((resp) => {
+            this.setState({ won: true });
+          })
+          .catch((error) => {
+            console.error(error)
+          })
+      } else {
+        this.setState({ won: true });
+      }
+    }
   }
 
   render() {
