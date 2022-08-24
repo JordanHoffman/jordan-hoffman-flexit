@@ -1,11 +1,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import { useAuth0 } from "@auth0/auth0-react";
 
 import './StageSelect.scss'
 import { API_URL } from '../../config/index';
 import Login from "../../components/Login";
+import { Trophy } from "../../Utility/svg-loader";
 
 class StageSelect extends React.Component {
 
@@ -162,10 +162,12 @@ class StageSelect extends React.Component {
                 to={{
                   pathname: ("/play/" + puzzleObject.id),
                   prevPg: 'stage-select',
-                  state: {loginToken: this.state.loginToken, complete:puzzleObject.complete}
+                  state: { loginToken: this.state.loginToken, complete: puzzleObject.complete }
                 }}>
                 <span className="puzzle-card__number">{i + 1}</span>
-                {puzzleObject.complete && <span>complete</span>}
+                <div className="puzzle-card__save-data">
+                  {puzzleObject.complete && <Trophy className="puzzle-card__complete-svg" />}
+                </div>
               </Link>
             )
           })}
