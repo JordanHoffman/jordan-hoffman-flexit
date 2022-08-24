@@ -1,0 +1,19 @@
+@use "../../styles/partials/global" as *;
+
+.login {
+
+  &__Msg {
+    text-align: right;
+  }
+
+  &__btn {
+    background-color: $Primary-Dark;
+    padding: $half-padding-between-mobile;
+    border-radius: 5px;
+
+    @include tablet {
+      padding: $half-padding-between-mobile $padding-between-mobile;
+    }
+  }
+
+}

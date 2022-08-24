@@ -5,7 +5,7 @@ import axios from "axios";
 import './StageSelect.scss'
 import { API_URL } from '../../config/index';
 import Login from "../../components/Login";
-import { Trophy } from "../../Utility/svg-loader";
+import { Trophy, Saved } from "../../Utility/svg-loader";
 
 class StageSelect extends React.Component {
 
@@ -166,6 +166,7 @@ class StageSelect extends React.Component {
                 }}>
                 <span className="puzzle-card__number">{i + 1}</span>
                 <div className="puzzle-card__save-data">
+                  <Saved className="puzzle-card__saved-svg" />
                   {puzzleObject.complete && <Trophy className="puzzle-card__complete-svg" />}
                 </div>
               </Link>

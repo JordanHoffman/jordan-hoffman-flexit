@@ -11,11 +11,8 @@
   &__title {
     font-family: Righteous;
     @include title-fontstats;
-    margin-top: $padding-H-before-mobile;
-
-    @include tablet {
-      margin-top: $padding-H-before-larger;
-    }
+    margin-top: $padding-H-before-larger;
+    margin-left: $half-padding-between-mobile;
 
     &--special-char {
       color: $Secondary;
@@ -127,6 +124,10 @@
     .puzzle-card__complete-svg{
       fill: $Primary-Dark;
     }
+
+    .puzzle-card__saved-svg{
+      fill: $Primary-Dark;
+    }
   }
 
 
@@ -152,6 +153,17 @@
       width: 18px;
     }
   }
+
+  &__saved-svg {
+    flex-shrink: 0;
+    width: 15px;
+    fill: $Secondary;
+    margin-right: auto;
+
+    @include tablet {
+      width: 18px;
+    }
+  }
 }
 
 //LOGIN
@@ -161,24 +173,21 @@
   top: 0;
   display: flex;
   flex-direction: column;
-  margin-top: $padding-H-before-mobile;
+  align-items: flex-end;
+  margin-top: $half-padding-between-mobile;
   margin-right: $padding-between-mobile;
+  gap: $half-padding-between-mobile;
+  width: 50%;
 
-  &__btn-ctr {
-    display: flex;
-    gap: $padding-between-mobile;
+  @include tablet {
+    margin-top: $padding-H-before-larger;
+    margin-right: $padding-H-before-larger;
   }
 
-  &__btn {
-    background-color: $Primary-Dark;
-    padding: $half-padding-between-mobile $padding-between-mobile;
-  }
-  &__profile {
-    background-color: $Primary-Dark;
+  @include desktop {
+    margin-right: calc(2 * $padding-H-before-larger + (100vw - $desktop-breakpoint)/1.75);
   }
 }
-
-
 
 //special loading animation styling from spinner reference website
 .sk-fading-circle {

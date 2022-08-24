@@ -78,9 +78,10 @@ function Login(props) {
   }
 
   //NOTE: if the user actually creates their own account, there will not be a user.given_name field. 
+  const loginMsg = user ? ('Welcome ' + user.give_name) : 'login to save progress';
   return (
     <div className={props.ctrClass}>
-      {user && <div>Welcome {user.given_name}</div>}
+      <div className='login__Msg'>{loginMsg}</div>
       {!isAuthenticated && <button className='login__btn' onClick={handleLogin}>Login</button>}
       {isAuthenticated && <button className='login__btn' onClick={handleLogout}>Logout</button>}
     </div>
