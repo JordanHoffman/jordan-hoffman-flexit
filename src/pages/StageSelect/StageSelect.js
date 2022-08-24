@@ -6,6 +6,7 @@ import './StageSelect.scss'
 import { API_URL } from '../../config/index';
 import Login from "../../components/Login";
 import { Trophy, Saved } from "../../Utility/svg-loader";
+import LoadingAnimation from "../../components/LoadingAnimation";
 
 class StageSelect extends React.Component {
 
@@ -17,6 +18,7 @@ class StageSelect extends React.Component {
     loginToken: null,
   }
 
+  //This used to handle initial data request before user login functionality was added. I'm keeping it just in case.
   componentDidMount() {
     //the response is an array of all puzzle data objects of the form [{id: 1234, difficulty:'medium', number: 4}]. Filter into seperate arrays for easy medium and hard, then sort by their "number" property.
 
@@ -111,20 +113,7 @@ class StageSelect extends React.Component {
       for (let i = 0; i < 2; i++) {
         loadingPuzzles.push(
           <button className="puzzle-card puzzle-card--loading" key={'loading' + i}>
-            <div className="sk-fading-circle">
-              <div className="sk-circle1 sk-circle"></div>
-              <div className="sk-circle2 sk-circle"></div>
-              <div className="sk-circle3 sk-circle"></div>
-              <div className="sk-circle4 sk-circle"></div>
-              <div className="sk-circle5 sk-circle"></div>
-              <div className="sk-circle6 sk-circle"></div>
-              <div className="sk-circle7 sk-circle"></div>
-              <div className="sk-circle8 sk-circle"></div>
-              <div className="sk-circle9 sk-circle"></div>
-              <div className="sk-circle10 sk-circle"></div>
-              <div className="sk-circle11 sk-circle"></div>
-              <div className="sk-circle12 sk-circle"></div>
-            </div>
+            <LoadingAnimation ctrOverrideClass='puzzle-card__loading-animation'/>
           </button>
         )
       }
@@ -162,12 +151,12 @@ class StageSelect extends React.Component {
                 to={{
                   pathname: ("/play/" + puzzleObject.id),
                   prevPg: 'stage-select',
-                  state: { loginToken: this.state.loginToken, complete: puzzleObject.complete }
+                  state: { loginToken: this.state.loginToken }
                 }}>
                 <span className="puzzle-card__number">{i + 1}</span>
                 <div className="puzzle-card__save-data">
-                  <Saved className="puzzle-card__saved-svg" />
-                  {puzzleObject.complete && <Trophy className="puzzle-card__complete-svg" />}
+                  {!!puzzleObject.savedPuzzle && <Saved className="puzzle-card__saved-svg" />}
+                  {!!puzzleObject.complete && <Trophy className="puzzle-card__complete-svg" />}
                 </div>
               </Link>
             )

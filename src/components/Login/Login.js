@@ -78,7 +78,7 @@ function Login(props) {
   }
 
   //NOTE: if the user actually creates their own account, there will not be a user.given_name field. 
-  const loginMsg = user ? ('Welcome ' + user.give_name) : 'login to save progress';
+  const loginMsg = user ? ('Welcome ' + user.given_name) : 'login to save progress';
   return (
     <div className={props.ctrClass}>
       <div className='login__Msg'>{loginMsg}</div>

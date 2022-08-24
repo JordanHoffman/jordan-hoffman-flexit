@@ -10,6 +10,7 @@ import helperFunctions from '../../Utility/HelperFunctions';
 import C from '../../Utility/Constants';
 import { API_URL } from '../../config';
 import { Link } from 'react-router-dom';
+import Loading from "../../components/LoadingAnimation";
 
 class PuzzlePlay extends React.Component {
 
@@ -22,10 +23,12 @@ class PuzzlePlay extends React.Component {
     puzzleDifficulty: null,
     puzzleNumber: null,
     won: false,
+    saveStatus: C.saveStatus.Ready,
     userAlreadyCompleted: false
   }
 
   winTimeoutId = null;
+  saveTimeoutId = null;
 
   componentDidMount() {
     // Use this instead of loadWorkPuzzle for developer mode where you can create new puzzles for the user to play that have different baseboard sizes
@@ -44,10 +47,12 @@ class PuzzlePlay extends React.Component {
         }
       })
         .then((resp) => {
-          console.log(resp.data)
           const puzzleObject = JSON.parse(resp.data.puzzleObject);
-          this.setState({ flexBlockWorkPuzzle: this.loadWorkPuzzle(puzzleObject), puzzleDifficulty: resp.data.difficulty, puzzleNumber: resp.data.number, userAlreadyCompleted: resp.data.complete })
-          this.setState({ flexBlockGoalPuzzle: this.loadGoalPuzzle(puzzleObject) })
+
+          const hasSavedData = resp.data.savedPuzzle ? true : false;
+          const workPuzzleObject = resp.data.savedPuzzle ? JSON.parse(resp.data.savedPuzzle) : puzzleObject;
+          this.setState({ flexBlockWorkPuzzle: this.loadWorkPuzzle(workPuzzleObject, hasSavedData), puzzleDifficulty: resp.data.difficulty, puzzleNumber: resp.data.number, userAlreadyCompleted: resp.data.complete })
+          this.setState({ flexBlockGoalPuzzle: this.loadSavedPuzzle(puzzleObject, false) })
         })
         .catch((error) => {
           console.error(error)
@@ -58,8 +63,8 @@ class PuzzlePlay extends React.Component {
       axios.get(reqst + 'api/puzzles/specific/' + puzzleId)
         .then((resp) => {
           const puzzleObject = JSON.parse(resp.data.puzzleObject);
-          this.setState({ flexBlockWorkPuzzle: this.loadWorkPuzzle(puzzleObject), puzzleDifficulty: resp.data.difficulty, puzzleNumber: resp.data.number })
-          this.setState({ flexBlockGoalPuzzle: this.loadGoalPuzzle(puzzleObject) })
+          this.setState({ flexBlockWorkPuzzle: this.loadWorkPuzzle(puzzleObject, false), puzzleDifficulty: resp.data.difficulty, puzzleNumber: resp.data.number })
+          this.setState({ flexBlockGoalPuzzle: this.loadSavedPuzzle(puzzleObject, false) })
         })
         .catch((error) => {
           console.error(error)
@@ -69,7 +74,7 @@ class PuzzlePlay extends React.Component {
 
   componentDidUpdate() {
     if (this.state.won && !this.winTimeoutId) {
-      setTimeout(() => {
+      this.winTimeoutId = setTimeout(() => {
         //This safeguard is for if anyone should just bypass the stage select and put the url of an exact puzzle play pg to start off with.
         if (this.props.location.state && this.props.location.state.prevPg === 'stage-select') {
           this.props.history.pop();
@@ -79,6 +84,11 @@ class PuzzlePlay extends React.Component {
         }
       }, 2500);
     }
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this.winTimeoutId);
+    clearTimeout(this.saveTimeoutId);
   }
 
   //This legacy function is still useful for experimenting/creating puzzles with different baseboard sizes.
@@ -125,8 +135,30 @@ class PuzzlePlay extends React.Component {
     return parent;
   }
 
-  //Loads the empty baseboard for this puzzle with standard initialization
-  loadWorkPuzzle = (puzzleObject) => {
+  //Loads either a saved work puzzle if the argument is true, or the target goal puzzle if false
+  loadSavedPuzzle(puzzleObject, isWorkPuzzle) {
+    let puzzleObjectClone = cloneDeep(puzzleObject)
+    this.createDetailIDs(puzzleObjectClone);
+
+    const parent = <FlexBlock
+      key={puzzleObjectClone.id}
+      details={puzzleObjectClone}
+      initialChildDetailsArray={puzzleObjectClone.initialChildDetailsArray}
+      selectedListener={this.newFlexBlockSelected}
+      receiveBaseBoardHandle={this.receiveBaseBoardHandle}
+      layer={0}
+      isWorkPuzzle={isWorkPuzzle}
+    />
+
+    return parent;
+  }
+
+  //Loads either the saved puzzle if there is one, or an empty baseboard with standard initialization
+  loadWorkPuzzle = (puzzleObject, fromSaved) => {
+    if (fromSaved) {
+      return this.loadSavedPuzzle(puzzleObject, true);
+    }
+
     const { initialChildDetailsArray, ...details } = puzzleObject
     let parentDetails = cloneDeep(details);
     parentDetails.alignItems = "start";
@@ -162,7 +194,33 @@ class PuzzlePlay extends React.Component {
 
   attemptSave = () => {
     let saveObject = this.state.workBaseBoard.attemptSave();
-    console.log(saveObject);
+
+    const puzzleId = this.props.match.params.puzzleId;
+    let reqst = API_URL ? API_URL : ('http://' + document.location.hostname + ":8080/");
+
+    this.setState({saveStatus: C.saveStatus.Saving});
+    axios.put((reqst + 'api/users/saveSpecific/' + puzzleId), {puzzleObject: saveObject}, {
+      headers: {
+        authorization: `Bearer ${this.props.location.state.loginToken}`,
+      }
+    })
+      .then((resp) => {
+        //successful save
+        this.setState({saveStatus: C.saveStatus.CompleteMessage})
+        this.saveTimeoutId = setTimeout(() => {
+          this.setState({saveStatus: C.saveStatus.Ready})
+        }, 1000);
+      })
+      .catch((error) => {
+        console.warn('unable to save with following error:')
+        console.warn(error);
+        this.setState({saveStatus: C.saveStatus.Ready})
+      })
+  }
+
+
+  attemptDownload = () => {
+    let saveObject = this.state.workBaseBoard.attemptSave();
 
     const a = document.createElement("a");
     const content = JSON.stringify(saveObject);
@@ -254,9 +312,8 @@ class PuzzlePlay extends React.Component {
       const puzzleId = this.props.match.params.puzzleId;
       let reqst = API_URL ? API_URL : ('http://' + document.location.hostname + ":8080/");
 
-      console.log(this.props.location.state.loginToken)
       if (this.props.location.state && this.props.location.state.loginToken && !this.state.userAlreadyCompleted) {
-        axios.put((reqst + 'api/users/completedSpecific/' + puzzleId),{}, {
+        axios.put((reqst + 'api/users/completedSpecific/' + puzzleId), {}, {
           headers: {
             authorization: `Bearer ${this.props.location.state.loginToken}`,
           }
@@ -275,6 +332,21 @@ class PuzzlePlay extends React.Component {
   }
 
   render() {
+    const loggedIn = this.props.location.state && this.props.location.state.loginToken;
+
+    let saveButtonDisplay = 'save';
+    let saveButtonDisable = false;
+    let saveButtonModifier = ''
+    if (this.state.saveStatus === C.saveStatus.Saving) {
+      saveButtonModifier = ' action-btn--saveInProgress'
+      saveButtonDisplay = <>{'a'}<Loading ctrOverrideClass='save-animation-ctr'/></>
+      saveButtonDisable = true
+    } else if (this.state.saveStatus === C.saveStatus.CompleteMessage) {
+      saveButtonModifier = ' action-btn--saveCmpltMsg'
+      saveButtonDisplay = 'saved!';
+      saveButtonDisable = true;
+    }
+
     return (
       <div className={'puzzle-pg' + (this.state.won ? " puzzle-pg--disable" : "")}>
         <div className={'win-screen' + (this.state.won ? " win-screen--show" : "")}>WINNER!</div>
@@ -305,8 +377,8 @@ class PuzzlePlay extends React.Component {
               </div>
 
               <div className='action-btn-subsection'>
-                {/* <button className='action-btn action-btn--save save-btn' onClick={this.attemptSave}>Dwnld</button> */}
-                <button className='action-btn action-btn--submit submit-btn' onClick={this.attemptSubmit}>SUBMIT</button>
+                {loggedIn && <button className={'action-btn action-btn--save' + saveButtonModifier} disabled={saveButtonDisable} onClick={this.attemptSave}>{saveButtonDisplay}</button>}
+                <button className='action-btn action-btn--submit' onClick={this.attemptSubmit}>SUBMIT</button>
               </div>
 
 

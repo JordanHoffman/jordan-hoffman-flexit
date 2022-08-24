@@ -8,6 +8,11 @@ const Constants = {
     Room: 'Room',
     Overlap: 'Overlap',
     Confirm: 'Confirm'
+  }),
+  saveStatus: Object.freeze({
+    Ready:'Ready',
+    Saving:'Saving',
+    CompleteMessage:'CompleteMessage'
   })
 }
 
