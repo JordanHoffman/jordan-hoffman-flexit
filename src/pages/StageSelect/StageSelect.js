@@ -62,18 +62,18 @@ class StageSelect extends React.Component {
             console.error(error)
           })
       }
-      //User not logged in, but we have puzzle data. Any user info (saved, completed) for the puzzles needs to taken out.
+      //User not logged in, but we have puzzle data (this should occure on logout after being logged in). Any user info (saved, completed) for the puzzles needs to taken out. Actually, I believe this never gets triggered. Logout redirects to the page which triggers a fresh reload.
       else {
         const easyPuzzleData = this.state.easyPuzzleData.map(puzzleDataObject => {
-          const updatedObj = { ...puzzleDataObject, complete: false, savedProgress: null };
+          const updatedObj = { ...puzzleDataObject, complete: false, savedPuzzle: null };
           return updatedObj;
         })
         const mediumPuzzleData = this.state.mediumPuzzleData.map(puzzleDataObject => {
-          const updatedObj = { ...puzzleDataObject, complete: false, savedProgress: null };
+          const updatedObj = { ...puzzleDataObject, complete: false, savedPuzzle: null };
           return updatedObj;
         })
         const hardPuzzleData = this.state.hardPuzzleData.map(puzzleDataObject => {
-          const updatedObj = { ...puzzleDataObject, complete: false, savedProgress: null };
+          const updatedObj = { ...puzzleDataObject, complete: false, savedPuzzle: null };
           return updatedObj;
         })
         this.setState({
