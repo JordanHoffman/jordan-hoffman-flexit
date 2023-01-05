@@ -4,3 +4,4 @@ Welcome aspiring web developers! For anyone who is struggling to learn CSS Flexb
 
 ## Instructions
 ### You can refer to the Wiki or the Online Guide
+[FlexIt Home Screen](https://play-flexit.herokuapp.com/)
